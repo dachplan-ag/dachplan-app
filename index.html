@@ -1,12 +1,243 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0; url=https://sparkly-quokka-83d6be.netlify.app">
-<title>DachPlan AG</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DachPlan Quick — Diario di cantiere</title>
+
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<style>
+  :root {
+    --brand: #c8102e;
+    --brand-dark: #9a0c23;
+    --ink: #1a1f29;
+    --muted: #6b7280;
+    --ok: #16794a;
+    --ok-bg: #e7f6ee;
+    --line: #e5e7eb;
+    --bg: #f5f6f8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    padding: 18px 20px;
+  }
+  header .wrap { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 38px; height: 38px; border-radius: 9px;
+    background: var(--brand); color: #fff; font-weight: 800;
+    display: grid; place-items: center; font-size: 18px; letter-spacing: -.5px;
+  }
+  header h1 { font-size: 17px; margin: 0; line-height: 1.2; }
+  header p { font-size: 12.5px; margin: 2px 0 0; color: var(--muted); }
+
+  main { max-width: 720px; margin: 28px auto; padding: 0 20px; }
+  .card {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 24px; box-shadow: 0 1px 2px rgba(16,24,40,.04);
+  }
+  .card h2 { margin: 0 0 6px; font-size: 16px; }
+  .card .sub { margin: 0 0 20px; color: var(--muted); font-size: 13.5px; line-height: 1.5; }
+
+  .gbtn {
+    display: inline-flex; align-items: center; gap: 12px;
+    background: #fff; color: #3c4043;
+    border: 1px solid #dadce0; border-radius: 8px;
+    padding: 11px 18px 11px 14px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: background .15s, box-shadow .15s, border-color .15s;
+    font-family: inherit;
+  }
+  .gbtn:hover { background: #f7f8f8; box-shadow: 0 1px 3px rgba(60,64,67,.18); }
+  .gbtn:active { background: #eef0f1; }
+  .gbtn:disabled { opacity: .6; cursor: default; box-shadow: none; }
+  .gbtn svg { width: 18px; height: 18px; flex: none; }
+
+  .status {
+    margin-top: 18px; padding: 13px 15px; border-radius: 10px;
+    font-size: 13.5px; line-height: 1.45; display: none;
+  }
+  .status.show { display: block; }
+  .status.ok { background: var(--ok-bg); color: var(--ok); border: 1px solid #bfe6d1; font-weight: 600; }
+  .status.err { background: #fdecec; color: #b3261e; border: 1px solid #f3c2c0; }
+
+  .secondary {
+    margin-top: 16px; background: none; border: none; color: var(--muted);
+    font-size: 12.5px; text-decoration: underline; cursor: pointer; padding: 0;
+    font-family: inherit;
+  }
+  .config-note {
+    margin-top: 22px; padding: 13px 15px; border-radius: 10px;
+    background: #fff8e6; border: 1px solid #f3e2a8; color: #7a5d00;
+    font-size: 12.5px; line-height: 1.5; display: none;
+  }
+  .config-note.show { display: block; }
+  code { background: #eef0f3; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+  footer { max-width: 720px; margin: 22px auto 40px; padding: 0 20px; color: var(--muted); font-size: 12px; }
+</style>
 </head>
 <body>
-<h1>DachPlan Quick — Diario di cantiere</h1>
-<p>Caricamento in corso...</p>
+
+<header>
+  <div class="wrap">
+    <div class="logo">DP</div>
+    <div>
+      <h1>DachPlan Quick</h1>
+      <p>Diario di cantiere</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="card">
+    <h2>Collega Google Sheets</h2>
+    <p class="sub">
+      Accedi con il tuo account Google per sincronizzare il diario di cantiere.
+      Nessun token da copiare e incollare: basta un click.
+    </p>
+
+    <button id="connectBtn" class="gbtn" type="button" disabled>
+      <svg viewBox="0 0 48 48" aria-hidden="true">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+      </svg>
+      <span id="connectLabel">Collega Google Sheets</span>
+    </button>
+
+    <div id="status" class="status"></div>
+    <button id="disconnectBtn" class="secondary" type="button" style="display:none">Scollega account</button>
+
+    <div id="configNote" class="config-note">
+      <strong>Configurazione richiesta.</strong> Imposta il tuo
+      <em>Google OAuth Client ID</em> nel tag <code>&lt;meta name="google-client-id"&gt;</code>
+      in cima a questa pagina (oppure nella variabile <code>GOOGLE_CLIENT_ID</code> dello script).
+    </div>
+  </div>
+</main>
+
+<footer>DachPlan AG · DachPlan Quick</footer>
+
+<!--
+  CONFIGURAZIONE GOOGLE OAUTH
+  ---------------------------
+  1. Vai su https://console.cloud.google.com/apis/credentials
+  2. Crea credenziali → "ID client OAuth" → tipo "Applicazione web"
+  3. In "Origini JavaScript autorizzate" aggiungi:
+        https://sparkly-quokka-83d6be.netlify.app
+  4. Abilita la "Google Sheets API" per il progetto.
+  5. Copia il Client ID generato e incollalo qui sotto come valore del
+     <meta name="google-client-id"> (un Client ID OAuth è pubblico, non è un segreto).
+-->
+<meta name="google-client-id" content="">
+
+<script>
+(function () {
+  "use strict";
+
+  // Client ID OAuth (pubblico). Letto dal <meta> qui sopra; in alternativa
+  // si può incollare direttamente come stringa qui sotto.
+  var GOOGLE_CLIENT_ID =
+    (document.querySelector('meta[name="google-client-id"]') || {}).content || "";
+
+  var SCOPES = "https://www.googleapis.com/auth/spreadsheets";
+  var TOKEN_KEY = "goog_token";
+
+  var connectBtn = document.getElementById("connectBtn");
+  var connectLabel = document.getElementById("connectLabel");
+  var disconnectBtn = document.getElementById("disconnectBtn");
+  var statusEl = document.getElementById("status");
+  var configNote = document.getElementById("configNote");
+
+  var tokenClient = null;
+
+  function showStatus(msg, kind) {
+    statusEl.textContent = msg;
+    statusEl.className = "status show " + (kind || "");
+  }
+
+  function markConnected() {
+    showStatus("✅ Google Sheets collegato", "ok");
+    connectLabel.textContent = "Account collegato";
+    connectBtn.disabled = true;
+    disconnectBtn.style.display = "inline-block";
+  }
+
+  function markDisconnected() {
+    statusEl.className = "status";
+    connectLabel.textContent = "Collega Google Sheets";
+    connectBtn.disabled = false;
+    disconnectBtn.style.display = "none";
+  }
+
+  // Inizializza il token client quando la libreria GSI è pronta.
+  function init() {
+    if (!GOOGLE_CLIENT_ID) {
+      configNote.classList.add("show");
+      showStatus("Configurazione OAuth mancante: imposta il Client ID.", "err");
+      return;
+    }
+
+    if (!window.google || !google.accounts || !google.accounts.oauth2) {
+      // La libreria non è ancora caricata: riprova a breve.
+      return setTimeout(init, 150);
+    }
+
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: SCOPES,
+      callback: function (resp) {
+        if (resp && resp.access_token) {
+          localStorage.setItem(TOKEN_KEY, resp.access_token);
+          markConnected();
+        } else {
+          showStatus("Accesso non riuscito. Riprova.", "err");
+        }
+      },
+      error_callback: function () {
+        showStatus("Accesso annullato o non riuscito.", "err");
+        connectBtn.disabled = false;
+        connectLabel.textContent = "Collega Google Sheets";
+      }
+    });
+
+    connectBtn.disabled = false;
+
+    // Se esiste già un token salvato, mostra lo stato collegato.
+    if (localStorage.getItem(TOKEN_KEY)) {
+      markConnected();
+    }
+  }
+
+  connectBtn.addEventListener("click", function () {
+    if (!tokenClient) return;
+    connectBtn.disabled = true;
+    connectLabel.textContent = "Apertura di Google…";
+    // Apre la schermata di consenso Google.
+    tokenClient.requestAccessToken({ prompt: "consent" });
+  });
+
+  disconnectBtn.addEventListener("click", function () {
+    var tok = localStorage.getItem(TOKEN_KEY);
+    if (tok && window.google && google.accounts && google.accounts.oauth2) {
+      google.accounts.oauth2.revoke(tok, function () {});
+    }
+    localStorage.removeItem(TOKEN_KEY);
+    markDisconnected();
+  });
+
+  init();
+})();
+</script>
 </body>
 </html>
