@@ -8,7 +8,7 @@
 <style>
   :root{
     --bg:#0f1117; --surface:#1a1d27; --card:#22263a; --accent:#f5a623;
-    --accent-dim:#c4831b; --text:#f0f0f0; --muted:#8a8fa8; --border:#2e3250;
+    --text:#f0f0f0; --muted:#8a8fa8; --border:#2e3250;
     --radius:14px; --danger:#e2574c; --ok:#3fb27f;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -22,7 +22,7 @@
   .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px;font-weight:600;letter-spacing:.02em}
   .input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:15px 16px;font-size:16px;outline:none;transition:border-color .15s;}
   .input:focus{border-color:var(--accent)}
-  textarea.input{min-height:120px;resize:vertical}
+  textarea.input{min-height:100px;resize:vertical}
   .btn{background:var(--accent);color:#1a1206;border-radius:var(--radius);padding:16px 20px;font-size:16px;font-weight:700;width:100%;transition:filter .15s,transform .05s;}
   .btn:active{transform:translateY(1px)}
   .btn:hover{filter:brightness(1.06)}
@@ -32,6 +32,8 @@
   .btn.danger{background:transparent;color:var(--danger);border:1px solid var(--border)}
   .row{display:flex;gap:12px}
   .row>*{flex:1}
+
+  /* BRAND */
   .brand{text-align:center;margin:28px 0 8px}
   .brand .logo{font-size:34px;font-weight:800;letter-spacing:-.02em;background:linear-gradient(120deg,#f5a623,#ffce7a);-webkit-background-clip:text;background-clip:text;color:transparent;}
   .brand .logo .q{color:var(--text);-webkit-text-fill-color:var(--text)}
@@ -40,17 +42,17 @@
   .center{display:flex;justify-content:center}
   .h2{font-size:22px;font-weight:800;margin:6px 0 18px}
 
-  /* ZONE CARDS con immagine */
+  /* ZONE 6 */
   .zone-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:8px}
-  .zone-card{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:0;text-align:center;transition:border-color .15s,background .15s;color:var(--text);overflow:hidden;cursor:pointer;}
-  .zone-card.full{grid-column:1 / -1}
+  .zone-card{background:var(--card);border:2px solid var(--border);border-radius:18px;overflow:hidden;cursor:pointer;transition:border-color .15s,background .15s;color:var(--text);text-align:center;}
   .zone-card.sel{border-color:var(--accent);background:#2a2715}
-  .zone-card .zone-img{width:100%;height:110px;display:flex;align-items:center;justify-content:center;font-size:64px;background:var(--surface);}
-  .zone-card .zone-name{font-weight:700;font-size:15px;padding:10px 8px 12px;}
+  .zone-card .zone-img{width:100%;height:100px;display:flex;align-items:center;justify-content:center;font-size:56px;background:var(--surface);}
+  .zone-card .zone-name{font-weight:700;font-size:14px;padding:9px 6px 11px;}
   .zone-card.sel .zone-name{color:var(--accent)}
 
+  /* APP HEADER */
   .appheader{position:sticky;top:0;z-index:30;background:rgba(15,17,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 16px;}
-  .appheader .badges{display:flex;gap:8px;flex-wrap:wrap}
+  .badges{display:flex;gap:8px;flex-wrap:wrap}
   .badge{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;gap:6px;align-items:center;}
   .badge .k{color:var(--muted)}
   .pills{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 4px;scrollbar-width:none}
@@ -60,6 +62,8 @@
   .pill.done{color:var(--ok);border-color:#27432f}
   .page{padding:16px}
   .page-title{font-size:18px;font-weight:800;margin:4px 0 14px;display:flex;align-items:center;gap:9px}
+
+  /* MANSIONI */
   .man-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
   .man-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;text-align:left;color:var(--text);position:relative;transition:border-color .15s;}
   .man-card.sel{border-color:var(--accent);background:#26230f}
@@ -68,10 +72,15 @@
   .man-card .msub{color:var(--muted);font-size:12px;margin-top:3px}
   .man-card .check{position:absolute;top:8px;right:9px;color:var(--accent);font-weight:800;opacity:0;font-size:15px}
   .man-card.sel .check{opacity:1}
-  .req-tag{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;color:var(--danger);border:1px solid #4a2b2b;border-radius:6px;padding:1px 6px;letter-spacing:.03em}
+  .req-tag{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;color:var(--danger);border:1px solid #4a2b2b;border-radius:6px;padding:1px 6px;}
+
+  /* ORE nella mansione */
+  .ore-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-top:14px;}
+  .ore-box h5{margin:0 0 10px;font-size:14px;color:var(--accent)}
+
+  /* DETAIL */
   .detail{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
   .detail h4{margin:0 0 4px;font-size:16px}
-  .detail .dsub{color:var(--muted);font-size:13px;margin-bottom:12px}
   .chips-label{font-size:12px;color:var(--muted);font-weight:700;margin:14px 0 8px;text-transform:uppercase;letter-spacing:.05em}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
   .chip{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;transition:all .12s;}
@@ -84,47 +93,33 @@
   .meteo-card .emoji{font-size:24px;display:block}
   .meteo-card .ml{font-size:11px;color:var(--muted);margin-top:4px}
   .meteo-card.sel{border-color:var(--accent);background:#26230f}
-  .alert{margin-top:14px;border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;background:#3a241f;border:1px solid #5a3a32;color:#ffb9ad;display:flex;gap:8px;align-items:flex-start;}
+  .alert{margin-top:14px;border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;background:#3a241f;border:1px solid #5a3a32;color:#ffb9ad;display:flex;gap:8px;}
   .alert.ok{background:#1c3328;border-color:#27432f;color:#9ee3bf}
-  .meteo-auto-badge{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;margin-bottom:12px;color:var(--muted);}
-  .meteo-auto-badge.loaded{color:var(--ok);border-color:#27432f}
+  .meteo-badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 14px;font-size:13px;font-weight:600;margin-bottom:12px;border:1px solid var(--border);background:var(--card);color:var(--muted);}
+  .meteo-badge.ok{color:var(--ok);border-color:#27432f}
 
-  /* MISURE - slider */
-  .slider-field{margin:14px 0}
-  .slider-field label{display:block;font-size:13px;color:var(--muted);margin-bottom:4px;font-weight:600}
-  .slider-row{display:flex;align-items:center;gap:12px}
-  .slider-val{min-width:64px;text-align:right;font-size:20px;font-weight:800;color:var(--accent)}
-  .slider-unit{font-size:12px;color:var(--muted);font-weight:600}
-  input[type=range]{
-    -webkit-appearance:none;appearance:none;width:100%;height:6px;
-    border-radius:3px;background:var(--border);outline:none;
-    transition:background .2s;
-  }
-  input[type=range]::-webkit-slider-thumb{
-    -webkit-appearance:none;appearance:none;width:26px;height:26px;
-    border-radius:50%;background:var(--accent);cursor:pointer;
-    box-shadow:0 2px 8px rgba(245,166,35,.4);
-  }
-  input[type=range]::-moz-range-thumb{
-    width:26px;height:26px;border-radius:50%;background:var(--accent);
-    cursor:pointer;border:none;box-shadow:0 2px 8px rgba(245,166,35,.4);
-  }
+  /* SLIDER logaritmico */
+  .sfield{margin:18px 0}
+  .sfield .slabel{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .sfield .slabel span{font-size:13px;color:var(--muted);font-weight:600}
+  .sfield .sval{font-size:22px;font-weight:800;color:var(--accent)}
+  .sfield .sunit{font-size:12px;color:var(--muted);margin-left:3px}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:4px;background:var(--border);outline:none;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(245,166,35,.5);}
+  input[type=range]::-moz-range-thumb{width:28px;height:28px;border-radius:50%;background:var(--accent);cursor:pointer;border:none;}
+  .sinput{margin-top:8px;display:flex;align-items:center;gap:8px}
+  .sinput input{width:90px;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 12px;font-size:16px;font-weight:700;outline:none;}
+  .sinput input:focus{border-color:var(--accent)}
+  .sinput span{color:var(--muted);font-size:13px}
 
   /* FOTO */
   .foto-sec{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin:12px 0}
   .foto-sec h4{margin:0 0 10px;font-size:15px}
-  .foto-strip{display:flex;gap:9px;flex-wrap:wrap}
-  .foto-add{width:74px;height:74px;border-radius:12px;border:1.5px dashed var(--border);background:var(--card);color:var(--muted);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-  .foto-thumb{width:74px;height:74px;border-radius:12px;object-fit:cover;border:1px solid var(--border)}
-  .foto-wrap{position:relative}
-  .foto-wrap .del{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--danger);color:#fff;font-size:13px;line-height:22px;text-align:center;border:2px solid var(--bg)}
-
-  /* COUNTER */
-  .counter{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin:10px 0}
-  .counter .clabel{flex:1;font-weight:600;font-size:14.5px}
-  .counter .csub{display:block;font-size:11px;color:var(--muted);font-weight:500}
-  .cbtn{width:40px;height:40px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:22px;font-weight:700;line-height:1}
-  .cval{min-width:42px;text-align:center;font-size:18px;font-weight:800}
+  .foto-strip{display:flex;gap:9px;flex-wrap:wrap;align-items:flex-start}
+  .foto-add-btn{width:74px;height:74px;border-radius:12px;border:1.5px dashed var(--border);background:var(--card);color:var(--muted);font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+  .foto-thumb{width:74px;height:74px;border-radius:12px;object-fit:cover;border:1px solid var(--border);display:block;}
+  .foto-wrap{position:relative;flex-shrink:0;}
+  .foto-del{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--danger);color:#fff;font-size:14px;line-height:22px;text-align:center;border:2px solid var(--bg);cursor:pointer;}
 
   /* RIEPILOGO */
   .sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin:10px 0}
@@ -135,10 +130,14 @@
   .sum-row .v{text-align:right;font-weight:600}
   .pendgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
   .pendgrid .chip{text-align:center}
+
+  /* BOTTOM BAR */
   .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(15,17,23,.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:12px;max-width:560px;margin:0 auto;}
   .bottombar .btn{width:auto}
-  .bottombar .grow{flex:2}
-  .bottombar .shrink{flex:1}
+  .grow{flex:2}
+  .shrink{flex:1}
+
+  /* TOAST */
   .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:100;background:var(--card);border:1px solid var(--border);color:var(--text);padding:13px 18px;border-radius:12px;font-size:14px;font-weight:600;max-width:90%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
   .toast.err{border-color:#5a3a32}
@@ -202,196 +201,165 @@
 <div id="toast" class="toast"></div>
 
 <script>
-const SHEET_ID = "1ttfAdqE3TI7G_gwapZhz3Yw3dKSYHM2smpQoILLGcJ0";
-const SHEET_NAME = "DachPlan Diario";
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyBM3_3vbBL_cxu0eNFwbCOAvEs_UFaMaYL7U74zJFwF-wx6KWNMqgaPDE10r0t-cj8/exec";
 
-/* ZONE con emoji grandi — placeholder fino a immagini reali */
+/* 6 ZONE */
 const ZONES = [
-  {id:"Flachdach", emoji:"🏠", label:"Flachdach / Tetto", full:false},
-  {id:"Solar", emoji:"☀️", label:"Solar­unterkonstruktion", full:false},
-  {id:"Balkon", emoji:"🏗️", label:"Balkon / Balcone", full:false},
-  {id:"Terrasse", emoji:"🌿", label:"Terrasse / Terrazza", full:false},
-  {id:"Boden", emoji:"🔲", label:"Boden / Pavimento", full:false},
-  {id:"Unterterrain", emoji:"🏢", label:"Unterterrain", full:false},
-  {id:"Parking", emoji:"🅿️", label:"Parking", full:false},
-  {id:"Bruecke", emoji:"🌉", label:"Brücke / Ponte", full:false},
-  {id:"Wassermanagement", emoji:"💧", label:"Wassermanagement", full:true},
+  {id:"Tetto",       emoji:"🏠", label:"Tetto / Flachdach"},
+  {id:"Balkon",      emoji:"🏗️", label:"Balkon / Balcone"},
+  {id:"Terrasse",    emoji:"🌿", label:"Terrasse / Terrazza"},
+  {id:"Erdgeschoss", emoji:"🏢", label:"Erdgeschoss"},
+  {id:"Fassade",     emoji:"🧱", label:"Fassade"},
+  {id:"Keller",      emoji:"⬇️", label:"Keller / Cantina"},
 ];
 
 const METEO = [
-  {id:"Sole", emoji:"☀️"}, {id:"Nuvoloso", emoji:"⛅"},
-  {id:"Coperto", emoji:"☁️"}, {id:"Pioggia", emoji:"🌧️"},
+  {id:"Sole",emoji:"☀️"},{id:"Nuvoloso",emoji:"⛅"},
+  {id:"Coperto",emoji:"☁️"},{id:"Pioggia",emoji:"🌧️"},
 ];
 
 const PENDENZE = ["0–2%","2–5%","5–15%","15–30%",">30%","Verticale"];
 
-/* MANSIONI aggiornate */
 const MANSIONI = [
-  {id:"untergrund", emoji:"🧹", name:"Untergrund Vorbereitung", sub:"Preparazione fondo",
+  {id:"untergrund",emoji:"🧹",name:"Untergrund Vorbereitung",sub:"Preparazione fondo",
     materials:["Scopa piccola","Scopa grande","Soffiatore","Schleifmaschine + disco"],
     tools:["Schleifmaschine","Soffiatore","Scopa piccola","Scopa grande"]},
-  {id:"voranstrich", emoji:"🖌️", name:"Voranstrich Bitumen", sub:"Primer bituminoso",
-    materials:["Primer bitume"],
-    tools:["Pennello","Rullo"]},
-  {id:"dampfbremse", emoji:"♨️", name:"Dampfbremse (EVA + EGV)", sub:"Barriera vapore",
-    materials:["EVA","EGV"],
-    tools:["Cannello","Cutter"]},
-  {id:"daemmung", emoji:"🧱", name:"Dämmung verlegen", sub:"Posa isolamento",
-    materials:["Pannelli PIR","Lana di roccia","Colla PU"],
-    tools:["Cutter","Metro","Sega"]},
-  {id:"isolieren", emoji:"🔲", name:"Isolieren", sub:"Isolazione",
-    materials:["Pannelli isolanti","Tasselli"],
-    tools:["Trapano","Cutter","Sega"]},
-  {id:"dachpappe1", emoji:"🔥", name:"Dachpappe 1. Lage (EGV)", sub:"Guaina 1° strato",
-    materials:["EGV","Bombola gas"],
-    tools:["Cannello","Rullo pressore"]},
-  {id:"dachpappe2", emoji:"🔥", name:"Dachpappe 2. Lage (EP5)", sub:"Guaina 2° strato",
-    materials:["EP5","Bombola gas"],
-    tools:["Cannello","Rullo pressore"]},
-  {id:"aufbordung", emoji:"📐", name:"Aufbordung/Abbordung", sub:"Risvolti",
-    materials:["EVA","EGV","EP5"],
-    tools:["Cannello","Cutter"]},
-  {id:"primerflk", emoji:"🖌️", name:"Primer FLK", sub:"Primer FLK",
-    materials:["Primer FLK"],
-    tools:["Pennello","Rullo"]},
-  {id:"vorbflk", emoji:"⚙️", name:"Vorbereitung FLK", sub:"Preparazione FLK",
+  {id:"voranstrich",emoji:"🖌️",name:"Voranstrich Bitumen",sub:"Primer bituminoso",
+    materials:["Primer bitume"],tools:["Pennello","Rullo"]},
+  {id:"dampfbremse",emoji:"♨️",name:"Dampfbremse (EVA + EGV)",sub:"Barriera vapore",
+    materials:["EVA","EGV"],tools:["Cannello","Cutter"]},
+  {id:"daemmung",emoji:"🧱",name:"Dämmung verlegen",sub:"Posa isolamento",
+    materials:["Pannelli PIR","Lana di roccia","Colla PU"],tools:["Cutter","Metro","Sega"]},
+  {id:"isolieren",emoji:"🔲",name:"Isolieren",sub:"Isolazione",
+    materials:["Pannelli isolanti","Tasselli"],tools:["Trapano","Cutter","Sega"]},
+  {id:"dachpappe1",emoji:"🔥",name:"Dachpappe 1. Lage (EGV)",sub:"Guaina 1° strato",
+    materials:["EGV","Bombola gas"],tools:["Cannello","Rullo pressore"]},
+  {id:"dachpappe2",emoji:"🔥",name:"Dachpappe 2. Lage (EP5)",sub:"Guaina 2° strato",
+    materials:["EP5","Bombola gas"],tools:["Cannello","Rullo pressore"]},
+  {id:"aufbordung",emoji:"📐",name:"Aufbordung/Abbordung",sub:"Risvolti",
+    materials:["EVA","EGV","EP5"],tools:["Cannello","Cutter"]},
+  {id:"primerflk",emoji:"🖌️",name:"Primer FLK",sub:"Primer FLK",
+    materials:["Primer FLK"],tools:["Pennello","Rullo"]},
+  {id:"vorbflk",emoji:"⚙️",name:"Vorbereitung FLK",sub:"Preparazione FLK",
     materials:["FLK kit","Klebeband"],
     tools:["Akuschrauber","Pinsel","Rolle","Klebeband","Handschuhe","Forbici","Schleifpapier"]},
-  {id:"flk1", emoji:"🪣", name:"FLK 1. Hand", sub:"FLK 1ª mano",
-    materials:["FLK resina","Catalizzatore"],
-    tools:["Rullo","Spatola","Handschuhe"]},
-  {id:"vliesflk", emoji:"🔲", name:"Vlies FLK verlegen", sub:"Posa vello FLK",
-    materials:["Vlies FLK"],
-    tools:["Rullo","Cutter"]},
-  {id:"flk2", emoji:"🪣", name:"FLK 2. Hand", sub:"FLK 2ª mano",
-    materials:["FLK resina","Catalizzatore"],
-    tools:["Rullo","Spatola","Handschuhe"]},
-  {id:"anschluss", emoji:"🔩", name:"Anschluss Blech", sub:"Raccordo lamiera",
-    materials:["Lamiera","Viti","Silicone"],
-    tools:["Avvitatore","Cesoia"]},
-  {id:"ablauf", emoji:"🕳️", name:"Ablauf", sub:"Scarico",
-    materials:["Bocchettone","Guaina rinforzo"],
-    tools:["Cannello","Cutter"]},
-  {id:"notablauf", emoji:"🚨", name:"Notablauf", sub:"Troppo-pieno",
-    materials:["Scarico emergenza","Sigillante"],
-    tools:["Trapano","Cannello"]},
-  {id:"durchdringung", emoji:"🔌", name:"Durchdringung", sub:"Penetrazione",
-    materials:["Manicotto","Collare","Sigillante"],
-    tools:["Cannello","Cutter"]},
-  {id:"controldach", emoji:"🔍", name:"Controldach", sub:"Controllo tetto",
-    materials:[],
-    tools:["Igrometro","Macchina foto"]},
-  {id:"seilsystem", emoji:"🪢", name:"Seilsystem", sub:"Linea vita",
-    materials:["Ancoraggi","Cavo acciaio"],
-    tools:["Trapano","Chiave dinamometrica"]},
-  {id:"tagesabschottung", emoji:"🔒", name:"Tagesabschottung", sub:"Chiusura giornaliera",
-    materials:["Guaina provvisoria","Klebeband"],
-    tools:["Cannello","Cutter"], required:true},
+  {id:"flk1",emoji:"🪣",name:"FLK 1. Hand",sub:"FLK 1ª mano",
+    materials:["FLK resina","Catalizzatore"],tools:["Rullo","Spatola","Handschuhe"]},
+  {id:"vliesflk",emoji:"🔲",name:"Vlies FLK verlegen",sub:"Posa vello FLK",
+    materials:["Vlies FLK"],tools:["Rullo","Cutter"]},
+  {id:"flk2",emoji:"🪣",name:"FLK 2. Hand",sub:"FLK 2ª mano",
+    materials:["FLK resina","Catalizzatore"],tools:["Rullo","Spatola","Handschuhe"]},
+  {id:"anschluss",emoji:"🔩",name:"Anschluss Blech",sub:"Raccordo lamiera",
+    materials:["Lamiera","Viti","Silicone"],tools:["Avvitatore","Cesoia"]},
+  {id:"ablauf",emoji:"🕳️",name:"Ablauf",sub:"Scarico",
+    materials:["Bocchettone","Guaina rinforzo"],tools:["Cannello","Cutter"]},
+  {id:"notablauf",emoji:"🚨",name:"Notablauf",sub:"Troppo-pieno",
+    materials:["Scarico emergenza","Sigillante"],tools:["Trapano","Cannello"]},
+  {id:"durchdringung",emoji:"🔌",name:"Durchdringung",sub:"Penetrazione",
+    materials:["Manicotto","Collare","Sigillante"],tools:["Cannello","Cutter"]},
+  {id:"controldach",emoji:"🔍",name:"Controldach",sub:"Controllo tetto",
+    materials:[],tools:["Igrometro","Macchina foto"]},
+  {id:"seilsystem",emoji:"🪢",name:"Seilsystem",sub:"Linea vita",
+    materials:["Ancoraggi","Cavo acciaio"],tools:["Trapano","Chiave dinamometrica"]},
+  {id:"tagesabschottung",emoji:"🔒",name:"Tagesabschottung",sub:"Chiusura giornaliera",
+    materials:["Guaina provvisoria","Klebeband"],tools:["Cannello","Cutter"],required:true},
 ];
 
 const STEPS = [
-  {id:"mansioni", emoji:"🏗️", label:"Mansioni"},
-  {id:"condizioni", emoji:"🌤️", label:"Condizioni"},
-  {id:"misure", emoji:"📐", label:"Misure"},
-  {id:"foto", emoji:"📸", label:"Foto"},
-  {id:"note", emoji:"📝", label:"Note"},
-  {id:"riepilogo", emoji:"✅", label:"Salva"},
+  {id:"mansioni",emoji:"🏗️",label:"Mansioni"},
+  {id:"condizioni",emoji:"🌤️",label:"Condizioni"},
+  {id:"misure",emoji:"📐",label:"Misure"},
+  {id:"foto",emoji:"📸",label:"Foto"},
+  {id:"note",emoji:"📝",label:"Note"},
+  {id:"riepilogo",emoji:"✅",label:"Salva"},
 ];
 
 function freshState(){
   return {
-    worker:"", site:"", zone:"", date:new Date().toISOString().slice(0,10),
-    mansioni:{}, meteo:"", tempAria:"", tempSotto:"", umidita:"",
-    operai:1, oreStart:"", oreEnd:"", pause:0,
-    mqNetti:0, mqMat:0, mlFLK:0, rotoli:0, kessel:0, bombole:0,
-    pendenza:"", tagesabschottung:"",
-    photos:[],
-    note:"", incidente:"", activeMansione:null, step:0,
+    worker:"",site:"",zone:"",date:new Date().toISOString().slice(0,10),
+    mansioni:{},meteo:"",tempAria:"",tempSotto:"",umidita:"",
+    operai:1,oreStart:"",oreEnd:"",pause:0,
+    mqNetti:0,mqMat:0,mlFLK:0,rotoli:0,kessel:0,bombole:0,
+    pendenza:"",tagesabschottung:"",
+    photos:[],note:"",incidente:"",activeMansione:null,step:0,
   };
 }
 let S = freshState();
 
+/* NAV */
 function show(id){
-  ["screen-start","screen-location","screen-app"].forEach(s=>{
-    document.getElementById(s).classList.toggle("hidden", s!==id);
-  });
+  ["screen-start","screen-location","screen-app"].forEach(s=>
+    document.getElementById(s).classList.toggle("hidden",s!==id));
   window.scrollTo(0,0);
 }
 function goLocation(){
-  S.worker = document.getElementById("in-worker").value.trim();
-  S.site = document.getElementById("in-site").value.trim();
-  if(!S.worker){ toast("Inserisci il nome operaio","err"); return; }
-  if(!S.site){ toast("Inserisci il cantiere","err"); return; }
+  S.worker=document.getElementById("in-worker").value.trim();
+  S.site=document.getElementById("in-site").value.trim();
+  if(!S.worker){toast("Inserisci il nome operaio","err");return;}
+  if(!S.site){toast("Inserisci il cantiere","err");return;}
   renderLocation();
-  // Carica meteo automatico
   caricaMeteo();
   show("screen-location");
 }
 function goApp(){
-  if(!S.zone){ toast("Seleziona una zona","err"); return; }
-  document.getElementById("b-worker").textContent = S.worker;
-  document.getElementById("b-site").textContent = S.site;
-  document.getElementById("b-zone").textContent = S.zone;
-  S.step = 0; renderPills(); renderPage(); show("screen-app");
+  if(!S.zone){toast("Seleziona una zona","err");return;}
+  document.getElementById("b-worker").textContent=S.worker;
+  document.getElementById("b-site").textContent=S.site;
+  document.getElementById("b-zone").textContent=S.zone;
+  S.step=0;renderPills();renderPage();show("screen-app");
 }
 function nextStep(){
-  if(S.step < STEPS.length-1){ S.step++; renderPills(); renderPage(); window.scrollTo(0,0); }
-  else { saveReport(); }
+  if(S.step<STEPS.length-1){S.step++;renderPills();renderPage();window.scrollTo(0,0);}
+  else{saveReport();}
 }
-function gotoStep(i){ S.step=i; renderPills(); renderPage(); window.scrollTo(0,0); }
+function gotoStep(i){S.step=i;renderPills();renderPage();window.scrollTo(0,0);}
 
-/* ZONE con immagini grandi */
+/* ZONE */
 function renderLocation(){
-  document.getElementById("locGrid").innerHTML = ZONES.map(z=>`
-    <button class="zone-card ${z.full?'full':''} ${S.zone===z.id?'sel':''}" onclick="selZone('${z.id}')">
+  document.getElementById("locGrid").innerHTML=ZONES.map(z=>`
+    <button class="zone-card ${S.zone===z.id?'sel':''}" onclick="selZone('${z.id}')">
       <div class="zone-img">${z.emoji}</div>
       <div class="zone-name">${z.label}</div>
     </button>`).join("");
 }
-function selZone(id){ S.zone=id; renderLocation(); }
+function selZone(id){S.zone=id;renderLocation();}
 
-/* METEO AUTOMATICO */
+/* METEO AUTO */
 async function caricaMeteo(){
   try{
-    const pos = await new Promise((res,rej)=>navigator.geolocation.getCurrentPosition(res,rej,{timeout:5000}));
-    const lat = pos.coords.latitude, lon = pos.coords.longitude;
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode&timezone=auto`;
-    const r = await fetch(url);
-    const d = await r.json();
-    const cur = d.current;
-    S.tempAria = cur.temperature_2m.toString();
-    S.umidita = cur.relative_humidity_2m.toString();
-    // Mappa weathercode a meteo
-    const code = cur.weathercode;
-    if(code===0) S.meteo="Sole";
-    else if(code<=3) S.meteo="Nuvoloso";
-    else if(code<=48) S.meteo="Coperto";
-    else S.meteo="Pioggia";
+    const pos=await new Promise((res,rej)=>
+      navigator.geolocation.getCurrentPosition(res,rej,{timeout:6000}));
+    const {latitude:lat,longitude:lon}=pos.coords;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode&timezone=auto`);
+    const d=await r.json();
+    const c=d.current;
+    S.tempAria=c.temperature_2m.toString();
+    S.umidita=c.relative_humidity_2m.toString();
+    const wc=c.weathercode;
+    S.meteo=wc===0?"Sole":wc<=3?"Nuvoloso":wc<=48?"Coperto":"Pioggia";
     toast("🌤️ Meteo caricato automaticamente","ok");
-  }catch(e){
-    // Silenzioso — l'utente può inserire manualmente
-  }
+  }catch(e){}
 }
 
 function renderPills(){
-  document.getElementById("pills").innerHTML = STEPS.map((st,i)=>`
+  document.getElementById("pills").innerHTML=STEPS.map((st,i)=>`
     <button class="pill ${i===S.step?'active':''} ${i<S.step?'done':''}" onclick="gotoStep(${i})">
       ${st.emoji} ${st.label}
     </button>`).join("");
-  const last = S.step===STEPS.length-1;
-  document.getElementById("nextBtn").textContent = last ? "✅ Salva diario" : "Avanti →";
+  document.getElementById("nextBtn").textContent=
+    S.step===STEPS.length-1?"✅ Salva diario":"Avanti →";
 }
 function renderPage(){
-  const fn = {mansioni:pgMansioni,condizioni:pgCondizioni,misure:pgMisure,foto:pgFoto,note:pgNote,riepilogo:pgRiepilogo}[STEPS[S.step].id];
-  document.getElementById("page-host").innerHTML = fn();
+  const fn={mansioni:pgMansioni,condizioni:pgCondizioni,misure:pgMisure,
+    foto:pgFoto,note:pgNote,riepilogo:pgRiepilogo}[STEPS[S.step].id];
+  document.getElementById("page-host").innerHTML=fn();
   if(STEPS[S.step].id==="condizioni") refreshSiaAlert();
 }
 
-/* MANSIONI */
+/* MANSIONI + ORE */
 function pgMansioni(){
-  const cards = MANSIONI.map(m=>{
-    const sel = !!S.mansioni[m.id];
+  const cards=MANSIONI.map(m=>{
+    const sel=!!S.mansioni[m.id];
     return `<button class="man-card ${sel?'sel':''}" onclick="openMansione('${m.id}')">
       <span class="check">✓</span>
       <span class="emoji">${m.emoji}</span>
@@ -402,187 +370,230 @@ function pgMansioni(){
   }).join("");
   return `<div class="page">
     <div class="page-title">🏗️ Mansioni eseguite</div>
-    <div class="man-grid">${cards}</div>
+    <div class="ore-box">
+      <h5>⏱️ Ore di lavoro</h5>
+      <div class="row">
+        <div class="field" style="margin:4px 0"><label>Inizio</label>
+          <input class="input" type="time" value="${S.oreStart}" oninput="S.oreStart=this.value"></div>
+        <div class="field" style="margin:4px 0"><label>Fine</label>
+          <input class="input" type="time" value="${S.oreEnd}" oninput="S.oreEnd=this.value"></div>
+      </div>
+      <div class="row">
+        <div class="field" style="margin:4px 0"><label>Pausa (min)</label>
+          <input class="input" type="number" inputmode="numeric" value="${S.pause}" oninput="S.pause=this.value"></div>
+        <div class="field" style="margin:4px 0"><label>N° operai</label>
+          <input class="input" type="number" inputmode="numeric" value="${S.operai}" oninput="S.operai=this.value"></div>
+      </div>
+    </div>
+    <div class="man-grid" style="margin-top:16px">${cards}</div>
     <div id="man-detail"></div>
   </div>`;
 }
+
 function openMansione(id){
-  S.activeMansione = id;
+  S.activeMansione=id;
   if(!S.mansioni[id]){
-    const m = MANSIONI.find(x=>x.id===id);
-    S.mansioni[id] = {materials:[...m.materials], tools:[...m.tools]};
+    const m=MANSIONI.find(x=>x.id===id);
+    S.mansioni[id]={materials:[...m.materials],tools:[...m.tools]};
   }
-  renderPage(); renderMansioneDetail();
-  const d=document.getElementById("man-detail"); if(d) d.scrollIntoView({behavior:"smooth",block:"nearest"});
+  renderPage();renderMansioneDetail();
+  const d=document.getElementById("man-detail");
+  if(d) d.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function renderMansioneDetail(){
-  const id = S.activeMansione; if(!id) return;
-  const m = MANSIONI.find(x=>x.id===id);
-  const sel = S.mansioni[id]; if(!sel) return;
-  const matChips = m.materials.length ? m.materials.map(mat=>`
-    <button class="chip ${sel.materials.includes(mat)?'sel':''}" onclick="toggleChip('materials','${mat}')">${mat}</button>`).join("")
-    : '<span class="dsub">Nessun materiale predefinito</span>';
-  const toolChips = m.tools.length ? m.tools.map(t=>`
-    <button class="chip ${sel.tools.includes(t)?'sel':''}" onclick="toggleChip('tools','${t}')">${t}</button>`).join("")
-    : '<span class="dsub">Nessun attrezzo predefinito</span>';
-  document.getElementById("man-detail").innerHTML = `
+  const id=S.activeMansione;if(!id)return;
+  const m=MANSIONI.find(x=>x.id===id);
+  const sel=S.mansioni[id];if(!sel)return;
+  const matChips=m.materials.length
+    ?m.materials.map(mat=>`<button class="chip ${sel.materials.includes(mat)?'sel':''}" onclick="toggleChip('materials','${mat}')">${mat}</button>`).join("")
+    :'<span class="dsub">—</span>';
+  const toolChips=m.tools.length
+    ?m.tools.map(t=>`<button class="chip ${sel.tools.includes(t)?'sel':''}" onclick="toggleChip('tools','${t}')">${t}</button>`).join("")
+    :'<span class="dsub">—</span>';
+  document.getElementById("man-detail").innerHTML=`
     <div class="detail">
       <h4>${m.emoji} ${m.name}</h4>
-      <div class="dsub">${m.sub}</div>
-      <div class="chips-label">Materiali</div>
-      <div class="chips">${matChips}</div>
-      <div class="chips-label">Attrezzi</div>
-      <div class="chips">${toolChips}</div>
+      <div class="dsub" style="margin-bottom:10px">${m.sub}</div>
+      <div class="chips-label">Materiali</div><div class="chips">${matChips}</div>
+      <div class="chips-label">Attrezzi</div><div class="chips">${toolChips}</div>
       <div class="row" style="margin-top:16px">
         <button class="btn danger" onclick="removeMansione('${id}')">Rimuovi</button>
-        <button class="btn secondary" onclick="closeMansione()">Fatto</button>
+        <button class="btn secondary" onclick="closeMansione()">Fatto ✓</button>
       </div>
     </div>`;
 }
 function toggleChip(kind,val){
-  const arr = S.mansioni[S.activeMansione][kind];
-  const i = arr.indexOf(val);
-  if(i<0) arr.push(val); else arr.splice(i,1);
+  const arr=S.mansioni[S.activeMansione][kind];
+  const i=arr.indexOf(val);
+  if(i<0)arr.push(val);else arr.splice(i,1);
   renderMansioneDetail();
 }
 function removeMansione(id){
   delete S.mansioni[id];
-  if(S.activeMansione===id) S.activeMansione=null;
+  if(S.activeMansione===id)S.activeMansione=null;
   renderPage();
 }
-function closeMansione(){ S.activeMansione=null; renderPage(); }
+function closeMansione(){S.activeMansione=null;renderPage();}
 
-/* CONDIZIONI con meteo auto */
+/* CONDIZIONI */
 function pgCondizioni(){
-  const meteo = METEO.map(m=>`
+  const meteo=METEO.map(m=>`
     <button class="meteo-card ${S.meteo===m.id?'sel':''}" onclick="selMeteo('${m.id}')">
       <span class="emoji">${m.emoji}</span><span class="ml">${m.id}</span>
     </button>`).join("");
-  const autoLabel = S.tempAria
-    ? `<div class="meteo-auto-badge loaded">🌐 Meteo caricato automaticamente · ${S.tempAria}°C · ${S.umidita}%</div>`
-    : `<div class="meteo-auto-badge">🌐 Caricamento meteo automatico...</div>`;
+  const autoBadge=S.tempAria
+    ?`<div class="meteo-badge ok">🌐 Auto · ${S.tempAria}°C · ${S.umidita}% umidità</div>`
+    :`<div class="meteo-badge">🌐 GPS meteo in corso…</div>`;
   return `<div class="page">
     <div class="page-title">🌤️ Condizioni meteo</div>
-    ${autoLabel}
+    ${autoBadge}
     <div class="grid4">${meteo}</div>
     <div class="field"><label>Temperatura aria (°C)</label>
-      <input class="input" type="number" inputmode="decimal" value="${S.tempAria}" oninput="setField('tempAria',this.value);refreshSiaAlert()"></div>
+      <input class="input" type="number" inputmode="decimal" value="${S.tempAria}" oninput="S.tempAria=this.value;refreshSiaAlert()"></div>
     <div class="field"><label>Temperatura sotto guaina (°C)</label>
-      <input class="input" type="number" inputmode="decimal" value="${S.tempSotto}" oninput="setField('tempSotto',this.value)"></div>
+      <input class="input" type="number" inputmode="decimal" value="${S.tempSotto}" oninput="S.tempSotto=this.value"></div>
     <div class="field"><label>Umidità (%)</label>
-      <input class="input" type="number" inputmode="decimal" value="${S.umidita}" oninput="setField('umidita',this.value);refreshSiaAlert()"></div>
+      <input class="input" type="number" inputmode="decimal" value="${S.umidita}" oninput="S.umidita=this.value;refreshSiaAlert()"></div>
     <div id="sia-alert"></div>
   </div>`;
 }
-function selMeteo(id){ S.meteo=id; renderPage(); }
-function setField(k,v){ S[k]=v; }
+function selMeteo(id){S.meteo=id;renderPage();}
 function refreshSiaAlert(){
-  const host = document.getElementById("sia-alert"); if(!host) return;
-  const t = parseFloat(S.tempAria), h = parseFloat(S.umidita);
+  const host=document.getElementById("sia-alert");if(!host)return;
+  const t=parseFloat(S.tempAria),h=parseFloat(S.umidita);
   const warns=[];
-  if(!isNaN(t) && t<5) warns.push("Temperatura &lt; 5 °C: posa di guaine/FLK a rischio (SIA 271).");
-  if(!isNaN(h) && h>80) warns.push("Umidità &gt; 80 %: rischio condensa, verificare il fondo (SIA 271).");
-  host.innerHTML = warns.length
-    ? `<div class="alert">⚠️ <div>${warns.join("<br>")}</div></div>`
-    : `<div class="alert ok">✅ <div>Condizioni conformi SIA 271 per la posa.</div></div>`;
+  if(!isNaN(t)&&t<5) warns.push("Temperatura &lt; 5°C: posa guaine/FLK a rischio (SIA 271).");
+  if(!isNaN(h)&&h>80) warns.push("Umidità &gt; 80%: rischio condensa (SIA 271).");
+  host.innerHTML=warns.length
+    ?`<div class="alert">⚠️ <div>${warns.join("<br>")}</div></div>`
+    :`<div class="alert ok">✅ Condizioni conformi SIA 271.</div>`;
 }
 
-/* MISURE con slider fluidi */
-function sliderField(label, key, min, max, unit, step){
-  const val = S[key] || 0;
-  const pct = ((val - min) / (max - min)) * 100;
-  return `<div class="slider-field">
-    <label>${label}</label>
-    <div class="slider-row">
-      <input type="range" min="${min}" max="${max}" step="${step||1}" value="${val}"
-        style="background: linear-gradient(to right, var(--accent) ${pct}%, var(--border) ${pct}%)"
-        oninput="updateSlider(this,'${key}','sv-${key}')">
-      <span class="slider-val" id="sv-${key}">${val}</span>
-      <span class="slider-unit">${unit}</span>
+/* SLIDER LOGARITMICO
+   Slider va da 0-100 (posizione) ma mappa a valori 0-200
+   0-60 = prima metà dello slider (fluido)
+   60-200 = seconda metà (graduale) */
+function sliderToValue(pos, max){
+  // pos 0-100
+  if(pos<=50) return Math.round(pos/50*60);
+  else return Math.round(60+(pos-50)/50*(max-60));
+}
+function valueToSlider(val, max){
+  if(val<=60) return Math.round(val/60*50);
+  else return Math.round(50+(val-60)/(max-60)*50);
+}
+function mkSlider(label, key, max, unit){
+  const val=Number(S[key])||0;
+  const pos=valueToSlider(val,max);
+  const pct=pos;
+  return `<div class="sfield">
+    <div class="slabel">
+      <span>${label}</span>
+      <span><b class="sval" id="sv-${key}">${val}</b><span class="sunit"> ${unit}</span></span>
+    </div>
+    <input type="range" min="0" max="100" value="${pos}"
+      style="background:linear-gradient(to right,var(--accent) ${pct}%,var(--border) ${pct}%)"
+      oninput="onSlider(this,'${key}',${max},'sv-${key}','si-${key}')">
+    <div class="sinput">
+      <input id="si-${key}" type="number" inputmode="decimal" value="${val}"
+        oninput="onInput(this,'${key}',${max})">
+      <span>${unit} — inserimento diretto</span>
     </div>
   </div>`;
 }
-function updateSlider(el, key, displayId){
-  const val = parseFloat(el.value);
-  S[key] = val;
-  document.getElementById(displayId).textContent = val;
-  const min = parseFloat(el.min), max = parseFloat(el.max);
-  const pct = ((val - min) / (max - min)) * 100;
-  el.style.background = `linear-gradient(to right, var(--accent) ${pct}%, var(--border) ${pct}%)`;
+function onSlider(el,key,max,dispId,inputId){
+  const pos=parseInt(el.value);
+  const val=sliderToValue(pos,max);
+  S[key]=val;
+  document.getElementById(dispId).textContent=val;
+  document.getElementById(inputId).value=val;
+  el.style.background=`linear-gradient(to right,var(--accent) ${pos}%,var(--border) ${pos}%)`;
+}
+function onInput(el,key,max){
+  let val=parseFloat(el.value)||0;
+  if(val>max*2) val=max*2;
+  S[key]=val;
+  const dispEl=document.getElementById('sv-'+key);
+  if(dispEl) dispEl.textContent=val;
+  const slEl=el.previousElementSibling;
+  if(slEl&&slEl.type==='range'){
+    const pos=valueToSlider(val,max>val?max:val*1.2);
+    slEl.value=Math.min(100,pos);
+    slEl.style.background=`linear-gradient(to right,var(--accent) ${slEl.value}%,var(--border) ${slEl.value}%)`;
+  }
 }
 function pgMisure(){
-  const pend = PENDENZE.map(p=>`<button class="chip ${S.pendenza===p?'sel':''}" onclick="selPend('${p}')">${p}</button>`).join("");
+  const pend=PENDENZE.map(p=>`<button class="chip ${S.pendenza===p?'sel':''}" onclick="S.pendenza='${p}';renderPage()">${p}</button>`).join("");
   return `<div class="page">
     <div class="page-title">📐 Misure & quantità</div>
-    ${sliderField("m² netti posati","mqNetti",0,800,"m²",1)}
-    ${sliderField("m² materiale impiegato","mqMat",0,800,"m²",1)}
-    ${sliderField("ml FLK (metri lineari)","mlFLK",0,200,"ml",1)}
-    ${sliderField("Rotoli guaina / vlies","rotoli",0,70,"pz",1)}
-    ${sliderField("Kessel / Bocchettoni","kessel",0,20,"pz",1)}
-    ${sliderField("Bombole gas","bombole",0,20,"pz",1)}
+    ${mkSlider("m² netti posati","mqNetti",200,"m²")}
+    ${mkSlider("m² materiale impiegato","mqMat",200,"m²")}
+    ${mkSlider("ml FLK","mlFLK",100,"ml")}
+    ${mkSlider("Rotoli guaina / vlies","rotoli",60,"pz")}
+    ${mkSlider("Kessel / Bocchettoni","kessel",20,"pz")}
+    ${mkSlider("Bombole gas","bombole",20,"pz")}
     <div class="field" style="margin-top:18px"><label>Pendenza</label>
       <div class="pendgrid">${pend}</div></div>
   </div>`;
 }
-function selPend(p){ S.pendenza=p; renderPage(); }
 
-/* FOTO — galleria libera con slider pausa */
+/* FOTO — galleria libera */
 function pgFoto(){
-  const thumbs = S.photos.map((src,i)=>`
+  const thumbs=S.photos.map((src,i)=>`
     <div class="foto-wrap">
       <img class="foto-thumb" src="${src}">
-      <button class="del" onclick="delPhoto(${i})">×</button>
+      <div class="foto-del" onclick="delPhoto(${i})">×</div>
     </div>`).join("");
   return `<div class="page">
-    <div class="page-title">📸 Documentazione fotografica</div>
+    <div class="page-title">📸 Foto cantiere (${S.photos.length})</div>
     <div class="foto-sec">
-      <h4>📷 Foto cantiere (${S.photos.length})</h4>
+      <h4>Aggiungi foto</h4>
       <div class="foto-strip">
         ${thumbs}
-        <label class="foto-add">＋
-          <input type="file" accept="image/*" capture="environment" class="hidden" onchange="addPhoto(this)" multiple>
-        </label>
+        <div class="foto-add-btn" onclick="document.getElementById('foto-input').click()">＋</div>
       </div>
+      <input id="foto-input" type="file" accept="image/*" capture="environment" multiple class="hidden"
+        onchange="addPhotos(this)">
     </div>
-    ${sliderField("⏸️ Pausa (minuti)","pause",0,120,"min",5)}
   </div>`;
 }
-function addPhoto(input){
-  const files = input.files; if(!files||!files.length) return;
+function addPhotos(input){
+  const files=input.files;
+  if(!files||!files.length) return;
   Array.from(files).forEach(f=>{
     const r=new FileReader();
     r.onload=e=>{
       const img=new Image();
       img.onload=()=>{
-        const max=1024, sc=Math.min(1,max/Math.max(img.width,img.height));
+        const max=1024,sc=Math.min(1,max/Math.max(img.width,img.height));
         const c=document.createElement("canvas");
-        c.width=Math.round(img.width*sc); c.height=Math.round(img.height*sc);
+        c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
         c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-        S.photos.push(c.toDataURL("image/jpeg",0.7));
+        S.photos.push(c.toDataURL("image/jpeg",0.75));
         renderPage();
       };
       img.src=e.target.result;
     };
     r.readAsDataURL(f);
   });
+  input.value="";
 }
-function delPhoto(i){ S.photos.splice(i,1); renderPage(); }
+function delPhoto(i){S.photos.splice(i,1);renderPage();}
 
 /* NOTE */
 function pgNote(){
-  const opts = ["Completata","Parziale","Non necessaria"];
-  const tg = opts.map(o=>`<button class="chip ${S.tagesabschottung===o?'sel':''}" onclick="selTag('${o}')">${o}</button>`).join("");
+  const opts=["Completata","Parziale","Non necessaria"];
+  const tg=opts.map(o=>`<button class="chip ${S.tagesabschottung===o?'sel':''}" onclick="S.tagesabschottung='${o}';renderPage()">${o}</button>`).join("");
   return `<div class="page">
     <div class="page-title">📝 Note & chiusura</div>
     <div class="field"><label>Note di cantiere</label>
-      <textarea class="input" oninput="setField('note',this.value)" placeholder="Osservazioni, problemi, materiale mancante…">${S.note}</textarea></div>
+      <textarea class="input" oninput="S.note=this.value" placeholder="Osservazioni, problemi, materiale mancante…">${S.note}</textarea></div>
     <div class="field"><label>Incidente / Anomalia</label>
-      <input class="input" type="text" value="${S.incidente}" oninput="setField('incidente',this.value)" placeholder="Lascia vuoto se nessuno"></div>
-    <div class="field"><label>🔒 Tagesabschottung (chiusura giornaliera)</label>
+      <input class="input" type="text" value="${S.incidente}" oninput="S.incidente=this.value" placeholder="Lascia vuoto se nessuno"></div>
+    <div class="field"><label>🔒 Tagesabschottung</label>
       <div class="chips">${tg}</div></div>
   </div>`;
 }
-function selTag(o){ S.tagesabschottung=o; renderPage(); }
 
 /* RIEPILOGO */
 function selectedMansioniNames(){
@@ -590,13 +601,12 @@ function selectedMansioniNames(){
 }
 function totalHours(){
   if(!S.oreStart||!S.oreEnd) return 0;
-  const [h1,m1]=S.oreStart.split(":").map(Number), [h2,m2]=S.oreEnd.split(":").map(Number);
-  let mins=(h2*60+m2)-(h1*60+m1)-(Number(S.pause)||0);
-  return mins>0 ? Math.round(mins/6)/10 : 0;
+  const [h1,m1]=S.oreStart.split(":").map(Number),[h2,m2]=S.oreEnd.split(":").map(Number);
+  const mins=(h2*60+m2)-(h1*60+m1)-(Number(S.pause)||0);
+  return mins>0?Math.round(mins/6)/10:0;
 }
 function pgRiepilogo(){
   const names=selectedMansioniNames();
-  const photoCount=S.photos.length;
   return `<div class="page">
     <div class="page-title">✅ Riepilogo diario</div>
     <div class="sum-card"><h4>Generale</h4>
@@ -606,94 +616,75 @@ function pgRiepilogo(){
       <div class="sum-row"><span class="k">Zona</span><span class="v">${S.zone||"—"}</span></div>
     </div>
     <div class="sum-card"><h4>Orario</h4>
-      <div class="row">
-        <div class="field" style="margin:4px 0"><label>Inizio</label>
-          <input class="input" type="time" value="${S.oreStart}" oninput="setField('oreStart',this.value);updateHours()"></div>
-        <div class="field" style="margin:4px 0"><label>Fine</label>
-          <input class="input" type="time" value="${S.oreEnd}" oninput="setField('oreEnd',this.value);updateHours()"></div>
-      </div>
-      <div class="row">
-        <div class="field" style="margin:4px 0"><label>Pausa (min)</label>
-          <input class="input" type="number" inputmode="numeric" value="${S.pause}" oninput="setField('pause',this.value);updateHours()"></div>
-        <div class="field" style="margin:4px 0"><label>N° operai</label>
-          <input class="input" type="number" inputmode="numeric" value="${S.operai}" oninput="setField('operai',this.value)"></div>
-      </div>
-      <div class="sum-row"><span class="k">Ore totali</span><span class="v" id="sum-hours">${totalHours()} h</span></div>
+      <div class="sum-row"><span class="k">Inizio / Fine</span><span class="v">${S.oreStart||"—"} – ${S.oreEnd||"—"}</span></div>
+      <div class="sum-row"><span class="k">Pausa</span><span class="v">${S.pause} min</span></div>
+      <div class="sum-row"><span class="k">Operai</span><span class="v">${S.operai}</span></div>
+      <div class="sum-row"><span class="k">Ore totali</span><span class="v">${totalHours()} h</span></div>
     </div>
     <div class="sum-card"><h4>Mansioni (${names.length})</h4>
-      ${names.length?names.map(n=>`<div class="sum-row"><span class="v" style="text-align:left;width:100%">• ${n}</span></div>`).join(""):'<div class="dsub">Nessuna mansione selezionata</div>'}
+      ${names.length?names.map(n=>`<div class="sum-row"><span class="v" style="text-align:left;width:100%">• ${n}</span></div>`).join(""):'<div class="dsub">Nessuna selezionata</div>'}
     </div>
-    <div class="sum-card"><h4>Condizioni & misure</h4>
+    <div class="sum-card"><h4>Misure & condizioni</h4>
       <div class="sum-row"><span class="k">Meteo</span><span class="v">${S.meteo||"—"}</span></div>
       <div class="sum-row"><span class="k">Temp. aria / sotto</span><span class="v">${S.tempAria||"—"} / ${S.tempSotto||"—"} °C</span></div>
       <div class="sum-row"><span class="k">Umidità</span><span class="v">${S.umidita||"—"} %</span></div>
-      <div class="sum-row"><span class="k">m² netti / materiale</span><span class="v">${S.mqNetti} / ${S.mqMat}</span></div>
+      <div class="sum-row"><span class="k">m² netti / mat.</span><span class="v">${S.mqNetti} / ${S.mqMat}</span></div>
       <div class="sum-row"><span class="k">ml FLK</span><span class="v">${S.mlFLK}</span></div>
-      <div class="sum-row"><span class="k">Rotoli / Kessel / Bombole</span><span class="v">${S.rotoli} / ${S.kessel} / ${S.bombole}</span></div>
+      <div class="sum-row"><span class="k">Rotoli / Kessel / Bomb.</span><span class="v">${S.rotoli} / ${S.kessel} / ${S.bombole}</span></div>
       <div class="sum-row"><span class="k">Pendenza</span><span class="v">${S.pendenza||"—"}</span></div>
       <div class="sum-row"><span class="k">Tagesabschottung</span><span class="v">${S.tagesabschottung||"—"}</span></div>
-      <div class="sum-row"><span class="k">Foto</span><span class="v">${photoCount}</span></div>
-      <div class="sum-row"><span class="k">Pausa</span><span class="v">${S.pause} min</span></div>
+      <div class="sum-row"><span class="k">Foto</span><span class="v">${S.photos.length}</span></div>
       <div class="sum-row"><span class="k">Incidente</span><span class="v">${S.incidente||"Nessuno"}</span></div>
     </div>
     <div id="save-status" class="dsub" style="margin:12px 2px"></div>
   </div>`;
 }
-function updateHours(){
-  const el=document.getElementById("sum-hours");
-  if(el) el.textContent=totalHours()+" h";
-}
 
 /* SAVE */
 async function appendToSheet(){
   try{
-    const data = {
-      date: S.date, site: S.site, worker: S.worker, zone: S.zone,
-      meteo: S.meteo, tempAria: S.tempAria, tempSotto: S.tempSotto, umidita: S.umidita,
-      operai: Number(S.operai)||0, totalHours: totalHours(),
-      mqNetti: S.mqNetti, mqMat: S.mqMat, mlFLK: S.mlFLK,
-      rotoli: S.rotoli, kessel: S.kessel, bombole: S.bombole,
-      pendenza: S.pendenza, tagesabschottung: S.tagesabschottung,
-      mansioni: selectedMansioniNames().join("; "),
-      note: S.note, incidente: S.incidente||"",
-      pause: S.pause, photos: S.photos.length
+    const data={
+      date:S.date,site:S.site,worker:S.worker,zone:S.zone,
+      meteo:S.meteo,tempAria:S.tempAria,tempSotto:S.tempSotto,umidita:S.umidita,
+      operai:Number(S.operai)||0,totalHours:totalHours(),pause:Number(S.pause)||0,
+      mqNetti:S.mqNetti,mqMat:S.mqMat,mlFLK:S.mlFLK,
+      rotoli:S.rotoli,kessel:S.kessel,bombole:S.bombole,
+      pendenza:S.pendenza,tagesabschottung:S.tagesabschottung,
+      mansioni:selectedMansioniNames().join("; "),
+      note:S.note,incidente:S.incidente||"",photos:S.photos.length
     };
-    const res = await fetch(WEBAPP_URL, {
-      method: "POST",
-      headers: {"Content-Type":"text/plain"},
-      body: JSON.stringify(data),
+    const res=await fetch(WEBAPP_URL,{
+      method:"POST",headers:{"Content-Type":"text/plain"},
+      body:JSON.stringify(data),
     });
-    const json = await res.json();
-    return json.ok ? {ok:true} : {ok:false, reason:"script-error"};
-  }catch(e){ return {ok:false, reason:"network"}; }
+    const json=await res.json();
+    return json.ok?{ok:true}:{ok:false,reason:"script-error"};
+  }catch(e){return{ok:false,reason:"network"};}
 }
 
 async function testSheets(){
-  toast("Test connessione Sheets...","");
-  const res = await appendToSheet();
-  if(res.ok) toast("✅ Sheets connesso","ok");
-  else toast("❌ Connessione fallita: "+res.reason,"err");
+  toast("Test connessione...","");
+  const res=await appendToSheet();
+  if(res.ok)toast("✅ Sheets connesso","ok");
+  else toast("❌ "+res.reason,"err");
 }
 
 async function saveReport(){
-  if(selectedMansioniNames().length===0){ toast("Seleziona almeno una mansione","err"); gotoStep(0); return; }
+  if(selectedMansioniNames().length===0){toast("Seleziona almeno una mansione","err");gotoStep(0);return;}
   const btn=document.getElementById("nextBtn");
-  btn.disabled=true; btn.textContent="Salvataggio…";
+  btn.disabled=true;btn.textContent="Salvataggio…";
   const status=document.getElementById("save-status");
-  const setStatus=(t)=>{ if(status) status.innerHTML=t; };
-  setStatus("🔄 Sincronizzazione Google Sheets…");
-  const sheet = await appendToSheet();
+  if(status)status.innerHTML="🔄 Sincronizzazione Google Sheets…";
+  const sheet=await appendToSheet();
   if(sheet.ok){
-    setStatus("✅ Diario salvato su Google Sheets.");
-    toast("Salvato su Sheets ✅","ok");
-  } else {
-    setStatus("❌ Sync fallita ("+sheet.reason+"). Riprova.");
+    if(status)status.innerHTML="✅ Diario salvato su Google Sheets.";
+    toast("Salvato ✅","ok");
+  }else{
+    if(status)status.innerHTML="❌ Sync fallita ("+sheet.reason+").";
     toast("Salvataggio non riuscito","err");
   }
-  btn.disabled=false; btn.textContent="✅ Salva diario";
-  if(sheet.ok){
-    setTimeout(()=>{ if(confirm("Diario salvato. Iniziare un nuovo diario?")) resetAll(); }, 700);
-  }
+  btn.disabled=false;btn.textContent="✅ Salva diario";
+  if(sheet.ok)setTimeout(()=>{if(confirm("Diario salvato. Nuovo diario?"))resetAll();},700);
 }
 
 function resetAll(){
@@ -706,9 +697,9 @@ function resetAll(){
 let toastT;
 function toast(msg,kind){
   const el=document.getElementById("toast");
-  el.textContent=msg; el.className="toast show "+(kind||"");
+  el.textContent=msg;el.className="toast show "+(kind||"");
   clearTimeout(toastT);
-  toastT=setTimeout(()=>{el.className="toast "+(kind||"");}, 2600);
+  toastT=setTimeout(()=>{el.className="toast "+(kind||"");},2800);
 }
 
 (function(){
