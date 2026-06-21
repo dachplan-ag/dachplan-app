@@ -1,0 +1,8 @@
+# Local Netlify folder
+.netlify
+
+# Dependencies
+node_modules
+
+# Deno (Netlify edge bootstrap) — not used by this project
+deno.lock
