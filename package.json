@@ -1,0 +1,9 @@
+{
+  "name": "dachplan-app",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/database": "^1.0.0"
+  }
+}
