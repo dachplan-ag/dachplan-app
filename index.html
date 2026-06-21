@@ -21,21 +21,13 @@
   button{font-family:inherit;cursor:pointer;border:none}
   input,textarea,select{font-family:inherit}
   .hidden{display:none !important}
-
-  /* ---------- generic ---------- */
   .screen{max-width:560px;margin:0 auto;padding:24px 18px 120px;min-height:100dvh}
   .field{margin:14px 0}
   .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px;font-weight:600;letter-spacing:.02em}
-  .input{
-    width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);
-    border-radius:var(--radius);padding:15px 16px;font-size:16px;outline:none;transition:border-color .15s;
-  }
+  .input{width:100%;background:var(--surface);border:1px solid var(--border);color:var(--text);border-radius:var(--radius);padding:15px 16px;font-size:16px;outline:none;transition:border-color .15s;}
   .input:focus{border-color:var(--accent)}
   textarea.input{min-height:120px;resize:vertical}
-  .btn{
-    background:var(--accent);color:#1a1206;border-radius:var(--radius);
-    padding:16px 20px;font-size:16px;font-weight:700;width:100%;transition:filter .15s,transform .05s;
-  }
+  .btn{background:var(--accent);color:#1a1206;border-radius:var(--radius);padding:16px 20px;font-size:16px;font-weight:700;width:100%;transition:filter .15s,transform .05s;}
   .btn:active{transform:translateY(1px)}
   .btn:hover{filter:brightness(1.06)}
   .btn:disabled{opacity:.6;cursor:default}
@@ -44,123 +36,66 @@
   .btn.danger{background:transparent;color:var(--danger);border:1px solid var(--border)}
   .row{display:flex;gap:12px}
   .row>*{flex:1}
-
-  /* ---------- screen 1 ---------- */
   .brand{text-align:center;margin:28px 0 8px}
-  .brand .logo{
-    font-size:34px;font-weight:800;letter-spacing:-.02em;
-    background:linear-gradient(120deg,#f5a623,#ffce7a);-webkit-background-clip:text;background-clip:text;color:transparent;
-  }
+  .brand .logo{font-size:34px;font-weight:800;letter-spacing:-.02em;background:linear-gradient(120deg,#f5a623,#ffce7a);-webkit-background-clip:text;background-clip:text;color:transparent;}
   .brand .logo .q{color:var(--text);-webkit-text-fill-color:var(--text)}
   .brand .tag{color:var(--muted);font-size:14px;margin-top:4px}
-  .datepill{
-    display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);
-    color:var(--text);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;margin:18px auto 4px;
-  }
+  .datepill{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:600;margin:18px auto 4px;}
   .center{display:flex;justify-content:center}
-
-  /* ---------- screen 2 (location) ---------- */
   .h2{font-size:22px;font-weight:800;margin:6px 0 18px}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .loc-card{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    padding:24px 14px;text-align:center;transition:border-color .15s,background .15s;color:var(--text);
-  }
+  .loc-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:24px 14px;text-align:center;transition:border-color .15s,background .15s;color:var(--text);}
   .loc-card .emoji{font-size:40px;display:block;margin-bottom:10px}
   .loc-card .name{font-weight:700;font-size:16px}
   .loc-card.full{grid-column:1 / -1}
   .loc-card.sel,.loc-card:active{border-color:var(--accent);background:#2a2715}
-
-  /* ---------- screen 3 header ---------- */
-  .appheader{
-    position:sticky;top:0;z-index:30;background:rgba(15,17,23,.92);backdrop-filter:blur(10px);
-    border-bottom:1px solid var(--border);padding:12px 16px;
-  }
+  .appheader{position:sticky;top:0;z-index:30;background:rgba(15,17,23,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding:12px 16px;}
   .appheader .badges{display:flex;gap:8px;flex-wrap:wrap}
-  .badge{
-    background:var(--card);border:1px solid var(--border);border-radius:999px;
-    padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;gap:6px;align-items:center;
-  }
+  .badge{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:600;display:inline-flex;gap:6px;align-items:center;}
   .badge .k{color:var(--muted)}
   .pills{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 4px;scrollbar-width:none}
   .pills::-webkit-scrollbar{display:none}
-  .pill{
-    white-space:nowrap;background:var(--card);border:1px solid var(--border);color:var(--muted);
-    border-radius:999px;padding:9px 15px;font-size:14px;font-weight:600;flex:0 0 auto;transition:all .15s;
-  }
+  .pill{white-space:nowrap;background:var(--card);border:1px solid var(--border);color:var(--muted);border-radius:999px;padding:9px 15px;font-size:14px;font-weight:600;flex:0 0 auto;transition:all .15s;}
   .pill.active{background:var(--accent);color:#1a1206;border-color:var(--accent)}
   .pill.done{color:var(--ok);border-color:#27432f}
-
   .page{padding:16px}
   .page-title{font-size:18px;font-weight:800;margin:4px 0 14px;display:flex;align-items:center;gap:9px}
-
-  /* ---------- mansioni ---------- */
   .man-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
-  .man-card{
-    background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    padding:14px 12px;text-align:left;color:var(--text);position:relative;transition:border-color .15s;
-  }
+  .man-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;text-align:left;color:var(--text);position:relative;transition:border-color .15s;}
   .man-card.sel{border-color:var(--accent);background:#26230f}
   .man-card .emoji{font-size:26px;display:block;margin-bottom:6px}
   .man-card .mname{font-weight:700;font-size:14px;line-height:1.25}
   .man-card .msub{color:var(--muted);font-size:12px;margin-top:3px}
   .man-card .check{position:absolute;top:8px;right:9px;color:var(--accent);font-weight:800;opacity:0;font-size:15px}
   .man-card.sel .check{opacity:1}
-  .req-tag{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;color:var(--danger);
-    border:1px solid #4a2b2b;border-radius:6px;padding:1px 6px;letter-spacing:.03em}
-
-  /* detail panel */
-  .detail{
-    margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;
-  }
+  .req-tag{display:inline-block;margin-top:6px;font-size:10px;font-weight:700;color:var(--danger);border:1px solid #4a2b2b;border-radius:6px;padding:1px 6px;letter-spacing:.03em}
+  .detail{margin-top:16px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;}
   .detail h4{margin:0 0 4px;font-size:16px}
   .detail .dsub{color:var(--muted);font-size:13px;margin-bottom:12px}
   .chips-label{font-size:12px;color:var(--muted);font-weight:700;margin:14px 0 8px;text-transform:uppercase;letter-spacing:.05em}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{
-    background:var(--card);border:1px solid var(--border);color:var(--text);
-    border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;transition:all .12s;
-  }
+  .chip{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:600;transition:all .12s;}
   .chip.sel{background:var(--accent);color:#1a1206;border-color:var(--accent)}
   .dsub{color:var(--muted);font-size:13px}
-
-  /* ---------- condizioni ---------- */
   .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
-  .meteo-card{
-    background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 4px;text-align:center;color:var(--text);
-  }
+  .meteo-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:13px 4px;text-align:center;color:var(--text);}
   .meteo-card .emoji{font-size:24px;display:block}
   .meteo-card .ml{font-size:11px;color:var(--muted);margin-top:4px}
   .meteo-card.sel{border-color:var(--accent);background:#26230f}
-  .alert{
-    margin-top:14px;border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;
-    background:#3a241f;border:1px solid #5a3a32;color:#ffb9ad;display:flex;gap:8px;align-items:flex-start;
-  }
+  .alert{margin-top:14px;border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:600;background:#3a241f;border:1px solid #5a3a32;color:#ffb9ad;display:flex;gap:8px;align-items:flex-start;}
   .alert.ok{background:#1c3328;border-color:#27432f;color:#9ee3bf}
-
-  /* ---------- misure / counters ---------- */
-  .counter{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--radius);padding:10px 12px;margin:10px 0}
+  .counter{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin:10px 0}
   .counter .clabel{flex:1;font-weight:600;font-size:14.5px}
   .counter .csub{display:block;font-size:11px;color:var(--muted);font-weight:500}
-  .cbtn{width:40px;height:40px;border-radius:10px;background:var(--card);border:1px solid var(--border);
-    color:var(--text);font-size:22px;font-weight:700;line-height:1}
+  .cbtn{width:40px;height:40px;border-radius:10px;background:var(--card);border:1px solid var(--border);color:var(--text);font-size:22px;font-weight:700;line-height:1}
   .cval{min-width:42px;text-align:center;font-size:18px;font-weight:800}
-
-  /* ---------- foto ---------- */
   .foto-sec{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin:12px 0}
   .foto-sec h4{margin:0 0 10px;font-size:15px}
   .foto-strip{display:flex;gap:9px;flex-wrap:wrap}
-  .foto-add{
-    width:74px;height:74px;border-radius:12px;border:1.5px dashed var(--border);background:var(--card);
-    color:var(--muted);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;
-  }
+  .foto-add{width:74px;height:74px;border-radius:12px;border:1.5px dashed var(--border);background:var(--card);color:var(--muted);font-size:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;}
   .foto-thumb{width:74px;height:74px;border-radius:12px;object-fit:cover;border:1px solid var(--border)}
   .foto-wrap{position:relative}
-  .foto-wrap .del{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;
-    background:var(--danger);color:#fff;font-size:13px;line-height:22px;text-align:center;border:2px solid var(--bg)}
-
-  /* ---------- riepilogo ---------- */
+  .foto-wrap .del{position:absolute;top:-6px;right:-6px;width:22px;height:22px;border-radius:50%;background:var(--danger);color:#fff;font-size:13px;line-height:22px;text-align:center;border:2px solid var(--bg)}
   .sum-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;margin:10px 0}
   .sum-card h4{margin:0 0 10px;font-size:14px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
   .sum-row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;font-size:14.5px;border-top:1px solid var(--border)}
@@ -169,24 +104,11 @@
   .sum-row .v{text-align:right;font-weight:600}
   .pendgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
   .pendgrid .chip{text-align:center}
-
-  /* ---------- bottom bar ---------- */
-  .bottombar{
-    position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(15,17,23,.95);backdrop-filter:blur(10px);
-    border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));
-    display:flex;gap:12px;max-width:560px;margin:0 auto;
-  }
+  .bottombar{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(15,17,23,.95);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:12px;max-width:560px;margin:0 auto;}
   .bottombar .btn{width:auto}
   .bottombar .grow{flex:2}
   .bottombar .shrink{flex:1}
-
-  /* toast */
-  .toast{
-    position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:100;
-    background:var(--card);border:1px solid var(--border);color:var(--text);
-    padding:13px 18px;border-radius:12px;font-size:14px;font-weight:600;max-width:90%;text-align:center;
-    box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;
-  }
+  .toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:100;background:var(--card);border:1px solid var(--border);color:var(--text);padding:13px 18px;border-radius:12px;font-size:14px;font-weight:600;max-width:90%;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(-6px)}
   .toast.err{border-color:#5a3a32}
   .toast.ok{border-color:#27432f}
@@ -194,14 +116,13 @@
 </head>
 <body>
 
-<!-- ============ SCREEN 1: START ============ -->
+<!-- SCREEN 1: START -->
 <section id="screen-start" class="screen">
   <div class="brand">
     <div class="logo">DachPlan <span class="q">Quick</span></div>
     <div class="tag">Diario di cantiere · DachPlan AG</div>
   </div>
   <div class="center"><div class="datepill">📅 <span id="todayLabel"></span></div></div>
-
   <div class="field">
     <label>Nome operaio</label>
     <input id="in-worker" class="input" type="text" placeholder="Es. Marco Rossi" autocomplete="name">
@@ -210,16 +131,15 @@
     <label>Cantiere / Baustelle</label>
     <input id="in-site" class="input" type="text" placeholder="Es. Wohnhaus Zürich">
   </div>
-
   <div style="margin-top:22px">
     <button class="btn" onclick="goLocation()">Avanti →</button>
   </div>
   <div style="margin-top:14px">
-    <button class="btn ghost" onclick="openTokenDialog()">🔗 Collega Google Sheets</button>
+    <button class="btn ghost" onclick="testSheets()">🔗 Test connessione Sheets</button>
   </div>
 </section>
 
-<!-- ============ SCREEN 2: LOCATION ============ -->
+<!-- SCREEN 2: LOCATION -->
 <section id="screen-location" class="screen hidden">
   <h2 class="h2">Dove lavori oggi?</h2>
   <div class="grid2" id="locGrid"></div>
@@ -229,7 +149,7 @@
   </div>
 </section>
 
-<!-- ============ SCREEN 3: APP ============ -->
+<!-- SCREEN 3: APP -->
 <section id="screen-app" class="hidden">
   <header class="appheader">
     <div class="badges">
@@ -239,11 +159,9 @@
     </div>
   </header>
   <nav class="pills" id="pills"></nav>
-
   <div class="screen" style="padding-top:4px">
     <div id="page-host"></div>
   </div>
-
   <div class="bottombar">
     <button class="btn shrink secondary" onclick="resetAll()">🔄 Nuovo</button>
     <button class="btn grow" id="nextBtn" onclick="nextStep()">Avanti →</button>
@@ -253,56 +171,9 @@
 <div id="toast" class="toast"></div>
 
 <script>
-/* ============================================================
-   DachPlan Quick — config + data
-   ============================================================ */
 const SHEET_ID = "1ttfAdqE3TI7G_gwapZhz3Yw3dKSYHM2smpQoILLGcJ0";
 const SHEET_NAME = "DachPlan Diario";
-
-/* ============================================================
-   PREZZI FORNITORI 2026 (CHF/m² o CHF/kg)
-   ============================================================ */
-const PREZZI = {
-  soprema: { egv3:8.40, ep5:13.70, dampfbremse:9.00, pir80:27.50, primer:3.60 },
-  bauder:  { egv3:9.00, ep5:15.05, dampfbremse:9.40, pir80:25.50, flk:28.15, primer:0    },
-  swisspor:{ egv3:8.50, ep5:14.00, dampfbremse:9.60, pir80:0,     flk:28.70, primer:7.10 },
-};
-const MARGINE = 0.35;
-
-function calcolaCosti(){
-  const mq  = parseFloat(S.mqMat)  || 0;
-  const flk = parseFloat(S.mlFLK)  || 0;   // kg stimati: ml * 1.5 kg/m (approssimazione)
-  const flkKg = flk * 1.5;
-
-  // Mansioni selezionate → quali voci di costo attivare
-  const ids = Object.keys(S.mansioni);
-  const has = id => ids.includes(id);
-
-  function costoFornitore(p){
-    let c = 0;
-    if(has("dampfbremse"))  c += mq * p.dampfbremse;
-    if(has("dachpappe1"))   c += mq * p.egv3;
-    if(has("dachpappe2"))   c += mq * p.ep5;
-    if(has("daemmung"))     c += mq * (p.pir80 || 0);
-    if(has("voranstrich"))  c += mq * (p.primer || 0);
-    if((has("flk1")||has("flk2")) && p.flk) c += flkKg * p.flk;
-    return Math.round(c * 100) / 100;
-  }
-
-  const soprema  = costoFornitore(PREZZI.soprema);
-  const bauder   = costoFornitore(PREZZI.bauder);
-  const swisspor = costoFornitore(PREZZI.swisspor);
-
-  const minCosto = Math.min(soprema||Infinity, bauder||Infinity, swisspor||Infinity);
-  let fornitore = "—";
-  if(minCosto === soprema  && soprema  > 0) fornitore = "Soprema";
-  if(minCosto === bauder   && bauder   > 0) fornitore = "Bauder";
-  if(minCosto === swisspor && swisspor > 0) fornitore = "Swisspor";
-
-  const costoMargine = Math.round(minCosto * (1 + MARGINE) * 100) / 100;
-
-  return { soprema, bauder, swisspor, fornitore, costoMargine };
-}
+const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyBM3_3vbBL_cxu0eNFwbCOAvEs_UFaMaYL7U74zJFwF-wx6KWNMqgaPDE10r0t-cj8/exec";
 
 const ZONES = [
   {id:"Tetto", emoji:"🏠", full:false},
@@ -319,48 +190,27 @@ const METEO = [
 
 const PENDENZE = ["0–2%","2–5%","5–15%","15–30%",">30%","Verticale"];
 
-// 20 mansioni, each with pre-selected materials and tools shown as chips
 const MANSIONI = [
-  {id:"untergrund", emoji:"🧹", name:"Untergrund Vorbereitung", sub:"Preparazione fondo",
-    materials:["Scopa","Aspiratore","Stracci"], tools:["Spazzola","Soffiatore"]},
-  {id:"voranstrich", emoji:"🖌️", name:"Voranstrich Bitumen", sub:"Primer bituminoso",
-    materials:["Primer bitume","Diluente"], tools:["Pennello","Rullo"]},
-  {id:"dampfbremse", emoji:"♨️", name:"Dampfbremse (EVA + EGV)", sub:"Barriera vapore",
-    materials:["EVA","EGV","Nastro alluminio"], tools:["Cannello","Cutter"]},
-  {id:"daemmung", emoji:"🧱", name:"Dämmung verlegen", sub:"Posa isolamento",
-    materials:["Pannelli PIR","Lana di roccia","Colla PU"], tools:["Cutter","Metro"]},
-  {id:"isolieren", emoji:"🔲", name:"Isolieren", sub:"Isolazione",
-    materials:["Pannelli isolanti","Tasselli"], tools:["Trapano","Cutter"]},
-  {id:"dachpappe1", emoji:"🔥", name:"Dachpappe 1. Lage (EGV)", sub:"Guaina 1° strato",
-    materials:["EGV","Bombola gas"], tools:["Cannello","Rullo pressore"]},
-  {id:"dachpappe2", emoji:"🔥", name:"Dachpappe 2. Lage (EP5)", sub:"Guaina 2° strato",
-    materials:["EP5","Bombola gas"], tools:["Cannello","Rullo pressore"]},
-  {id:"aufbordung", emoji:"📐", name:"Aufbordung/Abbordung", sub:"Risvolti",
-    materials:["Guaina risvolto","Profilo"], tools:["Cannello","Cutter"]},
-  {id:"primerflk", emoji:"🖌️", name:"Primer FLK", sub:"Primer FLK",
-    materials:["Primer FLK"], tools:["Pennello","Rullo"]},
-  {id:"vorbflk", emoji:"⚙️", name:"Vorbereitung FLK", sub:"Preparazione FLK",
-    materials:["FLK kit","Nastro"], tools:["Miscelatore","Spatola"]},
-  {id:"flk1", emoji:"🪣", name:"FLK 1. Hand", sub:"FLK 1ª mano",
-    materials:["FLK resina","Catalizzatore"], tools:["Rullo","Spatola"]},
-  {id:"vliesflk", emoji:"🔲", name:"Vlies FLK verlegen", sub:"Posa vello FLK",
-    materials:["Vlies FLK"], tools:["Rullo","Cutter"]},
-  {id:"flk2", emoji:"🪣", name:"FLK 2. Hand", sub:"FLK 2ª mano",
-    materials:["FLK resina","Catalizzatore"], tools:["Rullo","Spatola"]},
-  {id:"anschluss", emoji:"🔩", name:"Anschluss Blech", sub:"Raccordo lamiera",
-    materials:["Lamiera","Viti","Silicone"], tools:["Avvitatore","Cesoia"]},
-  {id:"ablauf", emoji:"🕳️", name:"Ablauf", sub:"Scarico",
-    materials:["Bocchettone","Guaina rinforzo"], tools:["Cannello","Cutter"]},
-  {id:"notablauf", emoji:"🚨", name:"Notablauf", sub:"Troppo-pieno",
-    materials:["Scarico emergenza","Sigillante"], tools:["Trapano","Cannello"]},
-  {id:"durchdringung", emoji:"🔌", name:"Durchdringung", sub:"Penetrazione",
-    materials:["Manicotto","Collare","Sigillante"], tools:["Cannello","Cutter"]},
-  {id:"controldach", emoji:"🔍", name:"Controldach", sub:"Controllo tetto",
-    materials:[], tools:["Igrometro","Macchina foto"]},
-  {id:"seilsystem", emoji:"🪢", name:"Seilsystem", sub:"Linea vita",
-    materials:["Ancoraggi","Cavo acciaio"], tools:["Trapano","Chiave dinamometrica"]},
-  {id:"tagesabschottung", emoji:"🔒", name:"Tagesabschottung", sub:"Chiusura giornaliera",
-    materials:["Guaina provvisoria","Nastro"], tools:["Cannello","Cutter"], required:true},
+  {id:"untergrund", emoji:"🧹", name:"Untergrund Vorbereitung", sub:"Preparazione fondo", materials:["Scopa","Aspiratore","Stracci"], tools:["Spazzola","Soffiatore"]},
+  {id:"voranstrich", emoji:"🖌️", name:"Voranstrich Bitumen", sub:"Primer bituminoso", materials:["Primer bitume","Diluente"], tools:["Pennello","Rullo"]},
+  {id:"dampfbremse", emoji:"♨️", name:"Dampfbremse (EVA + EGV)", sub:"Barriera vapore", materials:["EVA","EGV","Nastro alluminio"], tools:["Cannello","Cutter"]},
+  {id:"daemmung", emoji:"🧱", name:"Dämmung verlegen", sub:"Posa isolamento", materials:["Pannelli PIR","Lana di roccia","Colla PU"], tools:["Cutter","Metro"]},
+  {id:"isolieren", emoji:"🔲", name:"Isolieren", sub:"Isolazione", materials:["Pannelli isolanti","Tasselli"], tools:["Trapano","Cutter"]},
+  {id:"dachpappe1", emoji:"🔥", name:"Dachpappe 1. Lage (EGV)", sub:"Guaina 1° strato", materials:["EGV","Bombola gas"], tools:["Cannello","Rullo pressore"]},
+  {id:"dachpappe2", emoji:"🔥", name:"Dachpappe 2. Lage (EP5)", sub:"Guaina 2° strato", materials:["EP5","Bombola gas"], tools:["Cannello","Rullo pressore"]},
+  {id:"aufbordung", emoji:"📐", name:"Aufbordung/Abbordung", sub:"Risvolti", materials:["Guaina risvolto","Profilo"], tools:["Cannello","Cutter"]},
+  {id:"primerflk", emoji:"🖌️", name:"Primer FLK", sub:"Primer FLK", materials:["Primer FLK"], tools:["Pennello","Rullo"]},
+  {id:"vorbflk", emoji:"⚙️", name:"Vorbereitung FLK", sub:"Preparazione FLK", materials:["FLK kit","Nastro"], tools:["Miscelatore","Spatola"]},
+  {id:"flk1", emoji:"🪣", name:"FLK 1. Hand", sub:"FLK 1ª mano", materials:["FLK resina","Catalizzatore"], tools:["Rullo","Spatola"]},
+  {id:"vliesflk", emoji:"🔲", name:"Vlies FLK verlegen", sub:"Posa vello FLK", materials:["Vlies FLK"], tools:["Rullo","Cutter"]},
+  {id:"flk2", emoji:"🪣", name:"FLK 2. Hand", sub:"FLK 2ª mano", materials:["FLK resina","Catalizzatore"], tools:["Rullo","Spatola"]},
+  {id:"anschluss", emoji:"🔩", name:"Anschluss Blech", sub:"Raccordo lamiera", materials:["Lamiera","Viti","Silicone"], tools:["Avvitatore","Cesoia"]},
+  {id:"ablauf", emoji:"🕳️", name:"Ablauf", sub:"Scarico", materials:["Bocchettone","Guaina rinforzo"], tools:["Cannello","Cutter"]},
+  {id:"notablauf", emoji:"🚨", name:"Notablauf", sub:"Troppo-pieno", materials:["Scarico emergenza","Sigillante"], tools:["Trapano","Cannello"]},
+  {id:"durchdringung", emoji:"🔌", name:"Durchdringung", sub:"Penetrazione", materials:["Manicotto","Collare","Sigillante"], tools:["Cannello","Cutter"]},
+  {id:"controldach", emoji:"🔍", name:"Controldach", sub:"Controllo tetto", materials:[], tools:["Igrometro","Macchina foto"]},
+  {id:"seilsystem", emoji:"🪢", name:"Seilsystem", sub:"Linea vita", materials:["Ancoraggi","Cavo acciaio"], tools:["Trapano","Chiave dinamometrica"]},
+  {id:"tagesabschottung", emoji:"🔒", name:"Tagesabschottung", sub:"Chiusura giornaliera", materials:["Guaina provvisoria","Nastro"], tools:["Cannello","Cutter"], required:true},
 ];
 
 const STEPS = [
@@ -375,21 +225,16 @@ const STEPS = [
 function freshState(){
   return {
     worker:"", site:"", zone:"", date:new Date().toISOString().slice(0,10),
-    mansioni:{},               // id -> {materials:[], tools:[]}
-    meteo:"", tempAria:"", tempSotto:"", umidita:"",
+    mansioni:{}, meteo:"", tempAria:"", tempSotto:"", umidita:"",
     operai:1, oreStart:"", oreEnd:"", pause:0,
     mqNetti:0, mqMat:0, mlFLK:0, rotoli:0, kessel:0, bombole:0,
     pendenza:"", tagesabschottung:"",
     photos:{inizio:[], durante:[], fine:[]},
-    note:"", incidente:"",
-    activeMansione:null, step:0,
+    note:"", incidente:"", activeMansione:null, step:0,
   };
 }
 let S = freshState();
 
-/* ============================================================
-   navigation
-   ============================================================ */
 function show(id){
   ["screen-start","screen-location","screen-app"].forEach(s=>{
     document.getElementById(s).classList.toggle("hidden", s!==id);
@@ -401,28 +246,21 @@ function goLocation(){
   S.site = document.getElementById("in-site").value.trim();
   if(!S.worker){ toast("Inserisci il nome operaio","err"); return; }
   if(!S.site){ toast("Inserisci il cantiere","err"); return; }
-  renderLocation();
-  show("screen-location");
+  renderLocation(); show("screen-location");
 }
 function goApp(){
   if(!S.zone){ toast("Seleziona una zona","err"); return; }
   document.getElementById("b-worker").textContent = S.worker;
   document.getElementById("b-site").textContent = S.site;
   document.getElementById("b-zone").textContent = S.zone;
-  S.step = 0;
-  renderPills(); renderPage();
-  show("screen-app");
+  S.step = 0; renderPills(); renderPage(); show("screen-app");
 }
 function nextStep(){
-  if(S.step < STEPS.length-1){
-    S.step++; renderPills(); renderPage(); window.scrollTo(0,0);
-  } else { saveReport(); }
+  if(S.step < STEPS.length-1){ S.step++; renderPills(); renderPage(); window.scrollTo(0,0); }
+  else { saveReport(); }
 }
 function gotoStep(i){ S.step=i; renderPills(); renderPage(); window.scrollTo(0,0); }
 
-/* ============================================================
-   screen 2 — location
-   ============================================================ */
 function renderLocation(){
   document.getElementById("locGrid").innerHTML = ZONES.map(z=>`
     <button class="loc-card ${z.full?'full':''} ${S.zone===z.id?'sel':''}" onclick="selZone('${z.id}')">
@@ -431,9 +269,6 @@ function renderLocation(){
 }
 function selZone(id){ S.zone=id; renderLocation(); }
 
-/* ============================================================
-   screen 3 — pills + pages
-   ============================================================ */
 function renderPills(){
   document.getElementById("pills").innerHTML = STEPS.map((st,i)=>`
     <button class="pill ${i===S.step?'active':''} ${i<S.step?'done':''}" onclick="gotoStep(${i})">
@@ -448,7 +283,6 @@ function renderPage(){
   if(STEPS[S.step].id==="condizioni") refreshSiaAlert();
 }
 
-/* ---------- MANSIONI ---------- */
 function pgMansioni(){
   const cards = MANSIONI.map(m=>{
     const sel = !!S.mansioni[m.id];
@@ -472,8 +306,7 @@ function openMansione(id){
     const m = MANSIONI.find(x=>x.id===id);
     S.mansioni[id] = {materials:[...m.materials], tools:[...m.tools]};
   }
-  renderPage();
-  renderMansioneDetail();
+  renderPage(); renderMansioneDetail();
   const d=document.getElementById("man-detail"); if(d) d.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 function renderMansioneDetail(){
@@ -513,7 +346,6 @@ function removeMansione(id){
 }
 function closeMansione(){ S.activeMansione=null; renderPage(); }
 
-/* ---------- CONDIZIONI ---------- */
 function pgCondizioni(){
   const meteo = METEO.map(m=>`
     <button class="meteo-card ${S.meteo===m.id?'sel':''}" onclick="selMeteo('${m.id}')">
@@ -544,7 +376,6 @@ function refreshSiaAlert(){
     : `<div class="alert ok">✅ <div>Condizioni conformi SIA 271 per la posa.</div></div>`;
 }
 
-/* ---------- MISURE ---------- */
 function counterRow(label,sub,key){
   return `<div class="counter">
     <span class="clabel">${label}<span class="csub">${sub}</span></span>
@@ -576,7 +407,6 @@ function bump(key,d){
 }
 function selPend(p){ S.pendenza=p; renderPage(); }
 
-/* ---------- FOTO ---------- */
 function pgFoto(){
   const sec = (key,title)=>`
     <div class="foto-sec">
@@ -617,7 +447,6 @@ function addPhoto(key,input){
 }
 function delPhoto(key,i){ S.photos[key].splice(i,1); renderPage(); }
 
-/* ---------- NOTE ---------- */
 function pgNote(){
   const opts = ["Completata","Parziale","Non necessaria"];
   const tg = opts.map(o=>`<button class="chip ${S.tagesabschottung===o?'sel':''}" onclick="selTag('${o}')">${o}</button>`).join("");
@@ -633,7 +462,6 @@ function pgNote(){
 }
 function selTag(o){ S.tagesabschottung=o; renderPage(); }
 
-/* ---------- RIEPILOGO ---------- */
 function selectedMansioniNames(){
   return MANSIONI.filter(m=>S.mansioni[m.id]).map(m=>m.name);
 }
@@ -648,14 +476,12 @@ function pgRiepilogo(){
   const photoCount=S.photos.inizio.length+S.photos.durante.length+S.photos.fine.length;
   return `<div class="page">
     <div class="page-title">✅ Riepilogo diario</div>
-
     <div class="sum-card"><h4>Generale</h4>
       <div class="sum-row"><span class="k">Data</span><span class="v">${S.date}</span></div>
       <div class="sum-row"><span class="k">Operaio</span><span class="v">${S.worker||"—"}</span></div>
       <div class="sum-row"><span class="k">Cantiere</span><span class="v">${S.site||"—"}</span></div>
       <div class="sum-row"><span class="k">Zona</span><span class="v">${S.zone||"—"}</span></div>
     </div>
-
     <div class="sum-card"><h4>Orario</h4>
       <div class="row">
         <div class="field" style="margin:4px 0"><label>Inizio</label>
@@ -671,11 +497,9 @@ function pgRiepilogo(){
       </div>
       <div class="sum-row"><span class="k">Ore totali</span><span class="v" id="sum-hours">${totalHours()} h</span></div>
     </div>
-
     <div class="sum-card"><h4>Mansioni (${names.length})</h4>
       ${names.length?names.map(n=>`<div class="sum-row"><span class="v" style="text-align:left;width:100%">• ${n}</span></div>`).join(""):'<div class="dsub">Nessuna mansione selezionata</div>'}
     </div>
-
     <div class="sum-card"><h4>Condizioni & misure</h4>
       <div class="sum-row"><span class="k">Meteo</span><span class="v">${S.meteo||"—"}</span></div>
       <div class="sum-row"><span class="k">Temp. aria / sotto</span><span class="v">${S.tempAria||"—"} / ${S.tempSotto||"—"} °C</span></div>
@@ -688,22 +512,6 @@ function pgRiepilogo(){
       <div class="sum-row"><span class="k">Foto</span><span class="v">${photoCount}</span></div>
       <div class="sum-row"><span class="k">Incidente</span><span class="v">${S.incidente||"Nessuno"}</span></div>
     </div>
-
-    ${(()=>{
-      const c = calcolaCosti();
-      if(c.soprema===0 && c.bauder===0 && c.swisspor===0) return '';
-      return `<div class="sum-card"><h4>💰 Stima costi materiali</h4>
-        <div class="sum-row"><span class="k">Soprema</span><span class="v">CHF ${c.soprema.toFixed(2)}</span></div>
-        <div class="sum-row"><span class="k">Bauder</span><span class="v">CHF ${c.bauder.toFixed(2)}</span></div>
-        <div class="sum-row"><span class="k">Swisspor</span><span class="v">CHF ${c.swisspor.toFixed(2)}</span></div>
-        <div class="sum-row" style="border-top:2px solid var(--accent);margin-top:4px">
-          <span class="k">✅ Fornitore consigliato</span><span class="v" style="color:var(--accent)">${c.fornitore}</span></div>
-        <div class="sum-row">
-          <span class="k">Prezzo cliente (+35%)</span>
-          <span class="v" style="color:var(--ok);font-size:16px">CHF ${c.costoMargine.toFixed(2)}</span></div>
-      </div>`;
-    })()}
-
     <div id="save-status" class="dsub" style="margin:12px 2px"></div>
   </div>`;
 }
@@ -713,67 +521,52 @@ function updateHours(){
 }
 
 /* ============================================================
-   SAVE — Netlify DB + Google Sheets
+   SAVE — Apps Script Web App
    ============================================================ */
-function buildSiaCategories(){
-  const c=[]; const t=parseFloat(S.tempAria), h=parseFloat(S.umidita);
-  if(!isNaN(t)&&t<5) c.push("temp_bassa");
-  if(!isNaN(h)&&h>80) c.push("umidita_alta");
-  return c;
-}
-function buildDbPayload(){
-  return {
-    work_date:S.date, site_name:S.site, worker_name:S.worker,
-    photos:S.photos,
-    tasks:selectedMansioniNames(),
-    materials:Object.values(S.mansioni).flatMap(v=>v.materials),
-    sia_categories:buildSiaCategories(),
-    technical_notes:S.note,
-    time_start:S.oreStart, time_end:S.oreEnd,
-    total_hours:totalHours(), pause_minutes:Number(S.pause)||0,
-    final_notes:S.note, signature:"",
-    weather:{meteo:S.meteo, temp_aria:S.tempAria, temp_sotto:S.tempSotto, umidita:S.umidita},
-    risks:buildSiaCategories(),
-    logistics:{zona:S.zone, operai:Number(S.operai)||0, mq_netti:S.mqNetti, mq_mat:S.mqMat,
-      ml_flk:S.mlFLK, rotoli:S.rotoli, kessel:S.kessel, bombole:S.bombole, pendenza:S.pendenza},
-    anomalies:S.incidente?[S.incidente]:[],
-    workflow:Object.entries(S.mansioni).map(([id,v])=>({id,materials:v.materials,tools:v.tools})),
-  };
-}
-function buildSheetRow(timestamp){
-  const costi = calcolaCosti();
-  // Order: Data, Cantiere, Operaio, Zona, Meteo, Temp_Aria, Temp_Sotto, Umidita,
-  // Operai, Ore, mq_netti, mq_mat, ml_FLK, Rotoli, Kessel, Bombole, Pendenza,
-  // Tagesabschottung, Mansioni, Note, Incidente,
-  // Costo_Soprema, Costo_Bauder, Costo_Swisspor, Fornitore_Economico, Costo_Margine, Timestamp
-  return [
-    S.date, S.site, S.worker, S.zone, S.meteo,
-    S.tempAria, S.tempSotto, S.umidita,
-    Number(S.operai)||0, totalHours(),
-    S.mqNetti, S.mqMat, S.mlFLK, S.rotoli, S.kessel, S.bombole,
-    S.pendenza, S.tagesabschottung,
-    selectedMansioniNames().join("; "), S.note, S.incidente||"",
-    costi.soprema, costi.bauder, costi.swisspor,
-    costi.fornitore, costi.costoMargine,
-    timestamp,
-  ];
-}
-async function appendToSheet(row){
-  const token=localStorage.getItem("goog_token");
-  if(!token) return {ok:false, reason:"no-token"};
-  const range=encodeURIComponent(`${SHEET_NAME}!A1`);
-  const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${range}:append?valueInputOption=USER_ENTERED&insertDataOption=INSERT_ROWS`;
+async function appendToSheet(){
   try{
-    const res=await fetch(url,{
-      method:"POST",
-      headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
-      body:JSON.stringify({values:[row]}),
+    const data = {
+      date: S.date,
+      site: S.site,
+      worker: S.worker,
+      zone: S.zone,
+      meteo: S.meteo,
+      tempAria: S.tempAria,
+      tempSotto: S.tempSotto,
+      umidita: S.umidita,
+      operai: Number(S.operai)||0,
+      totalHours: totalHours(),
+      mqNetti: S.mqNetti,
+      mqMat: S.mqMat,
+      mlFLK: S.mlFLK,
+      rotoli: S.rotoli,
+      kessel: S.kessel,
+      bombole: S.bombole,
+      pendenza: S.pendenza,
+      tagesabschottung: S.tagesabschottung,
+      mansioni: selectedMansioniNames().join("; "),
+      note: S.note,
+      incidente: S.incidente||""
+    };
+    const res = await fetch(WEBAPP_URL, {
+      method: "POST",
+      headers: {"Content-Type":"text/plain"},
+      body: JSON.stringify(data),
     });
-    if(res.status===401||res.status===403) return {ok:false, reason:"auth"};
-    if(!res.ok) return {ok:false, reason:"http-"+res.status};
-    return {ok:true};
-  }catch(e){ return {ok:false, reason:"network"}; }
+    const json = await res.json();
+    return json.ok ? {ok:true} : {ok:false, reason:"script-error"};
+  }catch(e){
+    return {ok:false, reason:"network"};
+  }
 }
+
+async function testSheets(){
+  toast("Test connessione Sheets...","");
+  const res = await appendToSheet();
+  if(res.ok) toast("✅ Sheets connesso","ok");
+  else toast("❌ Connessione fallita: "+res.reason,"err");
+}
+
 async function saveReport(){
   if(selectedMansioniNames().length===0){ toast("Seleziona almeno una mansione","err"); gotoStep(0); return; }
   const btn=document.getElementById("nextBtn");
@@ -781,55 +574,30 @@ async function saveReport(){
   const status=document.getElementById("save-status");
   const setStatus=(t)=>{ if(status) status.innerHTML=t; };
 
-  const timestamp=new Date().toISOString();
-  let dbOk=false;
-  try{
-    setStatus("💾 Salvataggio nel database…");
-    const res=await fetch("/api/reports",{
-      method:"POST",headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(buildDbPayload()),
-    });
-    dbOk=res.ok;
-    if(!res.ok) console.warn("DB save failed", await res.text().catch(()=>""));
-  }catch(e){ console.warn("DB save error",e); }
+  setStatus("🔄 Sincronizzazione Google Sheets…");
+  const sheet = await appendToSheet();
 
-  setStatus((dbOk?"✅ Database salvato. ":"⚠️ Database non raggiungibile. ")+"🔄 Sincronizzazione Google Sheets…");
-  const sheet=await appendToSheet(buildSheetRow(timestamp));
-
-  if(dbOk && sheet.ok){
-    setStatus("✅ Diario salvato e sincronizzato su Google Sheets."); toast("Salvato e sincronizzato ✅","ok");
-  }else if(dbOk && !sheet.ok){
-    if(sheet.reason==="no-token"){ setStatus("✅ Salvato nel database. ℹ️ Google Sheets non collegato — usa «Collega Google Sheets»."); toast("Salvato. Sheets non collegato","ok"); }
-    else if(sheet.reason==="auth"){ setStatus("✅ Salvato nel database. ⚠️ Token Google scaduto — ricollega Google Sheets."); toast("Salvato. Token Google scaduto","err"); }
-    else{ setStatus("✅ Salvato nel database. ⚠️ Sync Google Sheets fallita ("+sheet.reason+")."); toast("Salvato. Sync Sheets fallita","err"); }
-  }else if(!dbOk && sheet.ok){
-    setStatus("⚠️ Database non raggiungibile, ma sincronizzato su Google Sheets."); toast("Sincronizzato su Sheets","ok");
-  }else{
-    setStatus("❌ Salvataggio non riuscito. Riprova."); toast("Salvataggio non riuscito","err");
+  if(sheet.ok){
+    setStatus("✅ Diario salvato su Google Sheets.");
+    toast("Salvato su Sheets ✅","ok");
+  } else {
+    setStatus("❌ Sync Google Sheets fallita ("+sheet.reason+"). Riprova.");
+    toast("Salvataggio non riuscito","err");
   }
 
   btn.disabled=false; btn.textContent="✅ Salva diario";
-  if(dbOk||sheet.ok){
+  if(sheet.ok){
     setTimeout(()=>{ if(confirm("Diario salvato. Iniziare un nuovo diario?")) resetAll(); }, 700);
   }
 }
 
-/* ============================================================
-   misc
-   ============================================================ */
 function resetAll(){
   S=freshState();
   document.getElementById("in-worker").value="";
   document.getElementById("in-site").value="";
   show("screen-start");
 }
-function openTokenDialog(){
-  const cur=localStorage.getItem("goog_token")||"";
-  const v=prompt("Incolla il Google OAuth access token (scope Google Sheets).\nViene salvato localmente nel browser come 'goog_token'.", cur);
-  if(v===null) return;
-  if(v.trim()){ localStorage.setItem("goog_token",v.trim()); toast("Token Google salvato ✅","ok"); }
-  else{ localStorage.removeItem("goog_token"); toast("Token Google rimosso","err"); }
-}
+
 let toastT;
 function toast(msg,kind){
   const el=document.getElementById("toast");
@@ -838,7 +606,6 @@ function toast(msg,kind){
   toastT=setTimeout(()=>{el.className="toast "+(kind||"");}, 2600);
 }
 
-/* init */
 (function(){
   document.getElementById("todayLabel").textContent=
     new Date().toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
