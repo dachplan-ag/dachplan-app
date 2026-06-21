@@ -1,0 +1,4 @@
+node_modules/
+.netlify/state.json
+.netlify/functions-serve/
+.DS_Store
