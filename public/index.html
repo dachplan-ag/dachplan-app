@@ -95,9 +95,41 @@
               <label class="flex items-center gap-3 text-sm"><input id="chk-psa" type="checkbox" class="w-5 h-5 accent-amber-500"> PSA anticaduta e casco verificati</label>
               <label class="flex items-center gap-3 text-sm"><input id="chk-meteo" type="checkbox" class="w-5 h-5 accent-amber-500"> Meteo compatibile con SIA 271</label>
               <label class="flex items-center gap-3 text-sm"><input id="chk-fiamma" type="checkbox" class="w-5 h-5 accent-amber-500"> Zona fiamma libera e protetta</label>
+              <label class="flex items-center gap-3 text-sm"><input id="chk-brenner" type="checkbox" class="w-5 h-5 accent-amber-500"> Brenner chiuso e valvole gas controllate</label>
+              <label class="flex items-center gap-3 text-sm"><input id="chk-linee-vita" type="checkbox" class="w-5 h-5 accent-amber-500"> Linee vita OK e punti ancoraggio verificati</label>
+              <div>
+                <label class="block text-xs font-mono uppercase text-slate-400 mb-1 mt-3">Foto del giunto</label>
+                <input id="foto-giunto" type="file" accept="image/*" capture="environment" class="w-full text-sm text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-800 file:px-3 file:py-2 file:text-xs file:font-bold file:text-amber-300">
+              </div>
             </div>
 
-            <button id="submit-btn" type="submit" class="w-full py-4 rounded-xl bg-amber-500 text-slate-950 font-black shadow-lg hover:bg-amber-400 transition-all">INVIA AL DIARIO</button>
+            <div class="bg-slate-950 p-4 border border-slate-800 rounded-xl">
+              <h4 class="text-xs font-mono uppercase text-amber-400 mb-3">Inventario Mobile - Stato Scomparti Furgone Squadra 1</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3">
+                  <div class="font-bold text-sky-300 mb-2">REPARTO FLK</div>
+                  <div class="flex justify-between"><span>Resina MAT001</span><span id="lbl-mat001" class="font-mono">250 kg</span></div>
+                  <div class="flex justify-between"><span>Catalizzatore MAT002</span><span id="lbl-mat002" class="font-mono">15000 g</span></div>
+                </div>
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3">
+                  <div class="font-bold text-red-300 mb-2">FUOCO & MASSE</div>
+                  <div class="flex justify-between"><span>Gas Linde</span><span class="font-mono">2 pz</span></div>
+                  <div class="flex justify-between"><span>Guaine EP5</span><span class="font-mono">12 rotoli</span></div>
+                </div>
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3">
+                  <div class="font-bold text-emerald-300 mb-2">POWER TOOLS</div>
+                  <div class="flex justify-between"><span>Flex</span><span class="font-mono text-emerald-300">A bordo</span></div>
+                  <div class="flex justify-between"><span>Trapano</span><span class="font-mono text-emerald-300">A bordo</span></div>
+                </div>
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3">
+                  <div class="font-bold text-amber-300 mb-2">CONSUMABILI</div>
+                  <div class="flex justify-between"><span>Dischi CON001</span><span id="lbl-con001" class="font-mono">15 pz</span></div>
+                  <div class="flex justify-between"><span>Tasselli</span><span class="font-mono">500 pz</span></div>
+                </div>
+              </div>
+            </div>
+
+            <button id="submit-btn" type="submit" class="w-full py-4 rounded-xl bg-amber-500 text-slate-950 font-black shadow-lg hover:bg-amber-400 transition-all">TRASMETTI REPORT CLOUD</button>
             <p id="form-status" class="text-xs text-slate-400"></p>
           </form>
         </div>

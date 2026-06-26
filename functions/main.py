@@ -80,6 +80,7 @@ def handler(event, context):
 
 def normalize_record(data):
     now = datetime.now(timezone.utc).isoformat()
+    notes = build_notes(data)
     record = {
         "timestamp": now,
         "date": clean_text(data.get("date")) or now[:10],
@@ -95,7 +96,7 @@ def normalize_record(data):
         "vlies_m": to_float(data.get("vlies_m")),
         "support_temp_c": to_float(data.get("support_temp_c")),
         "hours": to_float(data.get("hours")),
-        "notes": clean_text(data.get("notes")),
+        "notes": notes,
         "suva_psa": to_bool(data.get("suva_psa")),
         "suva_meteo": to_bool(data.get("suva_meteo")),
         "suva_fire": to_bool(data.get("suva_fire")),
@@ -116,9 +117,36 @@ def validate_record(record):
         return "Temperatura supporto sotto soglia SIA 271."
     if not (record["suva_psa"] and record["suva_meteo"] and record["suva_fire"]):
         return "Checklist SUVA incompleta."
+    if "Brenner chiuso: no" in record["notes"]:
+        return "Brenner non confermato chiuso."
+    if "Linee vita OK: no" in record["notes"]:
+        return "Linee vita non confermate."
     if record["ml"] <= 0 and record["vlies_m"] <= 0:
         return "Quantita lavorata mancante."
     return None
+
+
+def build_notes(data):
+    base = clean_text(data.get("notes"))
+    brenner_closed = to_bool(data.get("brenner_closed"))
+    linee_vita_ok = to_bool(data.get("linee_vita_ok"))
+    photo_name = clean_text(data.get("joint_photo_name")) or "non allegata"
+    stock = data.get("van_stock") if isinstance(data.get("van_stock"), dict) else {}
+    stock_text = " ".join(
+        [
+            f"MAT001={to_float(stock.get('MAT001'))}kg",
+            f"MAT002={to_float(stock.get('MAT002'))}g",
+            f"CON001={to_float(stock.get('CON001'))}pz",
+        ]
+    )
+    details = [
+        base,
+        f"Brenner chiuso: {'si' if brenner_closed else 'no'}",
+        f"Linee vita OK: {'si' if linee_vita_ok else 'no'}",
+        f"Foto giunto: {photo_name}",
+        f"Inventario furgone: {stock_text}",
+    ]
+    return clean_text(" | ".join(part for part in details if part))
 
 
 def to_float(value):

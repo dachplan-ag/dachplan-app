@@ -12,6 +12,7 @@ let timerStart = null;
 let timerInterval = null;
 let financeChart = null;
 let cachedReports = [];
+const furgoneStock = { MAT001: 250, MAT002: 15000, CON001: 15 };
 
 document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".decimal-input").forEach((input) => {
@@ -112,6 +113,8 @@ function validateForm() {
   if (!document.getElementById("chk-psa").checked) errors.push("PSA obbligatorio non confermato.");
   if (!document.getElementById("chk-meteo").checked) errors.push("Meteo SIA 271 non confermato.");
   if (!document.getElementById("chk-fiamma").checked) errors.push("Protezione fiamma non confermata.");
+  if (!document.getElementById("chk-brenner").checked) errors.push("Brenner non confermato chiuso.");
+  if (!document.getElementById("chk-linee-vita").checked) errors.push("Linee vita non confermate.");
   if (temp < 5) errors.push("Temperatura supporto sotto soglia SIA 271.");
   if (toNumber(document.getElementById("op-ml").value) <= 0 && toNumber(document.getElementById("op-vlies").value) <= 0) errors.push("Inserire metri lineari, pezzi o telo.");
   return errors;
@@ -139,6 +142,7 @@ async function submitForm(event) {
     });
     const data = await response.json();
     if (!response.ok || !data.ok) throw new Error(data.error || "Invio non riuscito");
+    updateInventory(payload);
     status.textContent = "Registrazione completata e normalizzata su 22 colonne.";
     status.className = "text-xs text-emerald-400";
     cachedReports.unshift(data.record || payload);
@@ -175,11 +179,32 @@ function buildPayload() {
     suva_psa: document.getElementById("chk-psa").checked,
     suva_meteo: document.getElementById("chk-meteo").checked,
     suva_fire: document.getElementById("chk-fiamma").checked,
+    brenner_closed: document.getElementById("chk-brenner").checked,
+    linee_vita_ok: document.getElementById("chk-linee-vita").checked,
+    joint_photo_name: document.getElementById("foto-giunto").files[0]?.name || "",
+    van_stock: { ...furgoneStock },
     sia_118: true,
     sia_271: temp >= 5,
     sia_312: true,
     status: temp >= 5 ? "validato" : "bloccato"
   };
+}
+
+function updateInventory(payload) {
+  const kgResina = payload.ml * 2.5;
+  furgoneStock.MAT001 = Math.max(0, roundStock(furgoneStock.MAT001 - kgResina));
+  if (payload.system === "2K") {
+    furgoneStock.MAT002 = Math.max(0, roundStock(furgoneStock.MAT002 - kgResina * 20));
+  }
+  furgoneStock.CON001 = Math.max(0, furgoneStock.CON001 - Math.ceil(payload.ml / 10));
+  document.getElementById("lbl-mat001").textContent = `${furgoneStock.MAT001} kg`;
+  document.getElementById("lbl-mat002").textContent = `${furgoneStock.MAT002} g`;
+  document.getElementById("lbl-con001").textContent = `${furgoneStock.CON001} pz`;
+  payload.van_stock = { ...furgoneStock };
+}
+
+function roundStock(value) {
+  return Math.round(value * 100) / 100;
 }
 
 async function loadReports() {
