@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="it-CH" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#020617">
+  <title>DachPlan OS - Dashboard Flachdach</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased">
+  <div class="min-h-screen flex flex-col">
+    <header class="border-b border-slate-800 bg-slate-900/95 backdrop-blur px-4 sm:px-6 py-4 flex flex-col lg:flex-row gap-4 lg:items-center lg:justify-between sticky top-0 z-50 shadow-md">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl font-black tracking-wider text-amber-500">DACHPLAN <span class="text-white font-light">OS</span></span>
+        <span class="text-xs font-mono bg-slate-800 text-gray-300 px-2 py-0.5 rounded-full border border-slate-700">v2026.2.5</span>
+      </div>
+      <div class="grid grid-cols-3 gap-2 bg-slate-950 p-1 rounded-lg border border-slate-800 shadow-inner">
+        <button onclick="switchRole('operaio')" id="btn-operaio" class="px-3 sm:px-4 py-3 rounded-md text-[11px] sm:text-xs font-mono font-bold bg-amber-500 text-slate-950 transition-all">1. OPERAIO</button>
+        <button onclick="switchRole('bauleiter')" id="btn-bauleiter" class="px-3 sm:px-4 py-3 rounded-md text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white transition-all">2. BAULEITER</button>
+        <button onclick="switchRole('admin')" id="btn-admin" class="px-3 sm:px-4 py-3 rounded-md text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white transition-all">3. ADMIN</button>
+      </div>
+    </header>
+
+    <main class="flex-1 p-4 sm:p-6 max-w-7xl mx-auto w-full space-y-6">
+      <section id="view-operaio" class="space-y-6">
+        <div class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl">
+          <div class="border-b border-slate-800 pb-3 mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+            <div>
+              <h1 class="text-xl font-bold tracking-tight">Inserimento Rapido Lavori sul Tetto</h1>
+              <p class="text-xs text-slate-300 mt-0.5">Nessun codice richiesto, clicca ed invia</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 min-w-40">
+              <button type="button" id="btn-1k" onclick="setSystemLocal('1K')" class="px-4 py-3 bg-amber-500 text-slate-950 font-bold rounded-lg text-xs font-mono">1K</button>
+              <button type="button" id="btn-2k" onclick="setSystemLocal('2K')" class="px-4 py-3 bg-slate-800 text-slate-300 font-bold rounded-lg text-xs font-mono border border-slate-700">2K</button>
+            </div>
+          </div>
+
+          <form onsubmit="submitForm(event)" class="space-y-6">
+            <input type="hidden" id="op-sistema" value="1K">
+            <div>
+              <label class="block text-xs uppercase tracking-wider font-mono text-amber-400 mb-2">Cosa hai sigillato oggi? (Lista Fissa)</label>
+              <select id="op-oggetto" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-lg font-bold text-lg text-white focus:ring-2 focus:ring-amber-500 focus:outline-none">
+                <option value="1">1. Fenster / Türe</option>
+                <option value="2">2. Anschluss Dachpappe -> Beton</option>
+                <option value="3">3. Ablauf</option>
+                <option value="4">4. Notablauf</option>
+                <option value="5">5. Anschluss Dachpappe -> Blech</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <label class="block">
+                <span class="block text-xs uppercase tracking-wider font-mono text-slate-300 mb-1">Quantità (ml lavorati o pezzi montati)</span>
+                <input type="number" id="op-quantita" value="10" min="0" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-lg font-black text-center text-2xl text-white">
+              </label>
+              <label class="block">
+                <span class="block text-xs uppercase tracking-wider font-mono text-slate-300 mb-1">Rotolo FLK-Vlies Consumato (m)</span>
+                <input type="number" id="op-vlies" value="0" min="0" class="w-full bg-slate-950 border border-slate-700 p-4 rounded-lg font-black text-center text-2xl text-white">
+              </label>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-lg border border-red-900/60 space-y-3">
+              <h2 class="text-xs font-mono text-red-300 uppercase tracking-widest">Checkpoint di sicurezza obbligatorio (prevenzione incidenti SUVA)</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <label class="bg-slate-900 p-3 rounded border border-slate-800 flex justify-between items-center gap-3">
+                  <span class="text-xs font-medium text-slate-200">Brenner spento/chiuso?</span>
+                  <input type="checkbox" id="check-brenner" required class="w-7 h-7 accent-amber-500 cursor-pointer">
+                </label>
+                <label class="bg-slate-900 p-3 rounded border border-slate-800 flex justify-between items-center gap-3">
+                  <span class="text-xs font-medium text-slate-200">Parapetto/linee vita ok?</span>
+                  <input type="checkbox" id="check-suva" required class="w-7 h-7 accent-amber-500 cursor-pointer">
+                </label>
+                <label class="bg-slate-900 p-3 rounded border border-slate-800 flex justify-between items-center gap-3">
+                  <span class="text-xs font-medium text-slate-200">Saldature controllate?</span>
+                  <input type="checkbox" id="check-saldature" required class="w-7 h-7 accent-amber-500 cursor-pointer">
+                </label>
+              </div>
+            </div>
+
+            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-5 rounded-xl text-xl shadow-lg tracking-wide uppercase active:scale-[0.99] transition-all">Invia aggiornamento dal tetto</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-bauleiter" class="space-y-6 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl space-y-5">
+            <h2 class="text-sm font-mono tracking-widest text-amber-400 uppercase border-b border-slate-800 pb-2">Telemetria live stock & livelli carburante</h2>
+            <div id="fuelGauges" class="space-y-4"></div>
+          </div>
+
+          <aside class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl space-y-4">
+            <h2 class="text-sm font-mono tracking-widest text-amber-400 uppercase">Ultimi carichi integrati</h2>
+            <div class="space-y-3 text-sm">
+              <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+                <p class="text-slate-300">Oggi, 08:15</p>
+                <p class="font-bold text-white">+12 pz MAT005 Primer Metallo</p>
+                <p class="text-xs text-slate-400">Fornitore Sita</p>
+              </div>
+              <div class="bg-slate-950 border border-slate-800 rounded-lg p-3">
+                <p class="text-slate-300">Ieri, 14:30</p>
+                <p class="font-bold text-white">+500 kg MAT001 Resina FLK</p>
+                <p class="text-xs text-slate-400">Fornitore Soprema CH</p>
+              </div>
+            </div>
+            <div>
+              <div class="flex justify-between text-sm font-bold mb-2"><span>Stato avanzamento cantiere</span><span>65%</span></div>
+              <div class="w-full bg-slate-950 h-5 rounded-full border border-slate-800 overflow-hidden">
+                <div class="bg-emerald-500 h-full" style="width:65%"></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl">
+            <h2 class="text-sm font-mono tracking-widest text-amber-400 uppercase mb-4">Calcolatore consumo settimanale</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label class="text-xs text-slate-300">Resina kg/giorno<input id="calc-resina" type="number" value="25" oninput="updateConsumption()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-lg font-bold text-white"></label>
+              <label class="text-xs text-slate-300">Catalizzatore g/giorno<input id="calc-cat" type="number" value="500" oninput="updateConsumption()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-lg font-bold text-white"></label>
+              <label class="text-xs text-slate-300">Vlies m/giorno<input id="calc-vlies" type="number" value="32" oninput="updateConsumption()" class="mt-1 w-full bg-slate-950 border border-slate-700 rounded-lg p-3 text-lg font-bold text-white"></label>
+            </div>
+            <div id="weeklyOutput" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+          </div>
+
+          <div class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl">
+            <h2 class="text-sm font-mono tracking-widest text-amber-400 uppercase mb-4">Motore decisionale rapido: cemento umido (&gt; 4%)</h2>
+            <p class="text-sm text-slate-300 mb-4">Il cliente esige massima velocità e rifiuta tempi morti di asciugatura naturale. Seleziona una contromisura a norma SIA 271.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button onclick="triggerSoluzione('A')" class="bg-slate-950 border border-slate-700 hover:border-amber-500 rounded-lg p-4 text-left">
+                <b class="text-white">A. Strato di compensazione</b><span class="block text-xs text-slate-300 mt-1">+1 giorno, CHF 8.00/m²</span>
+              </button>
+              <button onclick="triggerSoluzione('B')" class="bg-slate-950 border border-slate-700 hover:border-amber-500 rounded-lg p-4 text-left">
+                <b class="text-white">B. Barriera epossidica 2K</b><span class="block text-xs text-slate-300 mt-1">+4 ore, CHF 15.00/m²</span>
+              </button>
+              <button onclick="triggerSoluzione('C')" class="bg-slate-950 border border-slate-700 hover:border-amber-500 rounded-lg p-4 text-left">
+                <b class="text-white">C. Sistema PMMA rapido</b><span class="block text-xs text-slate-300 mt-1">0 ore, CHF 28.00/m²</span>
+              </button>
+            </div>
+            <div id="soluzioneOutput" class="hidden mt-4 bg-amber-500 text-slate-950 rounded-lg p-4 text-sm font-bold"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-admin" class="space-y-6 hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl">
+            <p class="text-xs uppercase tracking-widest text-slate-300 font-mono">Margine di guadagno netto aziendale</p>
+            <p class="text-3xl font-black text-emerald-400 mt-2">CHF 20'975.00</p>
+            <p class="text-sm text-slate-300">32% del totale</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl">
+            <p class="text-xs uppercase tracking-widest text-slate-300 font-mono">Trattenuta di garanzia bloccata (SIA 118)</p>
+            <p class="text-3xl font-black text-amber-400 mt-2">CHF 7'064.33</p>
+            <p class="text-sm text-slate-300">Capitale vincolato</p>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl">
+            <p class="text-xs uppercase tracking-widest text-slate-300 font-mono">Interscambio dati digitale (SIA 451)</p>
+            <label class="mt-3 border border-dashed border-slate-600 bg-slate-950 rounded-lg p-4 block text-sm text-slate-200 cursor-pointer">
+              Rilascia qui il file d'asta .sia / .crb dell'Architetto
+              <input type="file" accept=".sia,.crb" class="sr-only" onchange="showImportStatus(this)">
+            </label>
+            <p id="importStatus" class="text-xs text-slate-400 mt-2">L'algoritmo integrerà i listini scontati OCI del fornitore.</p>
+          </div>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 p-5 sm:p-6 rounded-xl shadow-xl">
+          <h2 class="text-sm font-mono tracking-widest text-amber-400 uppercase mb-4">Controlling ore totali - Earned Value Management (EVM)</h2>
+          <div class="h-72"><canvas id="evmChart"></canvas></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const activeBtn = "px-3 sm:px-4 py-3 rounded-md text-[11px] sm:text-xs font-mono font-bold bg-amber-500 text-slate-950 transition-all";
+    const idleBtn = "px-3 sm:px-4 py-3 rounded-md text-[11px] sm:text-xs font-mono font-bold text-slate-300 hover:text-white transition-all";
+    const materials = [
+      { id: "MAT001", name: "Resina FLK", current: 45, max: 250, unit: "kg", weekly: 125, days: 1.5, danger: true },
+      { id: "MAT002", name: "Catalizzatore (2K)", current: 12400, max: 15000, unit: "g", weekly: 2500, days: 24.8 },
+      { id: "MAT003", name: "FLK-Vlies", current: 180, max: 260, unit: "m", weekly: 160, days: 5.6 }
+    ];
+
+    function switchRole(role) {
+      ["operaio", "bauleiter", "admin"].forEach((name) => {
+        document.getElementById("view-" + name).classList.toggle("hidden", name !== role);
+        document.getElementById("btn-" + name).className = name === role ? activeBtn : idleBtn;
+      });
+      if (role === "admin") requestAnimationFrame(drawChart);
+    }
+
+    function setSystemLocal(sys) {
+      document.getElementById("op-sistema").value = sys;
+      document.getElementById("btn-1k").className = sys === "1K" ? "px-4 py-3 bg-amber-500 text-slate-950 font-bold rounded-lg text-xs font-mono" : "px-4 py-3 bg-slate-800 text-slate-300 font-bold rounded-lg text-xs font-mono border border-slate-700";
+      document.getElementById("btn-2k").className = sys === "2K" ? "px-4 py-3 bg-amber-500 text-slate-950 font-bold rounded-lg text-xs font-mono" : "px-4 py-3 bg-slate-800 text-slate-300 font-bold rounded-lg text-xs font-mono border border-slate-700";
+    }
+
+    function fuelColor(pct, danger) {
+      if (danger || pct < 25) return "bg-red-500";
+      if (pct < 50) return "bg-amber-500";
+      return "bg-emerald-500";
+    }
+
+    function renderFuelGauges() {
+      document.getElementById("fuelGauges").innerHTML = materials.map((item) => {
+        const pct = Math.round((item.current / item.max) * 100);
+        const border = item.danger ? "border-red-900/60" : "border-slate-800";
+        const status = item.danger ? "SOTTO SOGLIA" : "Sicuro";
+        return `
+          <div class="bg-slate-950 p-4 rounded-lg border ${border}">
+            <div class="flex justify-between items-center mb-1 text-sm font-bold gap-3">
+              <span class="${item.danger ? "text-red-300" : "text-emerald-300"}">${item.id} - ${item.name} (${status})</span>
+              <span class="text-slate-100 whitespace-nowrap">${item.current.toLocaleString("de-CH")} ${item.unit} / ${item.max.toLocaleString("de-CH")} ${item.unit}</span>
+            </div>
+            <div class="w-full bg-slate-900 h-5 rounded-full border border-slate-800 overflow-hidden shadow-inner">
+              <div class="${fuelColor(pct, item.danger)} h-full rounded-full transition-all duration-500" style="width:${pct}%"></div>
+            </div>
+            <div class="flex justify-between text-[11px] font-mono mt-2 text-slate-300 gap-3">
+              <span>Consumo settimanale: <b class="text-white">${item.weekly.toLocaleString("de-CH")} ${item.unit}</b></span>
+              <span class="${item.danger ? "text-red-300 font-bold" : "text-emerald-300"}">Esaurimento: ${item.days} giorni di lavoro</span>
+            </div>
+          </div>`;
+      }).join("");
+    }
+
+    function updateConsumption() {
+      const resina = Number(document.getElementById("calc-resina").value || 0) * 5;
+      const cat = Number(document.getElementById("calc-cat").value || 0) * 5;
+      const vlies = Number(document.getElementById("calc-vlies").value || 0) * 5;
+      document.getElementById("weeklyOutput").innerHTML = [
+        ["Resina", resina, "kg"],
+        ["Catalizzatore", cat, "g"],
+        ["FLK-Vlies", vlies, "m"]
+      ].map(([name, value, unit]) => `<div class="bg-slate-950 border border-slate-800 rounded-lg p-4"><p class="text-xs text-slate-300">${name} / settimana</p><p class="text-2xl font-black text-white">${value.toLocaleString("de-CH")} ${unit}</p></div>`).join("");
+    }
+
+    function triggerSoluzione(tipo) {
+      const out = document.getElementById("soluzioneOutput");
+      const testi = {
+        A: "STRATEGIA OPERATIVA A: posa di Soprema Elastovap perforato su barriera vapore. Generata voce variante CPN 364 (+CHF 8.00/m²). Ritardo inserito nel Gantt: +1 giorno.",
+        B: "STRATEGIA OPERATIVA B: applicazione di primer epossidico bicomponente blocca-umidità. Scarico stock resine 2K (+CHF 15.00/m²). Asciugatura forzata prima della posa FLK: 4 ore.",
+        C: "STRATEGIA OPERATIVA C: conversione in sistema monolitico PMMA rapido bagnato-su-bagnato tollerante fino all'8% di umidità residua. Tempo perso: 0 ore. Variante automatica per DL: +CHF 28.00/m²."
+      };
+      out.classList.remove("hidden");
+      out.innerText = testi[tipo];
+    }
+
+    async function submitForm(e) {
+      e.preventDefault();
+      const payload = {
+        oggetto_id: document.getElementById("op-oggetto").value,
+        sistema: document.getElementById("op-sistema").value,
+        quantita: document.getElementById("op-quantita").value,
+        vlies_m: document.getElementById("op-vlies").value,
+        glass_vlies_m: 0,
+        sicurezza_suva: {
+          brenner: document.getElementById("check-brenner").checked,
+          linee_vita: document.getElementById("check-suva").checked,
+          saldature: document.getElementById("check-saldature").checked
+        }
+      };
+      try {
+        const res = await fetch("/api/main", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
+        const data = await res.json();
+        alert("Sincronizzato Cloud: " + (data.notifica_controlling || "aggiornamento ricevuto"));
+      } catch (err) {
+        localStorage.setItem("dachplan_offline_payload", JSON.stringify({ payload, savedAt: new Date().toISOString() }));
+        alert("Dati salvati offline nel LocalStorage del tablet.");
+      }
+    }
+
+    function showImportStatus(input) {
+      const file = input.files && input.files[0];
+      document.getElementById("importStatus").textContent = file ? `File ${file.name} pronto per estrazione offerta reale.` : "Nessun file selezionato.";
+    }
+
+    let evmChart;
+    function drawChart() {
+      const canvas = document.getElementById("evmChart");
+      if (!canvas || evmChart) return;
+      evmChart = new Chart(canvas.getContext("2d"), {
+        type: "line",
+        data: {
+          labels: ["G1", "G2", "G3", "G4", "G5"],
+          datasets: [
+            { label: "Budget CPN", data: [42, 85, 128, 171, 214], borderColor: "#f59e0b", backgroundColor: "rgba(245,158,11,.12)", tension: .35, fill: true },
+            { label: "Ore Reali", data: [38, 92, 121, 188, 236], borderColor: "#10b981", backgroundColor: "rgba(16,185,129,.1)", tension: .35, fill: true }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { labels: { color: "#e2e8f0" } } },
+          scales: {
+            x: { ticks: { color: "#cbd5e1" }, grid: { color: "rgba(148,163,184,.15)" } },
+            y: { ticks: { color: "#cbd5e1" }, grid: { color: "rgba(148,163,184,.15)" } }
+          }
+        }
+      });
+    }
+
+    renderFuelGauges();
+    updateConsumption();
+  </script>
+</body>
+</html>
