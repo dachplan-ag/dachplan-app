@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it-CH" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>DachPlan OS — Dashboard Flachdach</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-gray-950 text-gray-100 font-sans antialiased">
+    <div class="min-h-screen flex flex-col">
+        <header class="border-b border-gray-800 bg-gray-900/50 backdrop-blur px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl font-black tracking-wider text-amber-500">DACHPLAN <span class="text-white font-light">OS</span></span>
+                <span class="text-xs font-mono bg-gray-800 text-gray-400 px-2 py-0.5 rounded-full border border-gray-700">v2026.2.1</span>
+            </div>
+            <span id="dbStatus" class="flex items-center gap-2 text-emerald-400 font-medium text-sm">
+                <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span> Netlify DB: Connessione…
+            </span>
+        </header>
+
+        <main class="flex-1 grid grid-cols-1 xl:grid-cols-3 gap-6 p-6">
+            <section class="xl:col-span-2 space-y-6">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
+                    <div class="flex items-center justify-between mb-6 border-b border-gray-800 pb-4">
+                        <div>
+                            <h2 class="text-xl font-bold tracking-tight">Rapporto Giornaliero FLK &amp; Montaggi</h2>
+                            <p class="text-xs text-gray-400 mt-1">Compilazione sul tetto a norma SIA 271 / 118 / 312</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" id="btnSystem1K" onclick="setSystem('1K')" class="px-4 py-2 rounded-lg font-mono font-bold text-sm transition-all border border-amber-500 bg-amber-500 text-gray-950">SYSTEM: 1K</button>
+                            <button type="button" id="btnSystem2K" onclick="setSystem('2K')" class="px-4 py-2 rounded-lg font-mono font-bold text-sm transition-all border border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600">SYSTEM: 2K</button>
+                        </div>
+                    </div>
+
+                    <form id="formCantiere" class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-mono tracking-widest text-amber-500 uppercase mb-2">Seleziona Oggetto FLK (Ordine Fisso Obbligatorio)</label>
+                            <select id="selectOggetto" onchange="handleObjectChange()" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-4 font-medium text-white text-lg cursor-pointer">
+                                <option value="1">1. Fenster / Türe</option>
+                                <option value="2">2. Anschluss Dachpappe → Beton</option>
+                                <option value="3">3. Ablauf</option>
+                                <option value="4">4. Notablauf</option>
+                                <option value="5">5. Anschluss Dachpappe → Blech</option>
+                                <option value="6">6. Anschluss Holz → Dachpappe</option>
+                                <option value="7">7. Anschluss Dachpappe → Kunststoffbahn</option>
+                                <option value="8">8. Lüftrohr</option>
+                                <option value="9">9. Kontrollstütze</option>
+                                <option value="10">10. Dachaufstieg</option>
+                                <option value="11">11. Treppe / Zugang Dach</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-mono text-gray-400 uppercase mb-2">Quantità ml / pz</label>
+                                <input type="number" id="inputQuantita" required min="0" step="0.1" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-4 text-lg font-bold text-white" value="10">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-gray-400 uppercase mb-2">FLK-Vlies (m)</label>
+                                <input type="number" id="vliesM" required min="0" step="0.1" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-4 text-lg font-bold text-white" value="0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-mono text-gray-400 uppercase mb-2">Glass-Vlies (m)</label>
+                                <input type="number" id="glassM" required min="0" step="0.1" class="w-full bg-gray-950 border border-gray-800 rounded-lg p-4 text-lg font-bold text-white" value="0">
+                            </div>
+                        </div>
+
+                        <label class="flex items-center gap-3 p-4 rounded-lg border border-gray-800 bg-gray-950/50 cursor-pointer select-none">
+                            <input type="checkbox" id="montaggioScarichi" class="h-5 w-5 accent-amber-500">
+                            <span class="text-sm font-medium">Montaggio Scarichi <span class="text-gray-500 font-mono text-xs">(Schlagdübel + Fassaden-Dübel + Flexscheibe)</span></span>
+                        </label>
+
+                        <div id="boxCondizionale" class="p-4 rounded-lg border border-gray-800 bg-gray-950/50 text-xs font-mono hidden"></div>
+
+                        <button type="submit" id="btnSubmit" class="w-full bg-amber-500 hover:bg-amber-400 text-gray-950 font-black tracking-wide text-lg py-5 px-6 rounded-xl transition-all shadow-lg disabled:opacity-60">
+                            INVIA REPORT E AGGIORNA MAGAZZINO AUTOMATICO
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl">
+                    <h3 class="text-sm font-mono tracking-widest text-gray-400 uppercase mb-4">Controlling Avanzato — Earned Value Management (EVM)</h3>
+                    <div class="h-64"><canvas id="evmChart"></canvas></div>
+                </div>
+            </section>
+
+            <section class="space-y-6">
+                <div class="bg-gray-900 border border-red-900/50 rounded-xl p-6 shadow-xl">
+                    <h3 class="text-xs font-mono tracking-widest text-red-400 uppercase mb-3 flex items-center gap-2">⚠️ Alert System &amp; Ordini Automatici</h3>
+                    <div id="alertBox" class="space-y-3">
+                        <div class="bg-red-950/30 border border-red-900/50 p-4 rounded-lg text-sm text-red-200">
+                            <span class="font-bold">SIA 118 Cash-Flow Risk:</span> 10% di trattenuta di garanzia applicata: <span class="font-mono text-amber-400 font-bold">CHF 7'064.33</span>. Richiedere Garantieschein bancario.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl space-y-4">
+                    <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+                        <h3 class="text-sm font-bold tracking-tight">Stato Stock Automatico (onStockChange)</h3>
+                        <button type="button" onclick="loadInventory()" class="text-xs font-mono text-gray-400 hover:text-amber-400">↻ Aggiorna</button>
+                    </div>
+                    <div id="stockContainer" class="space-y-2 text-xs font-mono max-h-96 overflow-y-auto">
+                        <div class="text-gray-500 p-3">Caricamento magazzino…</div>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 shadow-xl space-y-4">
+                    <h3 class="text-sm font-bold tracking-tight border-b border-gray-800 pb-2">Ordini Automatici Fornitori</h3>
+                    <div id="ordersContainer" class="space-y-2 text-xs font-mono max-h-72 overflow-y-auto">
+                        <div class="text-gray-500 p-3">Nessun ordine automatico.</div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
