@@ -1,0 +1,13 @@
+{
+  "name": "dachplan-os",
+  "version": "2026.2.1",
+  "private": true,
+  "type": "module",
+  "description": "DachPlan OS — Magazzino Automatico & Interfaccia Operaio (SIA 118 / 271 / 312)",
+  "dependencies": {
+    "@netlify/database": "^1.1.0"
+  },
+  "devDependencies": {
+    "@netlify/functions": "^4.3.0"
+  }
+}
