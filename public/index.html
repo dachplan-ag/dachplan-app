@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="it-CH" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DachPlan OS - Sottomenu Dinamici CPN</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased">
+  <div class="min-h-screen flex flex-col">
+    <header class="border-b border-slate-800 bg-slate-900 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
+      <div class="flex items-center gap-2">
+        <span class="text-xl font-black tracking-wider text-amber-500">DACHPLAN</span>
+        <span class="text-sm font-light text-slate-300">OS · Sottomenu Live</span>
+      </div>
+      <div class="flex items-center gap-2 text-xs text-slate-400">
+        <span class="hidden sm:inline">CHPLAN AG · Controllo Sfridi SIA 271</span>
+        <span id="sync-badge" class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-slate-800 border border-slate-700 font-bold text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>DB Connesso</span>
+        </span>
+      </div>
+    </header>
+
+    <nav class="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-2">
+      <div class="flex gap-2">
+        <button id="tab-operaio" onclick="switchTab('operaio')" class="flex-1 sm:flex-none sm:px-4 px-2 py-2 rounded-lg text-xs font-mono font-bold bg-amber-500 text-slate-950 shadow-md">1. OPERAIO · REGISTRAZIONE</button>
+        <button id="tab-bauleiter" onclick="switchTab('bauleiter')" class="flex-1 sm:flex-none sm:px-4 px-2 py-2 rounded-lg text-xs font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700">2. BAULEITER · VERIFICA</button>
+        <button id="tab-admin" onclick="switchTab('admin')" class="flex-1 sm:flex-none sm:px-4 px-2 py-2 rounded-lg text-xs font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700">3. ADMIN · FINANZE</button>
+      </div>
+    </nav>
+
+    <main class="flex-1 px-4 sm:px-6 py-4 max-w-7xl mx-auto w-full space-y-6">
+      <section id="view-operaio" class="space-y-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <div>
+              <h2 class="text-lg font-bold text-amber-500">Seleziona la Categoria e Avvia il Lavoro</h2>
+              <p class="text-xs text-slate-400 mt-1 font-mono text-[11px]">Sincronizzato con i fattori di sormonto reali CPN.</p>
+            </div>
+            <div class="px-4 py-2 rounded-lg bg-slate-950 border border-slate-800 text-center shadow-inner min-w-[120px]">
+              <div class="text-[10px] uppercase text-slate-500 font-mono">Durata</div>
+              <div id="job-timer" class="text-2xl font-black text-emerald-400 font-mono">00:00:00</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="flex flex-col gap-2">
+              <button id="btn-start" onclick="startMansione()" class="w-full py-4 bg-emerald-500 text-slate-950 font-black rounded-xl text-sm shadow-md hover:bg-emerald-400">START MANSIONE</button>
+              <button id="btn-stop" onclick="stopMansione()" disabled class="w-full py-4 bg-slate-800 text-slate-500 font-black rounded-xl text-sm border border-slate-700 cursor-not-allowed">STOP MANSIONE</button>
+            </div>
+
+            <div class="sm:col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-center">
+              <h3 class="text-xs font-mono uppercase text-slate-400 mb-2 tracking-wider">Attrezzi CPN richiesti per la sotto-fase attiva:</h3>
+              <div id="attrezzi-richiesti-box" class="flex flex-wrap gap-2 text-xs font-mono text-slate-300">
+                <span class="text-slate-500 italic">Seleziona una macro-categoria per caricare l'attrezzatura...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="box-form-operaio" class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-2xl space-y-4 hidden">
+          <h3 class="text-base font-bold text-amber-500 border-b border-slate-800 pb-2">Chiusura Mansione Strutturata</h3>
+
+          <form id="form-operaio-core" class="space-y-4" onsubmit="submitOperaio(event)">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-slate-400 font-mono mb-1 uppercase tracking-wider">1. Macro-Categoria di Lavoro</label>
+                <select id="op-macro" onchange="aggiornaSottomenuDinamico()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-bold text-white text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                  <option value="BITUMEN">BITUMEN (Tetti Bituminosi)</option>
+                  <option value="FLK">FLK (Impermeabilizzazioni Liquide)</option>
+                  <option value="KUNSTSTOFFBAHN">KUNSTSTOFFBAHN (Manti Sintetici PVC/FPO)</option>
+                  <option value="BEGRUENUNG">BEGRUENUNG & FINITURE (Tetti Verdi/Zavorre)</option>
+                  <option value="LATTONERIA">MONTAGGIO SCARICHI & LATTONERIA</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs text-slate-400 font-mono mb-1 uppercase tracking-wider">2. Sotto-Fase Specifica della Mansione</label>
+                <select id="op-sottofase" onchange="cambiaSottofase()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-bold text-amber-500 text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none"></select>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label id="lbl-quantita" class="block text-xs text-slate-400 font-mono mb-1 uppercase">Metri da Disegno / Capitolato</label>
+                <input id="op-quantita" type="number" min="0" step="0.1" value="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-white">
+              </div>
+              <div>
+                <label id="lbl-reale" class="block text-xs text-slate-400 font-mono mb-1 uppercase">Materiale Reale Tagliato / Srotolato</label>
+                <input id="op-materiale-reale" type="number" min="0" step="0.1" value="12" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-white">
+              </div>
+              <div>
+                <label class="block text-xs text-amber-500 font-mono mb-1 uppercase">Temp. Supporto Laser (C) [SIA 271]</label>
+                <input id="op-temp" type="number" value="15" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-amber-500">
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs text-slate-400 font-mono mb-1 uppercase">Ore Impiegate (Calcolate dal Timer)</label>
+                <input id="op-ore" type="number" step="0.01" readonly class="w-full bg-slate-950/50 border border-slate-800 rounded-lg p-3 font-mono font-bold text-center text-slate-400 cursor-not-allowed">
+              </div>
+              <div>
+                <label class="block text-xs text-slate-400 font-mono mb-1 uppercase">Note / Segnalazione Ostacoli Direzione Lavori</label>
+                <input id="op-note" type="text" placeholder="Es: Sottofondo armato ruvido, crepe, richieste extra..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white">
+              </div>
+            </div>
+
+            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-xs font-mono">
+              <h4 class="text-red-400 font-bold uppercase tracking-wider flex items-center gap-1">Safety Checkpoint Obbligatorio SUVA</h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <label class="flex justify-between items-center bg-slate-900 p-2.5 rounded border border-slate-800 cursor-pointer"><span>Brenner/Gas Chiuso?</span><input type="checkbox" id="suva-brenner" required class="w-5 h-5 accent-amber-500"></label>
+                <label class="flex justify-between items-center bg-slate-900 p-2.5 rounded border border-slate-800 cursor-pointer"><span>Parapetti / Bordi OK?</span><input type="checkbox" id="suva-bordi" required class="w-5 h-5 accent-amber-500"></label>
+                <label class="flex justify-between items-center bg-slate-900 p-2.5 rounded border border-slate-800 cursor-pointer"><span>Foto Giunto Eseguita?</span><input type="checkbox" id="suva-foto" required class="w-5 h-5 accent-amber-500"></label>
+              </div>
+            </div>
+
+            <div id="calcolo-preview" class="bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs font-mono text-slate-300"></div>
+            <button id="btn-submit" class="w-full py-4 bg-amber-500 text-slate-950 font-black rounded-xl text-sm shadow-md hover:bg-amber-400">TRASMETTI REPORT E CALCOLA SPRECO</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-bauleiter" class="hidden space-y-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="text-lg font-bold text-amber-500">Bauleiter · Verifica Rapporti</h2>
+              <p class="text-xs text-slate-400 font-mono mt-1">Controllo tecnico delle righe sincronizzate su DachPlan Diario.</p>
+            </div>
+            <button onclick="loadAudit()" class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200">AGGIORNA</button>
+          </div>
+          <div id="bauleiter-list" class="mt-4 space-y-3"></div>
+        </div>
+      </section>
+
+      <section id="view-admin" class="hidden space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><div class="text-xs text-slate-400 font-mono">Quantita</div><div id="kpi-quantita" class="text-2xl font-black">0</div></div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><div class="text-xs text-slate-400 font-mono">Spreco</div><div id="kpi-spreco" class="text-2xl font-black text-red-300">0%</div></div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><div class="text-xs text-slate-400 font-mono">Costo CHF</div><div id="kpi-costo" class="text-2xl font-black text-amber-300">0</div></div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4"><div class="text-xs text-slate-400 font-mono">Righe</div><div id="kpi-righe" class="text-2xl font-black text-emerald-300">0</div></div>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl overflow-x-auto">
+          <h2 class="text-lg font-bold text-amber-500 mb-4">Admin · Finanze e Sfridi SIA 118 / SIA 271</h2>
+          <table class="w-full text-xs text-left font-mono">
+            <thead class="text-slate-400 border-b border-slate-800">
+              <tr><th class="py-2">Data</th><th>Codice</th><th>Mansione</th><th>Categoria</th><th>Qta</th><th>Teorico</th><th>Reale</th><th>Spreco</th><th>Costo</th></tr>
+            </thead>
+            <tbody id="admin-table"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
