@@ -3,141 +3,118 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DachPlan OS – Controllo Sprechi e Sfridi</title>
+  <title>DachPlan OS – Solo Operaio & Magazzino</title>
   <script src="https://tailwindcss.com"></script>
-  <script src="https://jsdelivr.net"></script>
 </head>
+<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
+  <div class="min-h-screen flex flex-col max-w-xl mx-auto border-x border-slate-900 bg-slate-950">
 
-<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-900">
-  <div class="min-h-screen flex flex-col">
-
-    <!-- HEADER STRUTTURATO CHPLAN AG -->
-    <header class="border-b border-slate-800 bg-slate-900 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
+    <!-- HEADER IDALATO PER COPERTURA SOLARE -->
+    <header class="border-b border-slate-800 bg-slate-900 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
       <div class="flex items-center gap-2">
-        <span class="text-xl font-black tracking-wider text-amber-500">DACHPLAN</span>
-        <span class="text-sm font-light text-slate-300">OS · Cantiere Live</span>
+        <span class="text-lg font-black tracking-wider text-amber-500">CHPLAN AG</span>
+        <span class="text-xs font-light text-slate-400">DachPlan OS v3.0</span>
       </div>
-      <div class="flex items-center gap-2 text-xs text-slate-400 font-mono">
-        <span class="hidden sm:inline">CHPLAN AG · Riduzione Riflessi Sole</span>
-        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-950 border border-slate-800 text-emerald-400 font-bold">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Sincronizzato Cloud
-        </span>
-      </div>
+      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-950 border border-slate-800 text-emerald-400 text-[10px] font-mono font-bold shadow-inner">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Cloud Sincro
+      </span>
     </header>
 
-    <!-- BARRA NAVIGAZIONE A SCHEDE (TAB PER RUOLI) -->
-    <nav class="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-2 shadow-md">
-      <div class="flex gap-2 sm:gap-3">
-        <button id="tab-operaio" onclick="switchTab('operaio')" class="flex-1 sm:flex-none sm:px-4 px-2 py-3 rounded-lg text-xs sm:text-sm font-mono font-bold bg-amber-500 text-slate-950 shadow-md transition-all">
-          1. OPERAIO · FURGONE LIVE
-        </button>
-        <button id="tab-bauleiter" onclick="switchTab('bauleiter')" class="flex-1 sm:flex-none sm:px-4 px-2 py-3 rounded-lg text-xs sm:text-sm font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700 transition-all">
-          2. BAULEITER · TELEMETRIA
-        </button>
-        <button id="tab-admin" onclick="switchTab('admin')" class="flex-1 sm:flex-none sm:px-4 px-2 py-3 rounded-lg text-xs sm:text-sm font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700 transition-all">
-          3. ADMIN · COSTI & ASTE
-        </button>
-      </div>
-    </nav>
+    <!-- CONTAINER ATTIVITÀ OPERAIO -->
+    <main class="flex-1 p-4 space-y-5 overflow-y-auto">
 
-    <!-- CONTAINER CENTRALE -->
-    <main class="flex-1 px-4 sm:px-6 py-4 sm:py-6 max-w-7xl mx-auto w-full space-y-6">
-
-      <!-- ========================= RUOLO 1: OPERAIO ========================= -->
-      <section id="view-operaio" class="space-y-6">
-
-        <!-- CRONOMETRO ED ATTREZZATURA DINAMICA CPN -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-            <div>
-              <h2 class="text-lg font-bold text-amber-500">🎮 Ordine del Giorno – Modalità Gioco di Cantiere</h2>
-              <p class="text-xs text-slate-400 mt-1">Avvia il timer alla partenza, bloccalo a fine mansione. I materiali verranno scalati dal furgone.</p>
-            </div>
-            <div class="flex items-center gap-2">
-              <div class="px-4 py-2 rounded-lg bg-slate-950 border border-slate-800 text-center shadow-inner min-w-[130px]">
-                <div class="text-[10px] uppercase text-slate-500 font-mono tracking-wider font-bold">Tempo Attività</div>
-                <div id="job-timer" class="text-2xl font-black text-emerald-400 font-mono tracking-widest">00:00:00</div>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div class="sm:col-span-1 flex flex-col gap-3">
-              <button id="btn-start" onclick="startMansione()" class="w-full py-4 rounded-xl bg-emerald-500 text-slate-950 font-black text-base shadow-lg hover:bg-emerald-400 active:scale-[0.99] transition-all">
-                ▶ START MANSIONE
-              </button>
-              <button id="btn-stop" onclick="stopMansione()" disabled class="w-full py-4 rounded-xl bg-slate-800 text-slate-500 font-black text-base border border-slate-700 cursor-not-allowed transition-all">
-                ■ STOP MANSIONE
-              </button>
-            </div>
-
-            <!-- QUADRO ATTREZZI INIETTATO DA JAVASCRIPT -->
-            <div class="sm:col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-center">
-              <h3 class="text-xs font-mono uppercase text-slate-400 mb-3 tracking-widest font-bold">Attrezzi CPN necessari a bordo furgone per la sotto-fase attiva:</h3>
-              <div id="attrezzi-richiesti-box" class="flex flex-wrap gap-2 text-xs font-mono">
-                <!-- Caricamento dinamico tramite app.js basato sulla macro-categoria -->
-              </div>
-            </div>
-          </div>
+      <!-- MODULO 1: IL TIMER DEL CANTIERE -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl text-center space-y-3">
+        <div>
+          <h2 class="text-sm font-bold uppercase tracking-wider text-amber-500 font-mono">⏱️ CRONOMETRO ATTIVITÀ SUL TETTO</h2>
+          <p class="text-[11px] text-slate-400 mt-0.5">Avvia quando apri il rotolo o la latta, ferma quando hai sigillato.</p>
+        </div>
+        
+        <div id="job-timer" class="text-4xl font-black text-emerald-400 font-mono tracking-widest bg-slate-950 py-3 rounded-lg border border-slate-800 shadow-inner">
+          00:00:00
         </div>
 
-        <!-- FORM INPUT OPERAIO (APPARISCE DOPO IL BLOCCO DEL TIMER) -->
-        <div id="box-form-operaio" class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-2xl space-y-4 hidden">
-          <h3 class="text-base font-bold text-amber-500 border-b border-slate-800 pb-2">📥 Chiusura Lavori – Inserimento Parametri di Campo</h3>
-          
-          <form id="form-operaio-core" class="space-y-4" onsubmit="submitOperaio(event)">
-            
-            <!-- SOTTOMENU DINAMICI A 2 LIVELLI -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase tracking-wider">1. Macro-Categoria del Pacchetto</label>
-                <select id="op-macro" onchange="aggiornaSottomenuDinamico()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3.5 font-bold text-white text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none">
-                  <option value="BITUMEN">🔥 BITUMEN (Tetti Bituminosi)</option>
-                  <option value="FLK">💧 FLK (Impermeabilizzazioni Liquide)</option>
-                  <option value="KUNSTSTOFFBAHN">📐 KUNSTSTOFFBAHN (Manti Sintetici PVC/FPO)</option>
-                  <option value="BEGRUENUNG">🍀 BEGRÜNUNG & FINITURE (Tetti Verdi/Zavorre)</option>
-                  <option value="LATTONERIA">🛠️ MONTAGGIO SCARICHI & LATTONERIA</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase tracking-wider">2. Sotto-Fase Specifica della Mansione</label>
-                <select id="op-sottofase" onchange="cambiaSottofase()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3.5 font-bold text-amber-500 text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none">
-                  <!-- Caricato via app.js -->
-                </select>
-              </div>
-            </div>
+        <div class="flex gap-2">
+          <button id="btn-start" onclick="startTimerLive()" class="flex-1 py-4 bg-emerald-500 text-slate-950 font-black text-sm rounded-xl shadow-md hover:bg-emerald-400 transition-all uppercase tracking-wide">
+            ▶ Inizia Lavoro
+          </button>
+          <button id="btn-stop" onclick="stopTimerLive()" disabled class="flex-1 py-4 bg-slate-800 text-slate-600 font-black text-sm rounded-xl border border-slate-700 cursor-not-allowed transition-all uppercase tracking-wide">
+            ■ Fine Lavoro
+          </button>
+        </div>
+      </div>
 
-            <!-- CONTROLLO DEI METRI PREVISTI VS REALI PER LO SPRECO -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <div>
-                <label id="lbl-quantita" class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">Metri da Disegno / Capitolato</label>
-                <input id="op-quantita" type="number" min="0" step="0.1" value="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3.5 font-black text-center text-xl text-white">
-              </div>
-              <div>
-                <label id="lbl-reale" class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">Materiale Reale Consumato sul Campo</label>
-                <input id="op-materiale-reale" type="number" min="0" step="0.1" value="12" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3.5 font-black text-center text-xl text-white">
-              </div>
-              <div>
-                <label class="block text-xs text-amber-500 font-mono mb-1.5 uppercase">Temp. Supporto Laser (°C) [SIA 271]</label>
-                <input id="op-temp" type="number" step="0.5" value="15" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3.5 font-black text-center text-xl text-amber-500">
-              </div>
-            </div>
+      <!-- MODULO 2: RACCOLTA DATI (APPARISCE AL CLICK SU STOP) -->
+      <div id="box-form-operaio" class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl space-y-4 hidden animate-fade-in">
+        <h3 class="text-xs font-mono uppercase tracking-wider text-amber-500 border-b border-slate-800 pb-1.5 font-bold">📥 Inserisci il Lavoro Svolto</h3>
+        
+        <form class="space-y-4" onsubmit="inviaDatiAlCloud(event)">
+          <!-- Selezione Materiale/Mansione Dinamica caricata da Sheets -->
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Quale materiale o mansione hai usato?</label>
+            <select id="op-materiale-select" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-bold text-white text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 appearance-none cursor-pointer">
+              <!-- Riempito da Fogli Google tramite app.js -->
+            </select>
+          </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">Ore Calcolate in automatico dal Timer</label>
-                <input id="op-ore" type="number" step="0.01" readonly class="w-full bg-slate-950/50 border border-slate-800 rounded-lg p-3.5 font-mono font-bold text-center text-slate-400 cursor-not-allowed">
-              </div>
-              <div>
-                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">Note Ostacoli / Anomalie / Economia (Regie)</label>
-                <input id="op-note" type="text" placeholder="Es: massetto sconnesso, pendenze fuori norma, richieste DL" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3.5 text-sm text-white focus:ring-1 focus:ring-amber-500 focus:outline-none">
-              </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Quantità (ml, m² o pz)</label>
+              <input id="op-quantita" type="number" min="0" step="0.1" value="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-white">
             </div>
+            <div>
+              <label class="block text-[11px] font-mono text-amber-500 mb-1 uppercase">Temp. Laser Supporto (°C)</label>
+              <input id="op-temp" type="number" step="0.5" value="15" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-amber-500">
+            </div>
+          </div>
 
-            <!-- SICUREZZA INFORTUNI SUVA -->
-            <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-2.5 text-xs font-mono">
-              <h4 class="text-red-400 font-bold uppercase tracking-wider flex items-center gap-1">🛡️ Checkpoint Obbligatorio di Sicurezza SUVA</h4>
-              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <label class="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
-                  <span class="text-slate-300">Brenner/Gas Chiuso?</span><input type="checkbox" id="suva-brenner" required class="w-6 h-6 accent-amber-500 cursor-pointer">
-                </label>
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Ore Impiegate (Frazione Calcolata)</label>
+            <input id="op-ore" type="number" readonly class="w-full bg-slate-950/50 border border-slate-800 rounded-lg p-3 font-mono font-bold text-center text-slate-400 cursor-not-allowed">
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Note Problemi riscontrati / Anomalie sul tetto</label>
+            <input id="op-note" type="text" placeholder="Es: Cemento ruvido, fessure, infiltrazione latente" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-white">
+          </div>
+
+          <!-- CONTROLLI DI SICUREZZA SUVA DI FINE TURNO -->
+          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-[11px] font-mono">
+            <h4 class="text-red-400 font-bold uppercase tracking-wider">🛡️ CONTROLLO SICUREZZA OBBLIGATORIO SUVA</h4>
+            <label class="flex items-center justify-between bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer"><span class="text-slate-300">Brenner / Gas chiuso e sicuro?</span><input type="checkbox" id="suva-brenner" required class="w-5 h-5 accent-amber-500"></label>
+            <label class="flex items-center justify-between bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer"><span class="text-slate-300">Linee vita / Parapetto integri?</span><input type="checkbox" id="suva-linee" required class="w-5 h-5 accent-amber-500"></label>
+            <label class="flex items-center justify-between bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer"><span class="text-slate-300">Foto del lavoro eseguita?</span><input type="checkbox" id="suva-foto" required class="w-5 h-5 accent-amber-500"></label>
+          </div>
+
+          <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-4 rounded-xl text-md uppercase tracking-wider shadow-lg">
+            🚀 SALVA NEL DIARIO DI BORDO
+          </button>
+        </form>
+      </div>
+
+      <!-- MODULO 3: IL MAGAZZINO VISIVO DEL FURGONE -->
+      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl space-y-3">
+        <div class="border-b border-slate-800 pb-2">
+          <h3 class="text-xs font-mono font-bold tracking-widest text-amber-500 uppercase">📦 INVENTARIO ATTIVO & LIVELLO FURGONE</h3>
+          <p class="text-[10px] text-slate-400 mt-0.5">Elenco dinamico estratto direttamente dal tuo file Fogli Google.</p>
+        </div>
+
+        <!-- CONTENITORE DELLE CARD CON LE FOTO CARICATE DA SCRIPT -->
+        <div id="contenitore-magazzino" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
+          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs text-slate-500 font-mono animate-pulse">
+            Sincronizzazione scorte in corso...
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- FOOTER CHPLAN -->
+    <footer class="bg-slate-900 border-t border-slate-800 p-3 text-center text-[10px] text-slate-500 font-mono shadow-inner">
+      CHPLAN AG · DachPlan OS Mobile v3.0 · Licenza Attiva SIA-CH
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
