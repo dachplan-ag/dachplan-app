@@ -3,15 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DachPlan OS – Cantiere 3 Livelli</title>
+  <title>DachPlan OS - Cantiere 3 Livelli</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://jsdelivr.net"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 </head>
-
 <body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-900">
   <div class="min-h-screen flex flex-col">
-
-    <!-- HEADER AZIENDALE AD ALTO CONTRASTO -->
     <header class="border-b border-slate-800 bg-slate-900 px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
       <div class="flex items-center gap-2">
         <span class="text-xl font-black tracking-wider text-amber-500">DACHPLAN</span>
@@ -19,116 +16,151 @@
       </div>
       <div class="flex items-center gap-2 text-xs text-slate-400">
         <span class="hidden sm:inline font-mono">CHPLAN AG · Riflessi Sole Ridotti</span>
-        <span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-slate-800 border border-slate-700 font-bold text-emerald-400">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> DB Sincronizzato
+        <span id="cloudStatus" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-950 border border-slate-800 text-emerald-400 font-bold">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Cloud DB Linked
         </span>
       </div>
     </header>
 
-    <!-- NAV TABS RUOLI FLUIDA -->
-    <nav class="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-2 shadow-md">
+    <nav class="bg-slate-900 border-b border-slate-800 px-4 sm:px-6 py-2 shadow-inner">
       <div class="flex gap-2 sm:gap-3">
-        <button id="tab-operaio" onclick="switchTab('operaio')" class="flex-1 sm:flex-none sm:px-4 px-2 py-2 rounded-lg text-xs sm:text-sm font-mono font-bold bg-amber-500 text-slate-950 shadow-md transition-all">
-          1. OPERAIO · FURGONE LIVE
-        </button>
-        <button id="tab-bauleiter" onclick="switchTab('bauleiter')" class="flex-1 sm:flex-none sm:px-4 px-2 py-2 rounded-lg text-xs sm:text-sm font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700 transition-all">
-          2. BAULEITER · CONTROLLO
-        </button>
-        <button id="tab-admin" onclick="switchTab('admin')" class="flex-1 sm:flex-none sm:px-4 px-2 py-2 rounded-lg text-xs sm:text-sm font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700 transition-all">
-          3. ADMIN · FINANZE
-        </button>
+        <button id="tab-operaio" onclick="switchTab('operaio')" class="tab-active flex-1 sm:flex-none sm:px-4 px-2 py-3 rounded-lg text-xs sm:text-sm font-mono font-bold bg-amber-500 text-slate-950 shadow-lg transition-all">1. OPERAIO · FURGONE LIVE</button>
+        <button id="tab-bauleiter" onclick="switchTab('bauleiter')" class="tab-idle flex-1 sm:flex-none sm:px-4 px-2 py-3 rounded-lg text-xs sm:text-sm font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700 transition-all">2. BAULEITER · CONTROLLO</button>
+        <button id="tab-admin" onclick="switchTab('admin')" class="tab-idle flex-1 sm:flex-none sm:px-4 px-2 py-3 rounded-lg text-xs sm:text-sm font-mono font-bold text-slate-300 bg-slate-800 border border-slate-700 transition-all">3. ADMIN · FINANZE</button>
       </div>
     </nav>
 
-    <!-- MAIN WRAPPER CONTAINER -->
     <main class="flex-1 px-4 sm:px-6 py-4 sm:py-6 max-w-7xl mx-auto w-full space-y-6">
-
-      <!-- ========================= LEVEL 1: OPERAIO ========================= -->
       <section id="view-operaio" class="space-y-6">
-
-        <!-- TIMER E ORDINE DEL GIORNO MANSIONE -->
         <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
-              <h2 class="text-lg font-bold text-amber-500">🎮 Ordine del Giorno – Modalità Gioco di Cantiere</h2>
-              <p class="text-xs text-slate-400 mt-1">Avvia il timer alla partenza, bloccalo a fine lavoro e verifica l'attrezzatura a bordo.</p>
+              <h2 class="text-lg font-bold text-amber-500">Ordine del Giorno - Modalita Gioco di Cantiere</h2>
+              <p class="text-xs text-slate-400 mt-1">Avvia la mansione per monitorare i tempi. Lo stock del furgone si aggiorna da solo.</p>
             </div>
-            <div class="flex items-center gap-2">
-              <div class="px-4 py-2 rounded-lg bg-slate-950 border border-slate-800 text-center shadow-inner min-w-[120px]">
-                <div class="text-[10px] uppercase text-slate-500 font-mono tracking-wider">Durata Attività</div>
-                <div id="job-timer" class="text-2xl font-black text-emerald-400 font-mono tracking-widest">00:00:00</div>
-              </div>
+            <div class="px-4 py-2 rounded-xl bg-slate-950 border border-slate-800 text-center min-w-[120px]">
+              <div class="text-[10px] uppercase text-slate-500 font-mono tracking-wider">Tempo Mansione</div>
+              <div id="job-timer" class="text-2xl font-black text-emerald-400 font-mono tracking-widest">00:00:00</div>
             </div>
           </div>
-
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div class="sm:col-span-1 flex flex-col gap-3">
-              <button id="btn-start" onclick="startMansione()" class="w-full py-4 rounded-xl bg-emerald-500 text-slate-950 font-black text-sm sm:text-base shadow-lg hover:bg-emerald-400 active:scale-[0.99] transition-all">
-                ▶ START MANSIONE
-              </button>
-              <button id="btn-stop" onclick="stopMansione()" disabled class="w-full py-4 rounded-xl bg-slate-800 text-slate-500 font-black text-sm sm:text-base border border-slate-700 cursor-not-allowed transition-all">
-                ■ STOP MANSIONE
-              </button>
+              <button id="btn-start" onclick="startMansione()" class="w-full py-5 rounded-xl bg-emerald-500 text-slate-950 font-black text-base shadow-lg hover:bg-emerald-400 active:scale-[0.99] transition-all tracking-wide">START MANSIONE</button>
+              <button id="btn-stop" onclick="stopMansione()" disabled class="w-full py-5 rounded-xl bg-slate-800 text-slate-500 font-black text-base border border-slate-700 cursor-not-allowed transition-all">STOP MANSIONE</button>
             </div>
-
-            <!-- MESSAGGIO ATTREZZI OBBLIGATORI -->
             <div class="sm:col-span-2 bg-slate-950 border border-slate-800 rounded-xl p-4 flex flex-col justify-center">
-              <h3 class="text-xs font-mono uppercase text-slate-400 mb-3 tracking-widest text-center sm:text-left">Attrezzi CPN necessari a bordo furgone per la mansione</h3>
-              <div class="grid grid-cols-4 gap-2 text-center">
-                <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-amber-400 text-lg shadow">🔌</div><span class="text-[10px] font-mono mt-1 text-slate-300">Flex (ATZ001)</span></div>
-                <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-red-400 text-lg shadow">🔥</div><span class="text-[10px] font-mono mt-1 text-slate-300">Brenner (ATZ006)</span></div>
-                <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-sky-400 text-lg shadow">🛠️</div><span class="text-[10px] font-mono mt-1 text-slate-300">Tassellatore</span></div>
-                <div class="flex flex-col items-center"><div class="w-10 h-10 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center text-lime-400 text-lg shadow">🌡️</div><span class="text-[10px] font-mono mt-1 text-slate-300">Laser Temp</span></div>
+              <h3 class="text-xs font-mono uppercase text-slate-400 mb-3 tracking-wider">Attrezzi CPN obbligatori a bordo furgone per il cantiere</h3>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center">
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3"><div class="text-amber-400 text-xl">ATZ001</div><span class="text-[10px] font-mono mt-1 text-slate-300">Flex</span></div>
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3"><div class="text-red-400 text-xl">ATZ006</div><span class="text-[10px] font-mono mt-1 text-slate-300">Brenner</span></div>
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3"><div class="text-sky-400 text-xl">ATZ003</div><span class="text-[10px] font-mono mt-1 text-slate-300">Bohrmaschine</span></div>
+                <div class="rounded-lg bg-slate-900 border border-slate-800 p-3"><div class="text-lime-400 text-xl">ATZ008</div><span class="text-[10px] font-mono mt-1 text-slate-300">Laser Temp</span></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- FORM OPERAIO (SBLOCCATO DA STOP MANSIONE) -->
-        <div id="box-form-operaio" class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-xl space-y-4 hidden">
-          <h3 class="text-base font-bold text-amber-500 border-b border-slate-800 pb-2">📥 Chiusura Mansione – Dati di Fine Turno</h3>
-          
-          <form class="space-y-4" onsubmit="submitOperaio(event)">
+        <div id="box-form-operaio" class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 shadow-2xl space-y-4 hidden transition-all duration-300">
+          <h3 class="text-base font-bold text-amber-500 border-b border-slate-800 pb-2">Registrazione Fine Turno - Dati per Fatturazione CPN</h3>
+          <form class="space-y-5" onsubmit="submitOperaio(event)">
             <input type="hidden" id="op-sistema" value="1K">
-            
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label class="block text-xs text-slate-400 mb-1 font-mono uppercase tracking-wider">Cosa hai sigillato? (Lista Fissa)</label>
-                <select id="op-oggetto" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-bold text-white text-sm focus:ring-1 focus:ring-amber-500 focus:outline-none">
-                  <option value="1">1. Fenster / Türe</option>
-                  <option value="2">2. Anschluss Dachpappe → Beton</option>
-                  <option value="3">3. Ablauf</option>
-                  <option value="4">4. Notablauf</option>
-                  <option value="5">5. Anschluss Dachpappe → Blech</option>
+                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">1. Mansione / Oggetto</label>
+                <select id="op-oggetto" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3.5 font-bold text-white text-sm focus:outline-none focus:ring-1 focus:ring-amber-500">
+                  <option value="1">1. Fenster / Tuere - FLK</option>
+                  <option value="2">2. Anschluss Dachpappe zu Beton - FLK</option>
+                  <option value="3">3. Ablauf - CPN 351</option>
+                  <option value="4">4. Notablauf - CPN 351</option>
+                  <option value="5">5. Anschluss Dachpappe zu Blech</option>
                 </select>
               </div>
               <div>
-                <label class="block text-xs text-slate-400 mb-1 font-mono uppercase tracking-wider">Misure Realizzate (ml / pz)</label>
-                <input id="op-ml" type="number" min="0" step="0.1" value="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-white focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">2. Misure Realizzate</label>
+                <input id="op-ml" type="number" min="0" step="0.1" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-xl text-white focus:outline-none focus:ring-1 focus:ring-amber-500" value="10">
               </div>
               <div>
-                <label class="block text-xs text-amber-500 mb-1 font-mono uppercase tracking-wider">Temp. Supporto Laser (°C) [SIA 271]</label>
-                <input id="op-temp" type="number" step="0.5" value="15" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-amber-500 focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                <label class="block text-xs text-amber-500 font-mono mb-1.5 uppercase">3. Temp. Supporto Laser (C) [SIA 271]</label>
+                <input id="op-temp" type="number" step="0.5" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-xl text-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500" value="15">
               </div>
             </div>
-
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs text-slate-400 mb-1 font-mono uppercase tracking-wider">Rotolo FLK-Vlies Consumato (m)</label>
-                <input id="op-vlies" type="number" min="0" value="0" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-black text-white focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">4. FLK-Vlies Consumato (m)</label>
+                <input id="op-vlies" type="number" min="0" value="0" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-bold text-white focus:outline-none focus:ring-1 focus:ring-amber-500">
               </div>
               <div>
-                <label class="block text-xs text-slate-400 mb-1 font-mono uppercase tracking-wider">Note Problemi riscontrati / Lavori in economia (Regie)</label>
-                <input id="op-note" type="text" placeholder="Descrivi problemi o ordini della Direzione Lavori" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white focus:ring-1 focus:ring-amber-500 focus:outline-none">
+                <label class="block text-xs text-slate-400 font-mono mb-1.5 uppercase">5. Note / Regie</label>
+                <input id="op-note" type="text" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-1 focus:ring-amber-500" placeholder="Sottofondo bagnato, ritardi DL o modifiche di cantiere">
               </div>
             </div>
-
-            <!-- CONTROLLI SUVA OBBLIGATORI (PREVENZIONE INCIDENTI) -->
             <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
-              <h4 class="text-xs font-mono uppercase text-red-400 font-bold flex items-center gap-1">🛡️ Checkpoint di Sicurezza Obbligatorio SUVA</h4>
+              <h4 class="text-xs font-mono uppercase text-red-400 font-bold">Checkpoint di Sicurezza Obbligatorio SUVA</h4>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 font-mono text-xs">
-                <label class="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
-                  <span class="text-slate-300">Brenner Chiuso/Sicuro?</span>
-                  <input type="checkbox" id="suva-brenner" required class="w-5 h-5 accent-amber-500">
-                </label>
-                <label class="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800 cursor-pointer hover:border-slate-700 transition-all">
+                <label class="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800"><span>Brenner chiuso e sicuro</span><input type="checkbox" required class="w-5 h-5 accent-amber-500"></label>
+                <label class="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800"><span>Linea vita verificata</span><input type="checkbox" required class="w-5 h-5 accent-amber-500"></label>
+                <label class="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800"><span>Area calda libera</span><input type="checkbox" required class="w-5 h-5 accent-amber-500"></label>
+              </div>
+            </div>
+            <button type="submit" class="w-full py-4 rounded-xl bg-amber-500 text-slate-950 font-black hover:bg-amber-400 active:scale-[0.99] transition-all">SINCRO CLOUD E TRASMETTI RAPPORTI</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-bauleiter" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div>
+                <h2 class="text-lg font-bold text-amber-500">Bauleiter - Controllo Produzione</h2>
+                <p class="text-xs text-slate-400">Avanzamento, anomalie SIA e scostamenti EVM da Diario.</p>
+              </div>
+              <button onclick="refreshCloud()" class="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 hover:border-amber-500">Aggiorna</button>
+            </div>
+            <div id="reportContainer" class="space-y-3"></div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
+            <h3 class="text-sm font-bold text-slate-200 mb-3">Soluzioni Tecniche SIA</h3>
+            <div class="space-y-2">
+              <button onclick="triggerSoluzione('A')" class="w-full text-left p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-500">A · Primer e asciugatura controllata</button>
+              <button onclick="triggerSoluzione('B')" class="w-full text-left p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-500">B · Secondo strato FLK con rinforzo</button>
+              <button onclick="triggerSoluzione('C')" class="w-full text-left p-3 rounded-lg bg-slate-950 border border-slate-800 hover:border-amber-500">C · Rifacimento raccordo e lattoneria</button>
+            </div>
+            <div id="soluzioneOutput" class="hidden mt-4 p-3 rounded-lg bg-amber-500/10 border border-amber-500/40 text-amber-200 text-sm"></div>
+          </div>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
+          <h3 class="text-sm font-bold text-slate-200 mb-4">Inventario Mobile - Stato Scomparti Furgone Squadra 1</h3>
+          <div id="stockContainer" class="space-y-3"></div>
+        </div>
+      </section>
+
+      <section id="view-admin" class="hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
+            <div class="text-xs font-mono text-slate-500 uppercase">Margine Controllato</div>
+            <div id="kpiMargin" class="text-3xl font-black text-emerald-400 mt-1">0.0%</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
+            <div class="text-xs font-mono text-slate-500 uppercase">Fatturabile CPN</div>
+            <div id="kpiRevenue" class="text-3xl font-black text-amber-400 mt-1">CHF 0</div>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
+            <div class="text-xs font-mono text-slate-500 uppercase">Rischi Compliance</div>
+            <div id="kpiRisks" class="text-3xl font-black text-red-400 mt-1">0</div>
+          </div>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
+          <h2 class="text-lg font-bold text-amber-500 mb-4">Admin - Finanze EVM</h2>
+          <canvas id="evmChart" height="120"></canvas>
+        </div>
+      </section>
+    </main>
+
+    <footer class="border-t border-slate-800 bg-slate-900 px-4 sm:px-6 py-4 text-center text-[11px] text-slate-500 font-mono">
+      2026 CHPLAN AG · DachPlan OS v2.6-OCI · Licenza attiva SIA-CH
+    </footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
