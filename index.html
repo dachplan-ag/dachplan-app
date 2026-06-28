@@ -1,120 +1,1240 @@
 <!DOCTYPE html>
-<html lang="it-CH" class="dark">
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DachPlan OS – Solo Operaio & Magazzino</title>
-  <script src="https://tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>DachPlan OS · v4.1</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --accent: #f5a623;
+    --accent-dim: rgba(245,166,35,0.15);
+    --accent-glow: rgba(245,166,35,0.35);
+    --text: #e8eaf0;
+    --text-muted: #8a8fa8;
+    --danger: #e05555;
+    --success: #3ecf8e;
+    --border: rgba(255,255,255,0.07);
+    --radius: 14px;
+    --radius-sm: 8px;
+    --font: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 20px 10px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .brand span {
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 6px var(--success);
+    display: inline-block;
+    margin-right: 6px;
+  }
+  .status-label { font-size: 11px; color: var(--text-muted); }
+
+  /* ── TABS ── */
+  .tabs {
+    display: flex;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex: 0 0 auto;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s;
+    user-select: none;
+  }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; padding: 20px 16px 100px; }
+  .page.active { display: block; }
+
+  /* ── SECTION CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title .icon { font-size: 16px; }
+
+  /* ── CRONOMETRO ── */
+  .chrono-display {
+    text-align: center;
+    padding: 24px 0 20px;
+  }
+  .chrono-time {
+    font-size: 54px;
+    font-weight: 200;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    font-feature-settings: "tnum";
+  }
+  .chrono-time.running { color: var(--accent); }
+  .chrono-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .btn {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0f1117;
+  }
+  .btn-primary:active { opacity: 0.85; transform: scale(0.98); }
+  .btn-ghost {
+    background: var(--surface2);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:active { opacity: 0.85; transform: scale(0.98); }
+  .btn-danger {
+    background: rgba(224,85,85,0.12);
+    color: var(--danger);
+    border: 1px solid rgba(224,85,85,0.25);
+  }
+  .btn-success {
+    background: var(--success);
+    color: #0f1117;
+  }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  /* ── FORM FIELDS ── */
+  .field {
+    margin-bottom: 14px;
+  }
+  .field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .field select,
+  .field input,
+  .field textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 15px;
+    font-family: var(--font);
+    padding: 12px 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .field select:focus,
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--accent);
+  }
+  .field textarea { resize: none; min-height: 80px; }
+  .field select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8fa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* ── INPUT WITH UNIT ── */
+  .input-unit {
+    position: relative;
+  }
+  .input-unit input { padding-right: 48px; }
+  .input-unit .unit {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  /* ── SUVA CHECKLIST ── */
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .check-item:last-child { border-bottom: none; }
+  .check-box {
+    width: 24px; height: 24px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .check-box.checked {
+    background: var(--success);
+    border-color: var(--success);
+  }
+  .check-box.checked::after {
+    content: '';
+    width: 6px; height: 10px;
+    border: 2px solid #0f1117;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translateY(-1px);
+    display: block;
+  }
+  .check-label {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .check-label small { display: block; font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+
+  /* ── SAVE BUTTON BIG ── */
+  .btn-save {
+    width: 100%;
+    padding: 18px;
+    border-radius: var(--radius);
+    background: linear-gradient(135deg, var(--accent) 0%, #d4880a 100%);
+    color: #0f1117;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border: none;
+    margin-top: 8px;
+    box-shadow: 0 4px 20px var(--accent-glow);
+    transition: all 0.15s;
+  }
+  .btn-save:active { transform: scale(0.98); box-shadow: none; }
+  .btn-save:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 16px; right: 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 999;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.25s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.ok { border-color: rgba(62,207,142,0.4); color: var(--success); }
+  .toast.err { border-color: rgba(224,85,85,0.4); color: var(--danger); }
+
+  /* ── MAGAZZINO / INVENTARIO ── */
+  .mag-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .mag-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    position: relative;
+  }
+  .mag-item.low { border-color: rgba(224,85,85,0.4); }
+  .mag-item.ok { border-color: rgba(62,207,142,0.2); }
+  .mag-name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .mag-qty {
+    font-size: 22px;
+    font-weight: 200;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .mag-unit { font-size: 11px; color: var(--text-muted); display: inline; }
+  .mag-threshold {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .mag-badge {
+    position: absolute;
+    top: 8px; right: 8px;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+  .mag-badge.low { background: rgba(224,85,85,0.2); color: var(--danger); }
+  .mag-badge.ok { background: rgba(62,207,142,0.15); color: var(--success); }
+
+  .mag-edit-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: 10px;
+  }
+  .mag-edit-row input {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 14px;
+    padding: 9px 12px;
+    outline: none;
+    font-family: var(--font);
+  }
+  .mag-edit-row input:focus { border-color: var(--accent); }
+  .btn-small {
+    padding: 9px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    flex-shrink: 0;
+  }
+
+  /* ── STATS / INFO ── */
+  .stat-row {
+    display: flex;
+    gap: 10px;
+  }
+  .stat-box {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-val {
+    font-size: 26px;
+    font-weight: 200;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-lbl { font-size: 10px; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* ── METEO ── */
+  .meteo-strip {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .meteo-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .meteo-chip .val { color: var(--accent); font-weight: 700; }
+
+  /* ── CANTIERE INFO BAR ── */
+  .info-bar {
+    background: var(--accent-dim);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .info-bar strong { color: var(--accent); }
+
+  /* ── LOG LIST ── */
+  .log-entry {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .log-time { font-size: 11px; color: var(--text-muted); margin-bottom: 3px; }
+  .log-main { color: var(--text); font-weight: 600; }
+  .log-detail { color: var(--text-muted); font-size: 12px; margin-top: 2px; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex;
+    z-index: 100;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .nav-item {
+    flex: 1;
+    padding: 10px 4px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .nav-item .nav-icon { font-size: 22px; display: block; }
+  .nav-item .nav-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+  .nav-item.active .nav-icon { filter: drop-shadow(0 0 6px var(--accent)); }
+  .nav-item.active .nav-lbl { color: var(--accent); }
+
+  /* ── SPINNER ── */
+  .spinner {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── CANTIERE SELECTOR ── */
+  .cantiere-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin: 4px;
+    transition: all 0.15s;
+  }
+  .cantiere-tag.active {
+    background: var(--accent-dim);
+    border-color: rgba(245,166,35,0.4);
+    color: var(--accent);
+  }
+
+  /* MANSIONE CHIPS */
+  .mansioni-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .mansione-chip {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 7px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+  .mansione-chip.active {
+    background: var(--accent-dim);
+    border-color: rgba(245,166,35,0.5);
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ── SECTION SEPARATOR ── */
+  .sep {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0;
+  }
+
+  /* hide/show utility */
+  .hidden { display: none !important; }
+</style>
 </head>
-<body class="bg-slate-950 text-slate-100 font-sans antialiased selection:bg-amber-500 selection:text-slate-950">
-  <div class="min-h-screen flex flex-col max-w-xl mx-auto border-x border-slate-900 bg-slate-950">
+<body>
 
-    <!-- HEADER IDALATO PER COPERTURA SOLARE -->
-    <header class="border-b border-slate-800 bg-slate-900 px-4 py-3 flex items-center justify-between sticky top-0 z-50">
-      <div class="flex items-center gap-2">
-        <span class="text-lg font-black tracking-wider text-amber-500">CHPLAN AG</span>
-        <span class="text-xs font-light text-slate-400">DachPlan OS v3.0</span>
-      </div>
-      <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-950 border border-slate-800 text-emerald-400 text-[10px] font-mono font-bold shadow-inner">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Cloud Sincro
-      </span>
-    </header>
+<!-- HEADER -->
+<div class="header">
+  <div class="header-row">
+    <div>
+      <div class="brand">DachPlan <span>AG</span></div>
+      <div class="brand" style="font-size:9px; color:var(--text-muted); letter-spacing:0.06em; margin-top:1px;">OS v4.1 · SIA-CH</div>
+    </div>
+    <div style="text-align:right">
+      <span class="status-dot" id="syncDot"></span>
+      <span class="status-label" id="syncLabel">Offline</span>
+    </div>
+  </div>
+</div>
 
-    <!-- CONTAINER ATTIVITÀ OPERAIO -->
-    <main class="flex-1 p-4 space-y-5 overflow-y-auto">
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" data-tab="lavoro">⏱ Lavoro</div>
+  <div class="tab" data-tab="magazzino">📦 Magazzino</div>
+  <div class="tab" data-tab="log">📋 Diario</div>
+</div>
 
-      <!-- MODULO 1: IL TIMER DEL CANTIERE -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl text-center space-y-3">
-        <div>
-          <h2 class="text-sm font-bold uppercase tracking-wider text-amber-500 font-mono">⏱️ CRONOMETRO ATTIVITÀ SUL TETTO</h2>
-          <p class="text-[11px] text-slate-400 mt-0.5">Avvia quando apri il rotolo o la latta, ferma quando hai sigillato.</p>
-        </div>
-        
-        <div id="job-timer" class="text-4xl font-black text-emerald-400 font-mono tracking-widest bg-slate-950 py-3 rounded-lg border border-slate-800 shadow-inner">
-          00:00:00
-        </div>
+<!-- ══════════════ PAGE: LAVORO ══════════════ -->
+<div class="page active" id="page-lavoro">
 
-        <div class="flex gap-2">
-          <button id="btn-start" onclick="startTimerLive()" class="flex-1 py-4 bg-emerald-500 text-slate-950 font-black text-sm rounded-xl shadow-md hover:bg-emerald-400 transition-all uppercase tracking-wide">
-            ▶ Inizia Lavoro
-          </button>
-          <button id="btn-stop" onclick="stopTimerLive()" disabled class="flex-1 py-4 bg-slate-800 text-slate-600 font-black text-sm rounded-xl border border-slate-700 cursor-not-allowed transition-all uppercase tracking-wide">
-            ■ Fine Lavoro
-          </button>
-        </div>
-      </div>
-
-      <!-- MODULO 2: RACCOLTA DATI (APPARISCE AL CLICK SU STOP) -->
-      <div id="box-form-operaio" class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl space-y-4 hidden animate-fade-in">
-        <h3 class="text-xs font-mono uppercase tracking-wider text-amber-500 border-b border-slate-800 pb-1.5 font-bold">📥 Inserisci il Lavoro Svolto</h3>
-        
-        <form class="space-y-4" onsubmit="inviaDatiAlCloud(event)">
-          <!-- Selezione Materiale/Mansione Dinamica caricata da Sheets -->
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Quale materiale o mansione hai usato?</label>
-            <select id="op-materiale-select" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-bold text-white text-sm focus:outline-none focus:ring-1 focus:ring-amber-500 appearance-none cursor-pointer">
-              <!-- Riempito da Fogli Google tramite app.js -->
-            </select>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Quantità (ml, m² o pz)</label>
-              <input id="op-quantita" type="number" min="0" step="0.1" value="10" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-white">
-            </div>
-            <div>
-              <label class="block text-[11px] font-mono text-amber-500 mb-1 uppercase">Temp. Laser Supporto (°C)</label>
-              <input id="op-temp" type="number" step="0.5" value="15" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-center font-black text-lg text-amber-500">
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Ore Impiegate (Frazione Calcolata)</label>
-            <input id="op-ore" type="number" readonly class="w-full bg-slate-950/50 border border-slate-800 rounded-lg p-3 font-mono font-bold text-center text-slate-400 cursor-not-allowed">
-          </div>
-
-          <div>
-            <label class="block text-[11px] font-mono text-slate-400 mb-1 uppercase">Note Problemi riscontrati / Anomalie sul tetto</label>
-            <input id="op-note" type="text" placeholder="Es: Cemento ruvido, fessure, infiltrazione latente" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs text-white">
-          </div>
-
-          <!-- CONTROLLI DI SICUREZZA SUVA DI FINE TURNO -->
-          <div class="p-3 bg-slate-950 rounded-xl border border-slate-800 space-y-2 text-[11px] font-mono">
-            <h4 class="text-red-400 font-bold uppercase tracking-wider">🛡️ CONTROLLO SICUREZZA OBBLIGATORIO SUVA</h4>
-            <label class="flex items-center justify-between bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer"><span class="text-slate-300">Brenner / Gas chiuso e sicuro?</span><input type="checkbox" id="suva-brenner" required class="w-5 h-5 accent-amber-500"></label>
-            <label class="flex items-center justify-between bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer"><span class="text-slate-300">Linee vita / Parapetto integri?</span><input type="checkbox" id="suva-linee" required class="w-5 h-5 accent-amber-500"></label>
-            <label class="flex items-center justify-between bg-slate-900 p-2 rounded border border-slate-800 cursor-pointer"><span class="text-slate-300">Foto del lavoro eseguita?</span><input type="checkbox" id="suva-foto" required class="w-5 h-5 accent-amber-500"></label>
-          </div>
-
-          <button type="submit" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-4 rounded-xl text-md uppercase tracking-wider shadow-lg">
-            🚀 SALVA NEL DIARIO DI BORDO
-          </button>
-        </form>
-      </div>
-
-      <!-- MODULO 3: IL MAGAZZINO VISIVO DEL FURGONE -->
-      <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl space-y-3">
-        <div class="border-b border-slate-800 pb-2">
-          <h3 class="text-xs font-mono font-bold tracking-widest text-amber-500 uppercase">📦 INVENTARIO ATTIVO & LIVELLO FURGONE</h3>
-          <p class="text-[10px] text-slate-400 mt-0.5">Elenco dinamico estratto direttamente dal tuo file Fogli Google.</p>
-        </div>
-
-        <!-- CONTENITORE DELLE CARD CON LE FOTO CARICATE DA SCRIPT -->
-        <div id="contenitore-magazzino" class="space-y-2.5 max-h-96 overflow-y-auto pr-1">
-          <div class="p-4 bg-slate-950 border border-slate-800 rounded-lg text-center text-xs text-slate-500 font-mono animate-pulse">
-            Sincronizzazione scorte in corso...
-          </div>
-        </div>
-      </div>
-
-    </main>
-
-    <!-- FOOTER CHPLAN -->
-    <footer class="bg-slate-900 border-t border-slate-800 p-3 text-center text-[10px] text-slate-500 font-mono shadow-inner">
-      CHPLAN AG · DachPlan OS Mobile v3.0 · Licenza Attiva SIA-CH
-    </footer>
+  <!-- CANTIERE -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🏗</span> Cantiere Attivo</div>
+    <div class="field">
+      <label>Nome / Indirizzo</label>
+      <input type="text" id="cantiere" placeholder="Es: Hildisriden, Oberdorfstr. 12" autocomplete="off">
+    </div>
+    <div class="field">
+      <label>Operaio</label>
+      <input type="text" id="operaio" placeholder="Es: Andi / Klaus" autocomplete="off">
+    </div>
   </div>
 
-  <script src="app.js"></script>
+  <!-- CRONOMETRO -->
+  <div class="card">
+    <div class="card-title"><span class="icon">⏱</span> Cronometro Attività</div>
+    <div class="chrono-display">
+      <div class="chrono-time" id="chronoDisplay">00:00:00</div>
+      <div class="chrono-label" id="chronoStatus">In attesa di avvio</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btnStart" onclick="startTimer()">▶ Inizia Lavoro</button>
+      <button class="btn btn-danger" id="btnStop" onclick="stopTimer()" disabled>■ Fine Lavoro</button>
+    </div>
+    <div id="timeCalc" style="display:none; margin-top:12px; text-align:center;">
+      <span style="font-size:12px; color:var(--text-muted)">Ore calcolate: </span>
+      <span id="oreCalcolate" style="font-size:16px; font-weight:700; color:var(--accent)">—</span>
+    </div>
+  </div>
+
+  <!-- METEO -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🌡</span> Condizioni Cantiere</div>
+    <div class="meteo-strip" id="meteoStrip">
+      <div class="meteo-chip">⏳ <span>Caricamento meteo…</span></div>
+    </div>
+    <div class="sep"></div>
+    <div class="field">
+      <label>Temp. Laser / Supporto (°C)</label>
+      <div class="input-unit">
+        <input type="number" id="tempSupporto" placeholder="15" step="0.5" inputmode="decimal">
+        <span class="unit">°C</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANSIONE + MATERIALE -->
+  <div class="card">
+    <div class="card-title"><span class="icon">📥</span> Inserisci il Lavoro Svolto</div>
+
+    <div class="field">
+      <label>Tipo di Lavoro</label>
+      <select id="tipoLavoro">
+        <option value="">— Seleziona —</option>
+        <option value="Bitumen EGV3">Bitumen EGV3</option>
+        <option value="Bitumen EP5">Bitumen EP5</option>
+        <option value="FLK 1K">FLK 1K</option>
+        <option value="FLK 2K">FLK 2K</option>
+        <option value="PVC/TPO">PVC / TPO</option>
+        <option value="Ablauf">Ablauf / Notablauf</option>
+        <option value="Lichtkuppel">Lichtkuppel</option>
+        <option value="Dampfbremse">Dampfbremse</option>
+        <option value="Primer/Voranstrich">Primer / Voranstrich</option>
+        <option value="PIR Dämmung">PIR Dämmung</option>
+        <option value="Aufbordung">Aufbordung</option>
+        <option value="Zeilsystem">Zeilsystem</option>
+        <option value="Vorbereitung Untergrund">Vorbereitung Untergrund</option>
+        <option value="Tagesabschottung">Tagesabschottung</option>
+        <option value="Kontrolle / Prüfung">Kontrolle / Prüfung SIA 271</option>
+        <option value="Reinigung Abschluss">Reinigung Abschluss</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Mansione Specifica</label>
+      <div class="mansioni-grid" id="mansioniGrid">
+        <div class="mansione-chip" onclick="selectMansione(this, 'Applicazione membrana')">Applicazione membrana</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Incollaggio Dampfbremse')">Incollaggio Dampfbremse</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Schlackenabbrand')">Schlackenabbrand</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Abbordung')">Abbordung</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Kehle / Ecken')">Kehle / Ecken</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Durchdringung')">Durchdringung</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'FLK applicazione')">FLK applicazione</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Posatura PIR')">Posatura PIR</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Pulizia griglia')">Pulizia griglia</div>
+        <div class="mansione-chip" onclick="selectMansione(this, 'Altro')">Altro</div>
+      </div>
+      <input type="hidden" id="mansioneSelected" value="">
+    </div>
+
+    <div class="field">
+      <label>Fornitore</label>
+      <select id="fornitore">
+        <option value="">— Seleziona fornitore —</option>
+        <option value="Soprema">Soprema</option>
+        <option value="Bauder">Bauder</option>
+        <option value="Swisspor">Swisspor</option>
+        <option value="Hanselmann">Hanselmann</option>
+        <option value="Würth">Würth</option>
+        <option value="3M">3M</option>
+        <option value="Altro">Altro</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Superficie / Quantità</label>
+      <div style="display:flex; gap:8px">
+        <div class="input-unit" style="flex:1">
+          <input type="number" id="quantita" placeholder="0" inputmode="decimal" step="0.1">
+          <span class="unit" id="unitLabel">m²</span>
+        </div>
+        <select id="unitSelect" style="width:80px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-size:14px; padding:12px 8px;" onchange="document.getElementById('unitLabel').textContent=this.value">
+          <option value="m²">m²</option>
+          <option value="ml">ml</option>
+          <option value="pz">pz</option>
+          <option value="kg">kg</option>
+          <option value="L">L</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Strati</label>
+      <select id="strati">
+        <option value="1">1 strato</option>
+        <option value="2" selected>2 strati</option>
+        <option value="3">3 strati</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Note / Anomalie osservate</label>
+      <textarea id="note" placeholder="Es: Cemento ruvido, fessure presenti, bolle d'aria…"></textarea>
+    </div>
+  </div>
+
+  <!-- SUVA -->
+  <div class="card">
+    <div class="card-title"><span class="icon">🛡</span> Controllo Sicurezza SUVA</div>
+    <div class="check-item" onclick="toggleCheck('s1')">
+      <div class="check-box" id="s1"></div>
+      <div class="check-label">Brenner / Gas chiuso e sicuro
+        <small>Valvola gas chiusa dopo utilizzo</small></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck('s2')">
+      <div class="check-box" id="s2"></div>
+      <div class="check-label">Linee vita / Parapetto integri
+        <small>Assicurazione anticaduta verificata</small></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck('s3')">
+      <div class="check-box" id="s3"></div>
+      <div class="check-label">Foto lavoro eseguita
+        <small>Documentazione fotografica scattata</small></div>
+    </div>
+    <div class="check-item" onclick="toggleCheck('s4')">
+      <div class="check-box" id="s4"></div>
+      <div class="check-label">Pulizia zona lavoro completata
+        <small>Scarti e materiali rimossi</small></div>
+    </div>
+  </div>
+
+  <!-- SALVA -->
+  <button class="btn-save" id="btnSave" onclick="salvaDati()">
+    🚀 SALVA NEL DIARIO DI BORDO
+  </button>
+
+</div><!-- /page-lavoro -->
+
+
+<!-- ══════════════ PAGE: MAGAZZINO ══════════════ -->
+<div class="page" id="page-magazzino">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📦</span> Inventario Furgone</div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Livello scorte sul furgone. Tocca quantità per modificare.</p>
+
+    <div class="stat-row" style="margin-bottom:16px;">
+      <div class="stat-box">
+        <div class="stat-val" id="statTotale">—</div>
+        <div class="stat-lbl">Articoli totali</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" style="color:var(--danger)" id="statLow">—</div>
+        <div class="stat-lbl">Sotto soglia</div>
+      </div>
+    </div>
+
+    <div class="mag-grid" id="magGrid">
+      <!-- Generato da JS -->
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">➕</span> Aggiorna Scorte</div>
+    <div class="field">
+      <label>Materiale</label>
+      <select id="magMateriale">
+        <option value="">— Seleziona —</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Nuova Quantità</label>
+      <div class="mag-edit-row">
+        <input type="number" id="magQty" placeholder="0" inputmode="decimal">
+        <button class="btn-small btn-primary" onclick="aggiornaScorta()">Aggiorna</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🔄</span> Sync con Sheets</div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Aggiorna le scorte dal Google Sheets LISTINO_OCI.</p>
+    <button class="btn btn-ghost" style="width:100%" onclick="syncMagazzino()">📡 Sincronizza da Sheets</button>
+    <div id="syncStatus" style="font-size:12px; color:var(--text-muted); margin-top:10px; text-align:center;"></div>
+  </div>
+
+</div><!-- /page-magazzino -->
+
+
+<!-- ══════════════ PAGE: DIARIO ══════════════ -->
+<div class="page" id="page-log">
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📋</span> Diario di Bordo — Oggi</div>
+    <div id="logContainer">
+      <p style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px 0;">
+        Nessuna voce ancora.<br>Salva il primo lavoro dal tab ⏱ Lavoro.
+      </p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">📊</span> Riepilogo Giornata</div>
+    <div class="stat-row">
+      <div class="stat-box">
+        <div class="stat-val" id="riepilogoOre">0h</div>
+        <div class="stat-lbl">Ore lavorate</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" id="riepilogoVoci">0</div>
+        <div class="stat-lbl">Voci salvate</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon">🗑</span> Gestione</div>
+    <button class="btn btn-danger" style="width:100%" onclick="svuotaDiario()">Svuota diario locale</button>
+    <p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:8px;">I dati già inviati a Sheets non vengono eliminati.</p>
+  </div>
+
+</div><!-- /page-log -->
+
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <div class="nav-item active" id="nav-lavoro" onclick="switchPage('lavoro')">
+    <span class="nav-icon">⏱</span>
+    <div class="nav-lbl">Lavoro</div>
+  </div>
+  <div class="nav-item" id="nav-magazzino" onclick="switchPage('magazzino')">
+    <span class="nav-icon">📦</span>
+    <div class="nav-lbl">Magazzino</div>
+  </div>
+  <div class="nav-item" id="nav-log" onclick="switchPage('log')">
+    <span class="nav-icon">📋</span>
+    <div class="nav-lbl">Diario</div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+
+<script>
+// ══════════════════════════════════════════════════
+// CONFIGURAZIONE
+// ══════════════════════════════════════════════════
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyBM3_3vbBL_cxu0eNFwbCOAvEs_UFaMaYL7U74zJFwF-wx6KWNMqgaPDE10r0t-cj8/exec';
+const SHEETS_ID  = '1ttfAdqE3TI7G_gwapZhz3Yw3dKSYHM2smpQoILLGcJ0';
+
+// ══════════════════════════════════════════════════
+// STATO GLOBALE
+// ══════════════════════════════════════════════════
+let timerInterval = null;
+let startTime     = null;
+let elapsedMs     = 0;
+let isRunning     = false;
+let meteoData     = {};
+let localLog      = JSON.parse(localStorage.getItem('dp_log') || '[]');
+let magazzino     = JSON.parse(localStorage.getItem('dp_mag') || 'null');
+
+// ══════════════════════════════════════════════════
+// MAGAZZINO DEFAULT
+// ══════════════════════════════════════════════════
+const MAG_DEFAULT = [
+  { id:'egv3',      nome:'EGV3 Soprema',     qty:8,   min:3, unit:'rot' },
+  { id:'ep5',       nome:'EP5 Bauder',        qty:4,   min:2, unit:'rot' },
+  { id:'dampf',     nome:'Dampfbremse',       qty:3,   min:1, unit:'rot' },
+  { id:'pir80',     nome:'PIR 80mm',          qty:12,  min:4, unit:'pz' },
+  { id:'flk_1k',   nome:'FLK 1K',            qty:6,   min:2, unit:'Kt' },
+  { id:'flk_2k',   nome:'FLK 2K A+B',        qty:2,   min:1, unit:'set' },
+  { id:'primer',    nome:'Primer/Voranstrich',qty:3,   min:1, unit:'L' },
+  { id:'gas',       nome:'Gas propano',       qty:2,   min:1, unit:'Fl' },
+  { id:'bithermol', nome:'Bithermol',         qty:10,  min:3, unit:'L' },
+  { id:'vlies',     nome:'Vlies/Geotessile',  qty:2,   min:1, unit:'rot' },
+];
+
+if (!magazzino) magazzino = JSON.parse(JSON.stringify(MAG_DEFAULT));
+
+// ══════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════
+function switchPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'magazzino') renderMagazzino();
+  if (name === 'log') renderLog();
+}
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => switchPage(t.dataset.tab));
+});
+
+// ══════════════════════════════════════════════════
+// CRONOMETRO
+// ══════════════════════════════════════════════════
+function startTimer() {
+  if (isRunning) return;
+  isRunning = true;
+  startTime = Date.now() - elapsedMs;
+  timerInterval = setInterval(updateChrono, 200);
+  document.getElementById('btnStart').disabled = true;
+  document.getElementById('btnStop').disabled = false;
+  document.getElementById('chronoDisplay').classList.add('running');
+  document.getElementById('chronoStatus').textContent = 'Lavoro in corso…';
+  document.getElementById('timeCalc').style.display = 'none';
+}
+
+function stopTimer() {
+  if (!isRunning) return;
+  isRunning = false;
+  clearInterval(timerInterval);
+  elapsedMs = Date.now() - startTime;
+  document.getElementById('btnStart').disabled = false;
+  document.getElementById('btnStop').disabled = true;
+  document.getElementById('chronoDisplay').classList.remove('running');
+  const ore = elapsedMs / 3600000;
+  document.getElementById('chronoStatus').textContent = 'Fine lavoro registrato';
+  document.getElementById('oreCalcolate').textContent = ore.toFixed(2) + ' h';
+  document.getElementById('timeCalc').style.display = 'block';
+}
+
+function updateChrono() {
+  elapsedMs = Date.now() - startTime;
+  const h = Math.floor(elapsedMs / 3600000);
+  const m = Math.floor((elapsedMs % 3600000) / 60000);
+  const s = Math.floor((elapsedMs % 60000) / 1000);
+  document.getElementById('chronoDisplay').textContent =
+    String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function resetTimer() {
+  stopTimer();
+  elapsedMs = 0;
+  document.getElementById('chronoDisplay').textContent = '00:00:00';
+  document.getElementById('chronoStatus').textContent = 'In attesa di avvio';
+  document.getElementById('timeCalc').style.display = 'none';
+}
+
+// ══════════════════════════════════════════════════
+// MANSIONE CHIPS
+// ══════════════════════════════════════════════════
+function selectMansione(el, val) {
+  document.querySelectorAll('.mansione-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mansioneSelected').value = val;
+}
+
+// ══════════════════════════════════════════════════
+// SUVA CHECKLIST
+// ══════════════════════════════════════════════════
+const checks = { s1: false, s2: false, s3: false, s4: false };
+function toggleCheck(id) {
+  checks[id] = !checks[id];
+  const el = document.getElementById(id);
+  el.classList.toggle('checked', checks[id]);
+}
+function getSuvaStatus() {
+  const vals = Object.values(checks);
+  const done = vals.filter(Boolean).length;
+  return { done, total: vals.length, ok: vals.every(Boolean) };
+}
+
+// ══════════════════════════════════════════════════
+// METEO (OpenMeteo)
+// ══════════════════════════════════════════════════
+async function loadMeteo() {
+  try {
+    const pos = await new Promise((res, rej) => {
+      navigator.geolocation.getCurrentPosition(res, rej, { timeout: 6000 });
+    });
+    const { latitude: lat, longitude: lon } = pos.coords;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=relativehumidity_2m&timezone=auto`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const cw = d.current_weather;
+    const rh = d.hourly?.relativehumidity_2m?.[0] ?? '—';
+    meteoData = { temp: cw.temperature, wind: cw.windspeed, rh };
+    document.getElementById('meteoStrip').innerHTML = `
+      <div class="meteo-chip">🌡 <span class="val">${cw.temperature}°C</span> Aria</div>
+      <div class="meteo-chip">💨 <span class="val">${cw.windspeed} km/h</span></div>
+      <div class="meteo-chip">💧 <span class="val">${rh}%</span> Umidità</div>
+    `;
+    // SIA 271 FLK warning
+    if (rh > 80 || cw.temperature < 5 || cw.temperature > 30) {
+      document.getElementById('meteoStrip').innerHTML += `
+        <div class="meteo-chip" style="border-color:rgba(224,85,85,0.4); color:var(--danger)">
+          ⚠️ FLK fuori spec SIA 271
+        </div>`;
+    }
+  } catch (e) {
+    document.getElementById('meteoStrip').innerHTML = `
+      <div class="meteo-chip" style="color:var(--text-muted)">📡 GPS non disponibile — inserisci manualmente</div>`;
+  }
+}
+
+// ══════════════════════════════════════════════════
+// SALVA DATI → SHEETS
+// ══════════════════════════════════════════════════
+async function salvaDati() {
+  const cantiere = document.getElementById('cantiere').value.trim();
+  const operaio  = document.getElementById('operaio').value.trim();
+  const tipo     = document.getElementById('tipoLavoro').value;
+  const mansione = document.getElementById('mansioneSelected').value;
+  const qty      = document.getElementById('quantita').value;
+  const unit     = document.getElementById('unitSelect').value;
+  const strati   = document.getElementById('strati').value;
+  const tempSup  = document.getElementById('tempSupporto').value;
+  const note     = document.getElementById('note').value.trim();
+  const fornitore= document.getElementById('fornitore').value;
+  const suva     = getSuvaStatus();
+
+  if (!cantiere) { showToast('⚠️ Inserisci il nome cantiere', 'err'); return; }
+  if (!tipo)     { showToast('⚠️ Seleziona il tipo di lavoro', 'err'); return; }
+  if (!qty)      { showToast('⚠️ Inserisci la quantità', 'err'); return; }
+
+  const ore = elapsedMs > 0 ? (elapsedMs / 3600000).toFixed(2) : '';
+
+  const now = new Date();
+  const row = {
+    Data:            now.toLocaleDateString('it-CH'),
+    Ora:             now.toLocaleTimeString('it-CH', { hour:'2-digit', minute:'2-digit' }),
+    Cantiere:        cantiere,
+    Operaio:         operaio,
+    TipoLavoro:      tipo,
+    Mansione:        mansione,
+    Fornitore:       fornitore,
+    Quantita:        qty,
+    Unita:           unit,
+    Strati:          strati,
+    Ore_Lavorate:    ore,
+    Temp_Supporto:   tempSup,
+    Temp_Aria:       meteoData.temp ?? '',
+    Umidita:         meteoData.rh ?? '',
+    Vento_kmh:       meteoData.wind ?? '',
+    SUVA_OK:         suva.ok ? 'SI' : `${suva.done}/${suva.total}`,
+    Note:            note,
+    Timestamp:       now.toISOString(),
+  };
+
+  const btn = document.getElementById('btnSave');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Salvataggio…';
+
+  // salva locale
+  localLog.unshift(row);
+  localStorage.setItem('dp_log', JSON.stringify(localLog));
+
+  // invia a Sheets
+  try {
+    const res = await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(row),
+    });
+    setOnline(true);
+    showToast('✅ Salvato nel Diario di Bordo!', 'ok');
+  } catch (e) {
+    setOnline(false);
+    showToast('💾 Salvato offline — invieremo a Sheets appena connesso', 'ok');
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '🚀 SALVA NEL DIARIO DI BORDO';
+
+  // reset form parziale
+  document.getElementById('quantita').value = '';
+  document.getElementById('note').value = '';
+  document.getElementById('tempSupporto').value = '';
+  Object.keys(checks).forEach(k => {
+    checks[k] = false;
+    document.getElementById(k).classList.remove('checked');
+  });
+  document.querySelectorAll('.mansione-chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('mansioneSelected').value = '';
+  resetTimer();
+}
+
+// ══════════════════════════════════════════════════
+// MAGAZZINO
+// ══════════════════════════════════════════════════
+function renderMagazzino() {
+  const grid = document.getElementById('magGrid');
+  const sel  = document.getElementById('magMateriale');
+  sel.innerHTML = '<option value="">— Seleziona —</option>';
+  let low = 0;
+  grid.innerHTML = magazzino.map(m => {
+    const isLow = m.qty <= m.min;
+    if (isLow) low++;
+    return `<div class="mag-item ${isLow ? 'low' : 'ok'}">
+      <div class="mag-badge ${isLow ? 'low' : 'ok'}">${isLow ? 'BASSO' : 'OK'}</div>
+      <div class="mag-name">${m.nome}</div>
+      <div><span class="mag-qty">${m.qty}</span> <span class="mag-unit">${m.unit}</span></div>
+      <div class="mag-threshold">Min: ${m.min} ${m.unit}</div>
+    </div>`;
+  }).join('');
+  magazzino.forEach(m => {
+    sel.innerHTML += `<option value="${m.id}">${m.nome} (${m.qty} ${m.unit})</option>`;
+  });
+  document.getElementById('statTotale').textContent = magazzino.length;
+  document.getElementById('statLow').textContent = low;
+}
+
+function aggiornaScorta() {
+  const id  = document.getElementById('magMateriale').value;
+  const qty = parseFloat(document.getElementById('magQty').value);
+  if (!id || isNaN(qty)) { showToast('⚠️ Seleziona materiale e quantità', 'err'); return; }
+  const item = magazzino.find(m => m.id === id);
+  if (item) {
+    item.qty = qty;
+    localStorage.setItem('dp_mag', JSON.stringify(magazzino));
+    renderMagazzino();
+    document.getElementById('magQty').value = '';
+    showToast(`✅ ${item.nome}: aggiornato a ${qty} ${item.unit}`, 'ok');
+  }
+}
+
+async function syncMagazzino() {
+  const el = document.getElementById('syncStatus');
+  el.textContent = '⏳ Sincronizzazione in corso…';
+  try {
+    const url = SHEETS_URL + '?action=get_listino';
+    const r = await fetch(url);
+    const d = await r.json();
+    if (d && d.materiali) {
+      // merge con magazzino locale
+      d.materiali.forEach(sm => {
+        const local = magazzino.find(m => m.id === sm.id || m.nome === sm.nome);
+        if (local) { local.qty = sm.qty; local.min = sm.min; }
+      });
+      localStorage.setItem('dp_mag', JSON.stringify(magazzino));
+      renderMagazzino();
+      el.textContent = '✅ Sync completato — ' + new Date().toLocaleTimeString('it-CH');
+    } else {
+      el.textContent = '⚠️ Nessun dato ricevuto da Sheets';
+    }
+  } catch (e) {
+    el.textContent = '❌ Errore connessione — controlla il webhook';
+  }
+}
+
+// ══════════════════════════════════════════════════
+// DIARIO LOG
+// ══════════════════════════════════════════════════
+function renderLog() {
+  const container = document.getElementById('logContainer');
+  if (!localLog.length) {
+    container.innerHTML = '<p style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px 0;">Nessuna voce ancora.<br>Salva il primo lavoro dal tab ⏱ Lavoro.</p>';
+    document.getElementById('riepilogoOre').textContent = '0h';
+    document.getElementById('riepilogoVoci').textContent = '0';
+    return;
+  }
+  let totOre = 0;
+  container.innerHTML = localLog.slice(0,20).map(r => {
+    if (r.Ore_Lavorate) totOre += parseFloat(r.Ore_Lavorate) || 0;
+    return `<div class="log-entry">
+      <div class="log-time">${r.Data} ${r.Ora} · ${r.Cantiere}</div>
+      <div class="log-main">${r.TipoLavoro} ${r.Mansione ? '· ' + r.Mansione : ''}</div>
+      <div class="log-detail">${r.Quantita} ${r.Unita} · ${r.Fornitore || '—'} · ${r.Ore_Lavorate ? r.Ore_Lavorate + 'h' : '—'} ${r.Note ? '· ' + r.Note.substring(0,40) : ''}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('riepilogoOre').textContent = totOre.toFixed(1) + 'h';
+  document.getElementById('riepilogoVoci').textContent = localLog.length;
+}
+
+function svuotaDiario() {
+  if (!confirm('Svuotare il diario locale? I dati già inviati a Sheets rimangono.')) return;
+  localLog = [];
+  localStorage.removeItem('dp_log');
+  renderLog();
+  showToast('🗑 Diario locale svuotato', 'ok');
+}
+
+// ══════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════
+function showToast(msg, type = 'ok') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + type;
+  setTimeout(() => el.classList.remove('show'), 3200);
+}
+
+function setOnline(on) {
+  document.getElementById('syncDot').style.background = on ? 'var(--success)' : 'var(--danger)';
+  document.getElementById('syncDot').style.boxShadow = on ? '0 0 6px var(--success)' : '0 0 6px var(--danger)';
+  document.getElementById('syncLabel').textContent = on ? 'Online' : 'Offline';
+}
+
+// ══════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════
+window.addEventListener('load', () => {
+  renderMagazzino();
+  loadMeteo();
+  // restore cantiere da localStorage
+  const lastCantiere = localStorage.getItem('dp_lastCantiere');
+  const lastOperaio  = localStorage.getItem('dp_lastOperaio');
+  if (lastCantiere) document.getElementById('cantiere').value = lastCantiere;
+  if (lastOperaio)  document.getElementById('operaio').value  = lastOperaio;
+  // auto-save cantiere/operaio
+  document.getElementById('cantiere').addEventListener('blur', () => {
+    localStorage.setItem('dp_lastCantiere', document.getElementById('cantiere').value);
+  });
+  document.getElementById('operaio').addEventListener('blur', () => {
+    localStorage.setItem('dp_lastOperaio', document.getElementById('operaio').value);
+  });
+  // check connectivity
+  setOnline(navigator.onLine);
+  window.addEventListener('online',  () => setOnline(true));
+  window.addEventListener('offline', () => setOnline(false));
+});
+</script>
 </body>
 </html>
