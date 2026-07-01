@@ -560,6 +560,55 @@
 
   /* hide/show utility */
   .hidden { display: none !important; }
+
+  /* ── FIX 3: STEPPER / BUTTONS touch-friendly ── */
+  .mag-edit-row button,
+  .btn-small {
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 16px;
+    touch-action: manipulation;
+  }
+  @media (pointer: coarse) {
+    .mag-edit-row button,
+    .btn-small {
+      min-width: 52px;
+      min-height: 52px;
+    }
+  }
+
+  /* ── FIX 4: Badge esaurito ── */
+  .badge-out {
+    background: rgba(224,85,85,0.15);
+    color: var(--danger);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ── FIX 5: Header layout ── */
+  .header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .header-row > div:last-child {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+  }
+  @media (max-width: 360px) {
+    .status-label { font-size: 0; }
+    .status-label::before { font-size: 11px; }
+  }
 </style>
 </head>
 <body>
@@ -742,6 +791,10 @@
     <div class="card-title"><span class="icon">📦</span> Inventario Furgone</div>
     <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Livello scorte sul furgone. Tocca quantità per modificare.</p>
 
+    <div class="field" style="margin-bottom:12px;">
+      <input type="search" id="magSearch" placeholder="🔍 Cerca materiale…" oninput="renderMagazzino()" autocomplete="off" style="width:100%; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-size:15px; padding:12px 14px; outline:none; font-family:var(--font);">
+    </div>
+
     <div class="stat-row" style="margin-bottom:16px;">
       <div class="stat-box">
         <div class="stat-val" id="statTotale">—</div>
@@ -857,6 +910,65 @@ let isRunning     = false;
 let meteoData     = {};
 let localLog      = JSON.parse(localStorage.getItem('dp_log') || '[]');
 let magazzino     = JSON.parse(localStorage.getItem('dp_mag') || 'null');
+
+// ══════════════════════════════════════════════════
+// CODA OFFLINE CON RITENTATIVO
+// ══════════════════════════════════════════════════
+const QKEY = 'dp_syncQueue';
+const getQ = () => JSON.parse(localStorage.getItem(QKEY) || '[]');
+const setQ = q => localStorage.setItem(QKEY, JSON.stringify(q));
+
+function accodaSync(payload) {
+  setQ([...getQ(), { payload, ts: Date.now() }]);
+  aggiornaBadgeSync();
+  svuotaCoda();
+}
+
+let inCorso = false;
+async function svuotaCoda() {
+  if (inCorso || !navigator.onLine) return;
+  inCorso = true;
+  let q = getQ();
+  while (q.length) {
+    try {
+      await fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(q[0].payload)
+      });
+      q.shift();
+      setQ(q);
+    } catch (e) { break; }
+  }
+  inCorso = false;
+  aggiornaBadgeSync();
+}
+
+function aggiornaBadgeSync() {
+  const q = getQ();
+  const dot = document.getElementById('syncDot');
+  const lbl = document.getElementById('syncLabel');
+  if (!dot || !lbl) return;
+  if (q.length > 0) {
+    dot.style.background = 'var(--accent)';
+    dot.style.boxShadow = '0 0 6px var(--accent)';
+    lbl.textContent = `⏳ ${q.length} in attesa`;
+  } else if (navigator.onLine) {
+    dot.style.background = 'var(--success)';
+    dot.style.boxShadow = '0 0 6px var(--success)';
+    lbl.textContent = '✓ Sincronizzato';
+  } else {
+    dot.style.background = 'var(--danger)';
+    dot.style.boxShadow = '0 0 6px var(--danger)';
+    lbl.textContent = 'Offline';
+  }
+}
+
+window.addEventListener('online', () => { svuotaCoda(); aggiornaBadgeSync(); });
+window.addEventListener('offline', aggiornaBadgeSync);
+setInterval(svuotaCoda, 60000);
+
 
 // ══════════════════════════════════════════════════
 // MAGAZZINO DEFAULT
@@ -1195,20 +1307,9 @@ async function salvaDati() {
   localLog.unshift(row);
   localStorage.setItem('dp_log', JSON.stringify(localLog));
 
-  // invia a Sheets
-  try {
-    const res = await fetch(SHEETS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(row),
-    });
-    setOnline(true);
-    showToast('✅ Salvato nel Diario di Bordo!', 'ok');
-  } catch (e) {
-    setOnline(false);
-    showToast('💾 Salvato offline — invieremo a Sheets appena connesso', 'ok');
-  }
+  // accoda per sync con Sheets (ritentativo automatico)
+  accodaSync(row);
+  showToast('✅ Salvato nel Diario di Bordo!', 'ok');
 
   btn.disabled = false;
   btn.innerHTML = '🚀 SALVA NEL DIARIO DI BORDO';
@@ -1232,22 +1333,37 @@ function renderMagazzino() {
   const grid = document.getElementById('magGrid');
   const sel  = document.getElementById('magMateriale');
   sel.innerHTML = '<option value="">— Seleziona —</option>';
+
+  // Search filter
+  const searchEl = document.getElementById('magSearch');
+  const q = searchEl ? searchEl.value.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '') : '';
+
+  const filtered = magazzino.filter(m => {
+    if (!q) return true;
+    const haystack = m.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return haystack.includes(q);
+  });
+
   let low = 0;
-  grid.innerHTML = magazzino.map(m => {
+  grid.innerHTML = filtered.map(m => {
     const isLow = m.qty <= m.min;
+    const esaurito = m.qty <= 0;
     if (isLow) low++;
     return `<div class="mag-item ${isLow ? 'low' : 'ok'}">
-      <div class="mag-badge ${isLow ? 'low' : 'ok'}">${isLow ? 'BASSO' : 'OK'}</div>
-      <div class="mag-name">${m.nome}</div>
+      <div class="mag-badge ${isLow ? 'low' : 'ok'}">${esaurito ? 'ESAURITO' : (isLow ? 'BASSO' : 'OK')}</div>
+      <div class="mag-name">${m.nome}${esaurito ? ' <span class="badge-out">Esaurito</span>' : ''}</div>
       <div><span class="mag-qty">${m.qty}</span> <span class="mag-unit">${m.unit}</span></div>
       <div class="mag-threshold">Min: ${m.min} ${m.unit}</div>
     </div>`;
   }).join('');
+
+  // Always populate select with all items (unfiltered)
   magazzino.forEach(m => {
     sel.innerHTML += `<option value="${m.id}">${m.nome} (${m.qty} ${m.unit})</option>`;
   });
   document.getElementById('statTotale').textContent = magazzino.length;
-  document.getElementById('statLow').textContent = low;
+  document.getElementById('statLow').textContent = magazzino.filter(m => m.qty <= m.min).length;
 }
 
 function aggiornaScorta() {
@@ -1331,9 +1447,7 @@ function showToast(msg, type = 'ok') {
 }
 
 function setOnline(on) {
-  document.getElementById('syncDot').style.background = on ? 'var(--success)' : 'var(--danger)';
-  document.getElementById('syncDot').style.boxShadow = on ? '0 0 6px var(--success)' : '0 0 6px var(--danger)';
-  document.getElementById('syncLabel').textContent = on ? 'Online' : 'Offline';
+  aggiornaBadgeSync();
 }
 
 // ══════════════════════════════════════════════════
@@ -1355,10 +1469,9 @@ window.addEventListener('load', () => {
   document.getElementById('operaio').addEventListener('blur', () => {
     localStorage.setItem('dp_lastOperaio', document.getElementById('operaio').value);
   });
-  // check connectivity
-  setOnline(navigator.onLine);
-  window.addEventListener('online',  () => setOnline(true));
-  window.addEventListener('offline', () => setOnline(false));
+  // check connectivity & sync queue
+  aggiornaBadgeSync();
+  svuotaCoda();
 });
 </script>
 </body>
