@@ -639,29 +639,6 @@
     <div class="card-title"><span class="icon">📥</span> Inserisci il Lavoro Svolto</div>
 
     <div class="field">
-      <label>Tipo di Lavoro</label>
-      <select id="tipoLavoro">
-        <option value="">— Seleziona —</option>
-        <option value="Bitumen EGV3">Bitumen EGV3</option>
-        <option value="Bitumen EP5">Bitumen EP5</option>
-        <option value="FLK 1K">FLK 1K</option>
-        <option value="FLK 2K">FLK 2K</option>
-        <option value="PVC/TPO">PVC / TPO</option>
-        <option value="Ablauf">Ablauf / Notablauf</option>
-        <option value="Lichtkuppel">Lichtkuppel</option>
-        <option value="Dampfbremse">Dampfbremse</option>
-        <option value="Primer/Voranstrich">Primer / Voranstrich</option>
-        <option value="PIR Dämmung">PIR Dämmung</option>
-        <option value="Aufbordung">Aufbordung</option>
-        <option value="Zeilsystem">Zeilsystem</option>
-        <option value="Vorbereitung Untergrund">Vorbereitung Untergrund</option>
-        <option value="Tagesabschottung">Tagesabschottung</option>
-        <option value="Kontrolle / Prüfung">Kontrolle / Prüfung SIA 271</option>
-        <option value="Reinigung Abschluss">Reinigung Abschluss</option>
-      </select>
-    </div>
-
-    <div class="field">
       <label>Mansione Principale</label>
       <div class="mansioni-grid" id="mansioniGridLv1"></div>
       <input type="hidden" id="mansionePrincipale" value="">
@@ -1143,7 +1120,6 @@ async function loadMeteo() {
 async function salvaDati() {
   const cantiere = document.getElementById('cantiere').value.trim();
   const operaio  = document.getElementById('operaio').value.trim();
-  const tipo     = document.getElementById('tipoLavoro').value;
   const mansione = document.getElementById('mansioneSelected').value;
   const qty      = document.getElementById('quantita').value;
   const unit     = document.getElementById('unitSelect').value;
@@ -1154,7 +1130,6 @@ async function salvaDati() {
   const suva     = getSuvaStatus();
 
   if (!cantiere) { showToast('⚠️ Inserisci il nome cantiere', 'err'); return; }
-  if (!tipo)     { showToast('⚠️ Seleziona il tipo di lavoro', 'err'); return; }
   if (!qty)      { showToast('⚠️ Inserisci la quantità', 'err'); return; }
 
   const ore = elapsedMs > 0 ? (elapsedMs / 3600000).toFixed(2) : '';
@@ -1165,7 +1140,7 @@ async function salvaDati() {
     Ora:             now.toLocaleTimeString('it-CH', { hour:'2-digit', minute:'2-digit' }),
     Cantiere:        cantiere,
     Operaio:         operaio,
-    TipoLavoro:      tipo,
+    TipoLavoro:      mansioneState.principale ? MANSIONI_TREE[mansioneState.principale].de : '',
     Mansione:        mansione,
     MansionePrincipale: document.getElementById('mansionePrincipale').value,
     MansioneGruppo:     document.getElementById('mansioneGruppo').value,
