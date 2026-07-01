@@ -535,19 +535,41 @@
   .mansione-chip {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 7px 14px;
+    border-radius: 10px;
+    padding: 9px 12px;
     font-size: 13px;
     cursor: pointer;
     transition: all 0.15s;
     user-select: none;
     white-space: nowrap;
+    text-align: left;
+  }
+  .mansione-chip.lv1 {
+    flex: 1 1 160px;
+    font-weight: 700;
+  }
+  .mansione-chip.lv2 {
+    flex: 1 1 140px;
+  }
+  .mansione-chip.lv3 {
+    flex: 1 1 180px;
   }
   .mansione-chip.active {
     background: var(--accent-dim);
     border-color: rgba(245,166,35,0.5);
     color: var(--accent);
     font-weight: 700;
+  }
+  .mansione-level {
+    margin-top: 10px;
+  }
+  .mansione-level-title {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    margin: 10px 0 6px;
+    text-transform: uppercase;
   }
 
   /* ── SECTION SEPARATOR ── */
@@ -662,18 +684,20 @@
 
     <div class="field">
       <label>Mansione Specifica</label>
-      <div class="mansioni-grid" id="mansioniGrid">
-        <div class="mansione-chip" onclick="selectMansione(this, 'Applicazione membrana')">Applicazione membrana</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Incollaggio Dampfbremse')">Incollaggio Dampfbremse</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Schlackenabbrand')">Schlackenabbrand</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Abbordung')">Abbordung</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Kehle / Ecken')">Kehle / Ecken</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Durchdringung')">Durchdringung</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'FLK applicazione')">FLK applicazione</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Posatura PIR')">Posatura PIR</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Pulizia griglia')">Pulizia griglia</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Altro')">Altro</div>
+      <div class="mansione-level">
+        <div class="mansione-level-title">Mansione principale</div>
+        <div class="mansioni-grid" id="mansioniLv1"></div>
       </div>
+      <div class="mansione-level hidden" id="mansioniLv2Wrap">
+        <div class="mansione-level-title">Gruppo</div>
+        <div class="mansioni-grid" id="mansioniLv2"></div>
+      </div>
+      <div class="mansione-level hidden" id="mansioniLv3Wrap">
+        <div class="mansione-level-title">Dettaglio</div>
+        <div class="mansioni-grid" id="mansioniLv3"></div>
+      </div>
+      <input type="hidden" id="mansionePrincipale" value="">
+      <input type="hidden" id="mansioneGruppo" value="">
       <input type="hidden" id="mansioneSelected" value="">
     </div>
 
@@ -964,10 +988,82 @@ function resetTimer() {
 // ══════════════════════════════════════════════════
 // MANSIONE CHIPS
 // ══════════════════════════════════════════════════
-function selectMansione(el, val) {
-  document.querySelectorAll('.mansione-chip').forEach(c => c.classList.remove('active'));
+const MANSIONI_TREE = {
+  'Preparazione': {
+    'Supporto': ['Pulizia griglia', 'Preparazione Untergrund', 'Primer / Voranstrich'],
+    'Sicurezza': ['Tagesabschottung', 'Kontrolle / Prüfung SIA 271'],
+  },
+  'Dampfbremse': {
+    'Posa': ['Incollaggio Dampfbremse', 'Saldatura Dampfbremse'],
+    'Dettagli': ['Risvolti Dampfbremse', 'Sigillatura raccordi'],
+  },
+  'Isolamento': {
+    'PIR Dämmung': ['Posatura PIR', 'Taglio PIR', 'Fissaggio PIR'],
+    'Pendenze': ['Formazione pendenze', 'Raccordo isolamento'],
+  },
+  'Impermeabilizzazione': {
+    'Bitume': ['Applicazione membrana', 'Schlackenabbrand', 'Abbordung'],
+    'Dettagli': ['Kehle / Ecken', 'Durchdringung', 'Ablauf / Notablauf'],
+  },
+  'FLK / Finiture': {
+    'FLK': ['FLK applicazione', 'FLK armatura', 'FLK finitura'],
+    'Chiusura': ['Reinigung Abschluss', 'Controllo finale', 'Altro'],
+  },
+};
+
+function renderMansioniLv1() {
+  const grid = document.getElementById('mansioniLv1');
+  grid.innerHTML = Object.keys(MANSIONI_TREE).map(mansione => `
+    <div class="mansione-chip lv1" onclick="selectMansioneLv1(this, '${mansione}')">${mansione}</div>
+  `).join('');
+}
+
+function selectMansioneLv1(el, mansione) {
+  document.querySelectorAll('#mansioniLv1 .mansione-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('mansioneSelected').value = val;
+  document.getElementById('mansionePrincipale').value = mansione;
+  document.getElementById('mansioneGruppo').value = '';
+  document.getElementById('mansioneSelected').value = '';
+
+  const wrap = document.getElementById('mansioniLv2Wrap');
+  const grid = document.getElementById('mansioniLv2');
+  grid.innerHTML = Object.keys(MANSIONI_TREE[mansione]).map(gruppo => `
+    <div class="mansione-chip lv2" onclick="selectMansioneLv2(this, '${mansione}', '${gruppo}')">${gruppo}</div>
+  `).join('');
+  wrap.classList.remove('hidden');
+  document.getElementById('mansioniLv3Wrap').classList.add('hidden');
+  document.getElementById('mansioniLv3').innerHTML = '';
+}
+
+function selectMansioneLv2(el, mansione, gruppo) {
+  document.querySelectorAll('#mansioniLv2 .mansione-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mansioneGruppo').value = gruppo;
+  document.getElementById('mansioneSelected').value = '';
+
+  const wrap = document.getElementById('mansioniLv3Wrap');
+  const grid = document.getElementById('mansioniLv3');
+  grid.innerHTML = MANSIONI_TREE[mansione][gruppo].map(dettaglio => `
+    <div class="mansione-chip lv3" onclick="selectMansioneLv3(this, '${dettaglio}')">${dettaglio}</div>
+  `).join('');
+  wrap.classList.remove('hidden');
+}
+
+function selectMansioneLv3(el, dettaglio) {
+  document.querySelectorAll('#mansioniLv3 .mansione-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('mansioneSelected').value = dettaglio;
+}
+
+function resetMansioni() {
+  document.getElementById('mansionePrincipale').value = '';
+  document.getElementById('mansioneGruppo').value = '';
+  document.getElementById('mansioneSelected').value = '';
+  document.getElementById('mansioniLv2Wrap').classList.add('hidden');
+  document.getElementById('mansioniLv3Wrap').classList.add('hidden');
+  document.getElementById('mansioniLv2').innerHTML = '';
+  document.getElementById('mansioniLv3').innerHTML = '';
+  renderMansioniLv1();
 }
 
 // ══════════════════════════════════════════════════
@@ -1048,6 +1144,8 @@ async function salvaDati() {
     Operaio:         operaio,
     TipoLavoro:      tipo,
     Mansione:        mansione,
+    MansionePrincipale: document.getElementById('mansionePrincipale').value,
+    MansioneGruppo:     document.getElementById('mansioneGruppo').value,
     Fornitore:       fornitore,
     Quantita:        qty,
     Unita:           unit,
@@ -1096,8 +1194,7 @@ async function salvaDati() {
     checks[k] = false;
     document.getElementById(k).classList.remove('checked');
   });
-  document.querySelectorAll('.mansione-chip').forEach(c => c.classList.remove('active'));
-  document.getElementById('mansioneSelected').value = '';
+  resetMansioni();
   resetTimer();
 }
 
@@ -1216,6 +1313,7 @@ function setOnline(on) {
 // INIT
 // ══════════════════════════════════════════════════
 window.addEventListener('load', () => {
+  renderMansioniLv1();
   renderMagazzino();
   loadMeteo();
   // restore cantiere da localStorage
