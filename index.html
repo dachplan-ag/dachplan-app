@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>DachPlan OS · v4.1</title>
+<title>DachPlan OS · v4.2</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -535,13 +535,14 @@
   .mansione-chip {
     background: var(--surface2);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 7px 14px;
+    border-radius: 14px;
+    padding: 8px 12px;
     font-size: 13px;
+    line-height: 1.3;
     cursor: pointer;
     transition: all 0.15s;
     user-select: none;
-    white-space: nowrap;
+    white-space: normal;
   }
   .mansione-chip.active {
     background: var(--accent-dim);
@@ -568,7 +569,7 @@
   <div class="header-row">
     <div>
       <div class="brand">DachPlan <span>AG</span></div>
-      <div class="brand" style="font-size:9px; color:var(--text-muted); letter-spacing:0.06em; margin-top:1px;">OS v4.1 · SIA-CH</div>
+      <div class="brand" style="font-size:9px; color:var(--text-muted); letter-spacing:0.06em; margin-top:1px;">OS v4.2 · SIA-CH</div>
     </div>
     <div style="text-align:right">
       <span class="status-dot" id="syncDot"></span>
@@ -638,42 +639,20 @@
     <div class="card-title"><span class="icon">📥</span> Inserisci il Lavoro Svolto</div>
 
     <div class="field">
-      <label>Tipo di Lavoro</label>
-      <select id="tipoLavoro">
-        <option value="">— Seleziona —</option>
-        <option value="Bitumen EGV3">Bitumen EGV3</option>
-        <option value="Bitumen EP5">Bitumen EP5</option>
-        <option value="FLK 1K">FLK 1K</option>
-        <option value="FLK 2K">FLK 2K</option>
-        <option value="PVC/TPO">PVC / TPO</option>
-        <option value="Ablauf">Ablauf / Notablauf</option>
-        <option value="Lichtkuppel">Lichtkuppel</option>
-        <option value="Dampfbremse">Dampfbremse</option>
-        <option value="Primer/Voranstrich">Primer / Voranstrich</option>
-        <option value="PIR Dämmung">PIR Dämmung</option>
-        <option value="Aufbordung">Aufbordung</option>
-        <option value="Zeilsystem">Zeilsystem</option>
-        <option value="Vorbereitung Untergrund">Vorbereitung Untergrund</option>
-        <option value="Tagesabschottung">Tagesabschottung</option>
-        <option value="Kontrolle / Prüfung">Kontrolle / Prüfung SIA 271</option>
-        <option value="Reinigung Abschluss">Reinigung Abschluss</option>
-      </select>
+      <label>Mansione Principale</label>
+      <div class="mansioni-grid" id="mansioniGridLv1"></div>
+      <input type="hidden" id="mansionePrincipale" value="">
     </div>
 
-    <div class="field">
+    <div class="field hidden" id="fieldGruppo">
+      <label>Gruppo FLK</label>
+      <div class="mansioni-grid" id="mansioniGridGruppo"></div>
+      <input type="hidden" id="mansioneGruppo" value="">
+    </div>
+
+    <div class="field hidden" id="fieldDettaglio">
       <label>Mansione Specifica</label>
-      <div class="mansioni-grid" id="mansioniGrid">
-        <div class="mansione-chip" onclick="selectMansione(this, 'Applicazione membrana')">Applicazione membrana</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Incollaggio Dampfbremse')">Incollaggio Dampfbremse</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Schlackenabbrand')">Schlackenabbrand</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Abbordung')">Abbordung</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Kehle / Ecken')">Kehle / Ecken</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Durchdringung')">Durchdringung</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'FLK applicazione')">FLK applicazione</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Posatura PIR')">Posatura PIR</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Pulizia griglia')">Pulizia griglia</div>
-        <div class="mansione-chip" onclick="selectMansione(this, 'Altro')">Altro</div>
-      </div>
+      <div class="mansioni-grid" id="mansioniGridDettaglio"></div>
       <input type="hidden" id="mansioneSelected" value="">
     </div>
 
@@ -962,12 +941,129 @@ function resetTimer() {
 }
 
 // ══════════════════════════════════════════════════
-// MANSIONE CHIPS
+// MANSIONI — Architettura a 5 categorie (30.06.2026)
+// DE primario / IT secondario
 // ══════════════════════════════════════════════════
-function selectMansione(el, val) {
-  document.querySelectorAll('.mansione-chip').forEach(c => c.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('mansioneSelected').value = val;
+const MANSIONI_TREE = {
+  bitumen: { de:'Bitumen', it:'Bitume', items:[
+    {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
+    {id:'dampf_flamm', de:'Dampfbremse – Membrana fiammata', it:'Dampfbremse – membrana fiammata'},
+    {id:'dampf_guss', de:'Dampfbremse – Gussasphalt/Bitumofen', it:'Dampfbremse – gussasphalt/bitumofen'},
+    {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
+    {id:'abdichtung', de:'Abdichtung / Deckschicht', it:'Strato di tenuta'},
+    {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
+    {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
+    {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
+  ]},
+  kunststoff: { de:'Kunststoff / PVC-TPO', it:'Kunststoff / PVC-TPO', items:[
+    {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
+    {id:'dampfbremse', de:'Dampfbremse', it:'Dampfbremse'},
+    {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
+    {id:'abdichtung', de:'Abdichtung / Deckschicht PVC-TPO', it:'Strato di tenuta PVC-TPO'},
+    {id:'schweissnaht', de:'Schweissnaht / Fügung', it:'Saldatura / giunzione'},
+    {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
+    {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
+    {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
+  ]},
+  flk: { de:'FLK', it:'FLK', groups:{
+    fenster: { de:'Fenster', it:'Finestre', items:[
+      {id:'fenster_anschluss', de:'Fensteranschluss', it:'Raccordo finestra'},
+      {id:'fensterbank', de:'Fensterbank', it:'Davanzale'},
+    ]},
+    montierte_objekte: { de:'Montierte Objekte', it:'Oggetti montati', items:[
+      {id:'lichtkuppel_flk', de:'Lichtkuppel Anschluss', it:'Raccordo lucernario'},
+      {id:'ablauf_flk', de:'Ablauf Anschluss', it:'Raccordo scarico'},
+      {id:'durchdringung', de:'Durchdringung', it:'Passaggio / attraversamento'},
+    ]},
+    anschluss: { de:'Anschluss', it:'Raccordi', items:[
+      {id:'wandanschluss', de:'Wandanschluss', it:'Raccordo a parete'},
+      {id:'tueranschluss', de:'Türanschluss', it:'Raccordo porta'},
+      {id:'kehle_flk', de:'Kehle / Ecken', it:'Gola / Angoli'},
+    ]},
+  }},
+  montage: { de:'Montage', it:'Montaggio', items:[
+    {id:'lichtkuppel', de:'Lichtkuppel', it:'Lucernario'},
+    {id:'ablauf', de:'Ablauf / Notablauf', it:'Scarico / scarico di sicurezza'},
+    {id:'lueftungsrohr', de:'Lüftungsrohr', it:'Tubo di ventilazione'},
+    {id:'dachausstieg', de:'Dachausstieg', it:'Uscita sul tetto'},
+    {id:'kamin_rwa', de:'Kamin / RWA-Anschluss', it:'Camino / raccordo RWA'},
+    {id:'kontrollstuetze', de:'Kontrollstütze', it:'Supporto di controllo'},
+    {id:'stromkasten', de:'Stromkasten / Kabeldurchführung', it:'Cassetta elettrica / passaggio cavi'},
+    {id:'metallhalter_gelaender', de:'Metallhalter Geländer', it:'Supporto metallico ringhiera'},
+    {id:'metallhalter_industrie', de:'Metallhalter Industriemaschine', it:'Supporto metallico macchinario'},
+  ]},
+  sekuranten: { de:'Sekuranten / Seilsystem', it:'Sekuranten / sistema a fune', items:[
+    {id:'seilsystem_montage', de:'Seilsystem Montage', it:'Montaggio sistema a fune'},
+    {id:'anschlagpunkt', de:'Anschlagpunkt', it:'Punto di ancoraggio'},
+    {id:'kontrolle_sekurant', de:'Kontrolle / Prüfung', it:'Controllo / verifica'},
+  ]},
+};
+
+let mansioneState = { principale:'', gruppo:'', dettaglio:'', dettaglioLabel:'' };
+
+function renderMansioniLv1() {
+  const grid = document.getElementById('mansioniGridLv1');
+  grid.innerHTML = Object.entries(MANSIONI_TREE).map(([key, m]) =>
+    `<div class="mansione-chip" data-key="${key}" onclick="selectMansionePrincipale('${key}')">${m.de}<br><small style="opacity:.6">${m.it}</small></div>`
+  ).join('');
+}
+
+function selectMansionePrincipale(key) {
+  mansioneState = { principale:key, gruppo:'', dettaglio:'', dettaglioLabel:'' };
+  document.getElementById('mansionePrincipale').value = key;
+  document.querySelectorAll('#mansioniGridLv1 .mansione-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.key === key));
+
+  const m = MANSIONI_TREE[key];
+  const fieldGruppo = document.getElementById('fieldGruppo');
+  const fieldDettaglio = document.getElementById('fieldDettaglio');
+  document.getElementById('mansioneSelected').value = '';
+  document.getElementById('mansioneGruppo').value = '';
+
+  if (m.groups) {
+    fieldGruppo.classList.remove('hidden');
+    fieldDettaglio.classList.add('hidden');
+    document.getElementById('mansioniGridGruppo').innerHTML = Object.entries(m.groups).map(([gkey, g]) =>
+      `<div class="mansione-chip" data-key="${gkey}" onclick="selectMansioneGruppo('${gkey}')">${g.de}<br><small style="opacity:.6">${g.it}</small></div>`
+    ).join('');
+  } else {
+    fieldGruppo.classList.add('hidden');
+    fieldDettaglio.classList.remove('hidden');
+    renderMansioniDettaglio(m.items);
+  }
+}
+
+function selectMansioneGruppo(gkey) {
+  mansioneState.gruppo = gkey;
+  document.getElementById('mansioneGruppo').value = gkey;
+  document.querySelectorAll('#mansioniGridGruppo .mansione-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.key === gkey));
+  document.getElementById('fieldDettaglio').classList.remove('hidden');
+  renderMansioniDettaglio(MANSIONI_TREE.flk.groups[gkey].items);
+}
+
+function renderMansioniDettaglio(items) {
+  document.getElementById('mansioniGridDettaglio').innerHTML = items.map(it =>
+    `<div class="mansione-chip" data-key="${it.id}" onclick="selectMansioneDettaglio('${it.id}','${it.de.replace(/'/g,"\\'")}')">${it.de}<br><small style="opacity:.6">${it.it}</small></div>`
+  ).join('');
+}
+
+function selectMansioneDettaglio(id, deLabel) {
+  mansioneState.dettaglio = id;
+  mansioneState.dettaglioLabel = deLabel;
+  document.getElementById('mansioneSelected').value = deLabel;
+  document.querySelectorAll('#mansioniGridDettaglio .mansione-chip').forEach(c =>
+    c.classList.toggle('active', c.dataset.key === id));
+}
+
+function resetMansioni() {
+  mansioneState = { principale:'', gruppo:'', dettaglio:'', dettaglioLabel:'' };
+  document.getElementById('mansionePrincipale').value = '';
+  document.getElementById('mansioneGruppo').value = '';
+  document.getElementById('mansioneSelected').value = '';
+  document.getElementById('fieldGruppo').classList.add('hidden');
+  document.getElementById('fieldDettaglio').classList.add('hidden');
+  document.querySelectorAll('#mansioniGridLv1 .mansione-chip').forEach(c => c.classList.remove('active'));
 }
 
 // ══════════════════════════════════════════════════
@@ -1024,7 +1120,6 @@ async function loadMeteo() {
 async function salvaDati() {
   const cantiere = document.getElementById('cantiere').value.trim();
   const operaio  = document.getElementById('operaio').value.trim();
-  const tipo     = document.getElementById('tipoLavoro').value;
   const mansione = document.getElementById('mansioneSelected').value;
   const qty      = document.getElementById('quantita').value;
   const unit     = document.getElementById('unitSelect').value;
@@ -1035,7 +1130,7 @@ async function salvaDati() {
   const suva     = getSuvaStatus();
 
   if (!cantiere) { showToast('⚠️ Inserisci il nome cantiere', 'err'); return; }
-  if (!tipo)     { showToast('⚠️ Seleziona il tipo di lavoro', 'err'); return; }
+  if (!mansioneState.principale) { showToast('⚠️ Seleziona la mansione principale', 'err'); return; }
   if (!qty)      { showToast('⚠️ Inserisci la quantità', 'err'); return; }
 
   const ore = elapsedMs > 0 ? (elapsedMs / 3600000).toFixed(2) : '';
@@ -1046,8 +1141,10 @@ async function salvaDati() {
     Ora:             now.toLocaleTimeString('it-CH', { hour:'2-digit', minute:'2-digit' }),
     Cantiere:        cantiere,
     Operaio:         operaio,
-    TipoLavoro:      tipo,
+    TipoLavoro:      mansioneState.principale ? MANSIONI_TREE[mansioneState.principale].de : '',
     Mansione:        mansione,
+    MansionePrincipale: document.getElementById('mansionePrincipale').value,
+    MansioneGruppo:     document.getElementById('mansioneGruppo').value,
     Fornitore:       fornitore,
     Quantita:        qty,
     Unita:           unit,
@@ -1096,8 +1193,7 @@ async function salvaDati() {
     checks[k] = false;
     document.getElementById(k).classList.remove('checked');
   });
-  document.querySelectorAll('.mansione-chip').forEach(c => c.classList.remove('active'));
-  document.getElementById('mansioneSelected').value = '';
+  resetMansioni();
   resetTimer();
 }
 
@@ -1216,6 +1312,7 @@ function setOnline(on) {
 // INIT
 // ══════════════════════════════════════════════════
 window.addEventListener('load', () => {
+  renderMansioniLv1();
   renderMagazzino();
   loadMeteo();
   // restore cantiere da localStorage
