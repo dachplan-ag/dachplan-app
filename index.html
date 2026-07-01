@@ -941,62 +941,90 @@ function resetTimer() {
 }
 
 // ══════════════════════════════════════════════════
-// MANSIONI — Architettura a 5 categorie (30.06.2026)
-// DE primario / IT secondario
+// MANSIONI — Architettura a 5 categorie (01.07.2026)
+// DE primario / IT secondario / MISURA dinamica
 // ══════════════════════════════════════════════════
 const MANSIONI_TREE = {
-  bitumen: { de:'Bitumen', it:'Bitume', items:[
-    {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
-    {id:'dampf_flamm', de:'Dampfbremse – Membrana fiammata', it:'Dampfbremse – membrana fiammata'},
-    {id:'dampf_guss', de:'Dampfbremse – Gussasphalt/Bitumofen', it:'Dampfbremse – gussasphalt/bitumofen'},
-    {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
-    {id:'abdichtung', de:'Abdichtung / Deckschicht', it:'Strato di tenuta'},
-    {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
-    {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
-    {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
-  ]},
-  kunststoff: { de:'Kunststoff / PVC-TPO', it:'Kunststoff / PVC-TPO', items:[
-    {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
-    {id:'dampfbremse', de:'Dampfbremse', it:'Dampfbremse'},
-    {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
-    {id:'abdichtung', de:'Abdichtung / Deckschicht PVC-TPO', it:'Strato di tenuta PVC-TPO'},
-    {id:'schweissnaht', de:'Schweissnaht / Fügung', it:'Saldatura / giunzione'},
-    {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
-    {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
-    {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
-  ]},
-  flk: { de:'FLK', it:'FLK', groups:{
-    fenster: { de:'Fenster', it:'Finestre', items:[
-      {id:'fenster_anschluss', de:'Fensteranschluss', it:'Raccordo finestra'},
-      {id:'fensterbank', de:'Fensterbank', it:'Davanzale'},
+  bitumen: { 
+    de:'Bitumen', it:'Bitume', 
+    misura: 'mq',
+    items:[
+      {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
+      {id:'dampf_flamm', de:'Dampfbremse – Membrana fiammata', it:'Dampfbremse – membrana fiammata'},
+      {id:'dampf_guss', de:'Dampfbremse – Gussasphalt/Bitumofen', it:'Dampfbremse – gussasphalt/bitumofen'},
+      {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
+      {id:'abdichtung', de:'Abdichtung / Deckschicht', it:'Strato di tenuta'},
+      {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
+      {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
+      {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
     ]},
-    montierte_objekte: { de:'Montierte Objekte', it:'Oggetti montati', items:[
-      {id:'lichtkuppel_flk', de:'Lichtkuppel Anschluss', it:'Raccordo lucernario'},
-      {id:'ablauf_flk', de:'Ablauf Anschluss', it:'Raccordo scarico'},
-      {id:'durchdringung', de:'Durchdringung', it:'Passaggio / attraversamento'},
+  kunststoff: { 
+    de:'Kunststoff / PVC-TPO', it:'Kunststoff / PVC-TPO', 
+    misura: 'mq',
+    items:[
+      {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
+      {id:'dampfbremse', de:'Dampfbremse', it:'Dampfbremse'},
+      {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
+      {id:'abdichtung', de:'Abdichtung / Deckschicht PVC-TPO', it:'Strato di tenuta PVC-TPO'},
+      {id:'schweissnaht', de:'Schweissnaht / Fügung', it:'Saldatura / giunzione'},
+      {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
+      {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
+      {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
     ]},
-    anschluss: { de:'Anschluss', it:'Raccordi', items:[
-      {id:'wandanschluss', de:'Wandanschluss', it:'Raccordo a parete'},
-      {id:'tueranschluss', de:'Türanschluss', it:'Raccordo porta'},
-      {id:'kehle_flk', de:'Kehle / Ecken', it:'Gola / Angoli'},
+  flk: { 
+    de:'FLK', it:'FLK', 
+    misura: 'flk',
+    groups:{
+      fenster: { 
+        de:'Fenster', it:'Finestre', 
+        items:[
+          {id:'fenster_anschluss', de:'Fensteranschluss', it:'Raccordo finestra'},
+          {id:'fensterbank', de:'Fensterbank', it:'Davanzale'},
+        ]},
+      montierte_objekte: { 
+        de:'Montierte Objekte', it:'Oggetti montati', 
+        items:[
+          {id:'lichtkuppel', de:'Lichtkuppel', it:'Lucernario'},
+          {id:'ablauf', de:'Ablauf / Notablauf', it:'Scarico / scarico di sicurezza'},
+          {id:'lueftungsrohr', de:'Lüftungsrohr', it:'Tubo di ventilazione'},
+          {id:'dachausstieg', de:'Dachausstieg', it:'Uscita sul tetto'},
+          {id:'kamin_rwa', de:'Kamin / RWA-Anschluss', it:'Camino / raccordo RWA'},
+          {id:'kontrollstuetze', de:'Kontrollstütze', it:'Supporto di controllo'},
+          {id:'stromkasten', de:'Stromkasten / Kabeldurchführung', it:'Cassetta elettrica / passaggio cavi'},
+          {id:'metallhalter_gelaender', de:'Metallhalter Geländer', it:'Supporto metallico ringhiera'},
+          {id:'metallhalter_industrie', de:'Metallhalter Industriemaschine', it:'Supporto metallico macchinario'},
+        ]},
+      anschluss: { 
+        de:'Anschluss', it:'Raccordi', 
+        items:[
+          {id:'anschluss_beton_bitumen', de:'Anschluss Beton–Bitumen', it:'Raccordo cemento–bitume'},
+          {id:'anschluss_bitumen_kunststoff', de:'Anschluss Bitumen–Kunststoff', it:'Raccordo bitume–plastica'},
+          {id:'anschluss_bitumen_holz', de:'Anschluss Bitumen–Holz', it:'Raccordo bitume–legno'},
+          {id:'anschluss_bitumen_metall', de:'Anschluss Bitumen–Metall', it:'Raccordo bitume–metallo'},
+        ]},
+    }},
+  montage: { 
+    de:'Montage', it:'Montaggio', 
+    misura: 'pezzi',
+    items:[
+      {id:'lichtkuppel', de:'Lichtkuppel', it:'Lucernario'},
+      {id:'ablauf', de:'Ablauf / Notablauf', it:'Scarico / scarico di sicurezza'},
+      {id:'lueftungsrohr', de:'Lüftungsrohr', it:'Tubo di ventilazione'},
+      {id:'dachausstieg', de:'Dachausstieg', it:'Uscita sul tetto'},
+      {id:'kamin_rwa', de:'Kamin / RWA-Anschluss', it:'Camino / raccordo RWA'},
+      {id:'kontrollstuetze', de:'Kontrollstütze', it:'Supporto di controllo'},
+      {id:'stromkasten', de:'Stromkasten / Kabeldurchführung', it:'Cassetta elettrica / passaggio cavi'},
+      {id:'metallhalter_gelaender', de:'Metallhalter Geländer', it:'Supporto metallico ringhiera'},
+      {id:'metallhalter_industrie', de:'Metallhalter Industriemaschine', it:'Supporto metallico macchinario'},
     ]},
-  }},
-  montage: { de:'Montage', it:'Montaggio', items:[
-    {id:'lichtkuppel', de:'Lichtkuppel', it:'Lucernario'},
-    {id:'ablauf', de:'Ablauf / Notablauf', it:'Scarico / scarico di sicurezza'},
-    {id:'lueftungsrohr', de:'Lüftungsrohr', it:'Tubo di ventilazione'},
-    {id:'dachausstieg', de:'Dachausstieg', it:'Uscita sul tetto'},
-    {id:'kamin_rwa', de:'Kamin / RWA-Anschluss', it:'Camino / raccordo RWA'},
-    {id:'kontrollstuetze', de:'Kontrollstütze', it:'Supporto di controllo'},
-    {id:'stromkasten', de:'Stromkasten / Kabeldurchführung', it:'Cassetta elettrica / passaggio cavi'},
-    {id:'metallhalter_gelaender', de:'Metallhalter Geländer', it:'Supporto metallico ringhiera'},
-    {id:'metallhalter_industrie', de:'Metallhalter Industriemaschine', it:'Supporto metallico macchinario'},
-  ]},
-  sekuranten: { de:'Sekuranten / Seilsystem', it:'Sekuranten / sistema a fune', items:[
-    {id:'seilsystem_montage', de:'Seilsystem Montage', it:'Montaggio sistema a fune'},
-    {id:'anschlagpunkt', de:'Anschlagpunkt', it:'Punto di ancoraggio'},
-    {id:'kontrolle_sekurant', de:'Kontrolle / Prüfung', it:'Controllo / verifica'},
-  ]},
+  sekuranten: { 
+    de:'Sekuranten / Seilsystem', it:'Sekuranten / sistema a fune', 
+    misura: 'pezzi',
+    items:[
+      {id:'seilsystem_montage', de:'Seilsystem Montage', it:'Montaggio sistema a fune'},
+      {id:'anschlagpunkt', de:'Anschlagpunkt', it:'Punto di ancoraggio'},
+      {id:'kontrolle_sekurant', de:'Kontrolle / Prüfung', it:'Controllo / verifica'},
+    ]},
 };
 
 let mansioneState = { principale:'', gruppo:'', dettaglio:'', dettaglioLabel:'' };
