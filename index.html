@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>DachPlan OS · v4.2</title>
+<title>DachPlan OS · v4.3</title>
 <style>
   :root {
     --bg: #0f1117;
@@ -325,80 +325,152 @@
   .toast.err { border-color: rgba(224,85,85,0.4); color: var(--danger); }
 
   /* ── MAGAZZINO / INVENTARIO ── */
-  .mag-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+  .cat-strip {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 4px 0 12px;
+    position: sticky;
+    top: 93px;
+    background: var(--bg);
+    z-index: 50;
   }
-  .mag-item {
+  .cat-strip::-webkit-scrollbar { display: none; }
+  .mansione-strip {
+    top: 141px;
+    padding-top: 0;
+    padding-bottom: 14px;
+  }
+  .mansione-strip .cat-chip {
+    padding: 6px 12px;
+    font-size: 12px;
+    background: transparent;
+  }
+  .mansione-group-header {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 16px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .mansione-group-header:first-child { margin-top: 0; }
+  .mag-empty {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-align: center;
+    padding: 20px 0;
+  }
+  .cat-chip {
+    flex: 0 0 auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 9px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    white-space: nowrap;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cat-chip.active {
+    background: var(--accent-dim);
+    border-color: rgba(245,166,35,0.5);
+    color: var(--accent);
+  }
+  .mag-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     background: var(--surface2);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 12px;
-    position: relative;
+    margin-bottom: 8px;
   }
-  .mag-item.low { border-color: rgba(224,85,85,0.4); }
-  .mag-item.ok { border-color: rgba(62,207,142,0.2); }
-  .mag-name {
-    font-size: 12px;
+  .mag-row.in-furgone { border-color: rgba(245,166,35,0.4); }
+  .mag-row-info { flex: 1; min-width: 0; }
+  .mag-row-nome {
+    font-size: 13px;
     font-weight: 700;
     color: var(--text);
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    line-height: 1.35;
   }
-  .mag-qty {
-    font-size: 22px;
-    font-weight: 200;
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-  }
-  .mag-unit { font-size: 11px; color: var(--text-muted); display: inline; }
-  .mag-threshold {
-    font-size: 10px;
+  .mag-row-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+  .mag-row-btn {
+    flex-shrink: 0;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid var(--border);
+    background: var(--surface);
     color: var(--text-muted);
-    margin-top: 4px;
+    cursor: pointer;
+    white-space: nowrap;
   }
-  .mag-badge {
-    position: absolute;
-    top: 8px; right: 8px;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.05em;
-    padding: 2px 6px;
-    border-radius: 4px;
+  .mag-row-btn.active {
+    background: var(--accent-dim);
+    border-color: rgba(245,166,35,0.5);
+    color: var(--accent);
   }
-  .mag-badge.low { background: rgba(224,85,85,0.2); color: var(--danger); }
-  .mag-badge.ok { background: rgba(62,207,142,0.15); color: var(--success); }
-
-  .mag-edit-row {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    margin-top: 10px;
-  }
-  .mag-edit-row input {
-    flex: 1;
-    background: var(--surface2);
+  .furgone-qty-input {
+    width: 60px;
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     color: var(--text);
     font-size: 14px;
-    padding: 9px 12px;
-    outline: none;
-    font-family: var(--font);
-  }
-  .mag-edit-row input:focus { border-color: var(--accent); }
-  .btn-small {
-    padding: 9px 14px;
-    border-radius: var(--radius-sm);
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    border: none;
+    padding: 8px;
+    text-align: center;
     flex-shrink: 0;
   }
+  .qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .qty-btn {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--accent);
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .qty-btn:active { background: var(--accent-dim); }
+  .consumo-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-bottom: 8px;
+  }
+  .consumo-row-info { flex: 1; min-width: 0; }
+  .consumo-row-nome {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .consumo-row-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
   /* ── STATS / INFO ── */
   .stat-row {
@@ -503,28 +575,6 @@
   }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* ── CANTIERE SELECTOR ── */
-  .cantiere-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 6px 12px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    cursor: pointer;
-    margin: 4px;
-    transition: all 0.15s;
-  }
-  .cantiere-tag.active {
-    background: var(--accent-dim);
-    border-color: rgba(245,166,35,0.4);
-    color: var(--accent);
-  }
-
   /* MANSIONE CHIPS */
   .mansioni-grid {
     display: flex;
@@ -550,12 +600,262 @@
     color: var(--accent);
     font-weight: 700;
   }
+  /* Mansione specifica: colonna, una per riga */
+  #mansioniGridDettaglio {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #mansioniGridDettaglio .mansione-chip { width: 100%; }
+  .mansione-chip-row {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .mansione-chip-row .mansione-chip { flex: 1; }
+  .info-btn {
+    flex-shrink: 0;
+    width: 38px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .info-btn:active { background: var(--accent-dim); }
+  .info-link {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-decoration: underline;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .fabbisogno-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 300;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+  .fabbisogno-overlay.open { display: flex; }
+  .fabbisogno-modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 20px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .fabbisogno-modal h2 {
+    font-size: 14px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+  .fabbisogno-modal .sub {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .fabbisogno-cat-title {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 14px 0 8px;
+  }
+  .fabbisogno-cat-title:first-of-type { margin-top: 0; }
+  .fabbisogno-item {
+    font-size: 13px;
+    color: var(--text);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .fabbisogno-item:last-child { border-bottom: none; }
+  .fabbisogno-item .id { color: var(--text-muted); font-size: 11px; }
+  .fabbisogno-empty { font-size: 12px; color: var(--text-muted); }
+  .fabbisogno-close {
+    width: 100%;
+    margin-top: 16px;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* Mansione principale: striscia a tocco (select nativo) */
+  .mansione-select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 15px;
+    font-family: var(--font);
+    padding: 12px 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8fa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+
+  /* Riquadro "selezione fatta" collassato con link Cambia */
+  .mansione-collapsed {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(245,166,35,0.4);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+  }
+  .mansione-collapsed .val {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .mansione-collapsed .val small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-top: 1px;
+  }
+  .mansione-collapsed .cambia {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-decoration: underline;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* ── SUVA banner (già verificata) ── */
+  .suva-banner {
+    background: rgba(62,207,142,0.1);
+    border: 1px solid rgba(62,207,142,0.35);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .suva-banner .msg { font-size: 13px; color: var(--success); font-weight: 600; }
+  .suva-banner .verifica {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  /* ── FOTO ── */
+  .foto-btn-row { display: flex; gap: 10px; margin-bottom: 12px; }
+  .foto-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    border: 1px dashed var(--border);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .foto-btn input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+  .foto-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .foto-thumb {
+    position: relative;
+    aspect-ratio: 1;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .foto-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .foto-thumb .rm {
+    position: absolute;
+    top: 4px; right: 4px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: rgba(15,17,23,0.8);
+    color: var(--danger);
+    font-size: 13px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid var(--danger);
+  }
+  .foto-count { font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: center; }
 
   /* ── SECTION SEPARATOR ── */
   .sep {
     height: 1px;
     background: var(--border);
     margin: 16px 0;
+  }
+
+  /* ── LANGUAGE SWITCH ── */
+  .lang-switch {
+    position: fixed;
+    top: 14px;
+    right: 16px;
+    z-index: 250;
+    display: flex;
+    gap: 3px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 3px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+  }
+  .lang-btn {
+    padding: 6px 11px;
+    border-radius: 16px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+  }
+  .lang-btn.active {
+    background: var(--accent);
+    color: #0f1117;
   }
 
   /* hide/show utility */
@@ -569,20 +869,27 @@
   <div class="header-row">
     <div>
       <div class="brand">DachPlan <span>AG</span></div>
-      <div class="brand" style="font-size:9px; color:var(--text-muted); letter-spacing:0.06em; margin-top:1px;">OS v4.2 · SIA-CH</div>
+      <div class="brand" style="font-size:9px; color:var(--text-muted); letter-spacing:0.06em; margin-top:1px;">OS v4.3 · SIA-CH</div>
     </div>
     <div style="text-align:right">
       <span class="status-dot" id="syncDot"></span>
-      <span class="status-label" id="syncLabel">Offline</span>
+      <span class="status-label" id="syncLabel" data-i18n="offline">Offline</span>
     </div>
   </div>
 </div>
 
+<!-- LANGUAGE SWITCH — fisso, sempre visibile -->
+<div class="lang-switch" id="langSwitch">
+  <div class="lang-btn" data-lang="de" onclick="setLang('de')">DE</div>
+  <div class="lang-btn" data-lang="it" onclick="setLang('it')">IT</div>
+</div>
+
 <!-- TABS -->
 <div class="tabs">
-  <div class="tab active" data-tab="lavoro">⏱ Lavoro</div>
-  <div class="tab" data-tab="magazzino">📦 Magazzino</div>
-  <div class="tab" data-tab="log">📋 Diario</div>
+  <div class="tab active" data-tab="lavoro" data-i18n="tabLavoro">⏱ Lavoro</div>
+  <div class="tab" data-tab="magazzino" data-i18n="tabMagazzino">📦 Magazzino</div>
+  <div class="tab" data-tab="furgone" data-i18n="tabFurgone">🚐 Furgone</div>
+  <div class="tab" data-tab="log" data-i18n="tabDiario">📋 Diario</div>
 </div>
 
 <!-- ══════════════ PAGE: LAVORO ══════════════ -->
@@ -590,43 +897,43 @@
 
   <!-- CANTIERE -->
   <div class="card">
-    <div class="card-title"><span class="icon">🏗</span> Cantiere Attivo</div>
+    <div class="card-title"><span class="icon">🏗</span> <span data-i18n="cantiereAttivo">Cantiere Attivo</span></div>
     <div class="field">
-      <label>Nome / Indirizzo</label>
-      <input type="text" id="cantiere" placeholder="Es: Hildisriden, Oberdorfstr. 12" autocomplete="off">
+      <label data-i18n="nomeIndirizzo">Nome / Indirizzo</label>
+      <input type="text" id="cantiere" placeholder="Es: Hildisriden, Oberdorfstr. 12" data-i18n-placeholder="placeholderCantiere" autocomplete="off">
     </div>
     <div class="field">
-      <label>Operaio</label>
-      <input type="text" id="operaio" placeholder="Es: Andi / Klaus" autocomplete="off">
+      <label data-i18n="operaio">Operaio</label>
+      <input type="text" id="operaio" placeholder="Es: Andi / Klaus" data-i18n-placeholder="placeholderOperaio" autocomplete="off">
     </div>
   </div>
 
   <!-- CRONOMETRO -->
   <div class="card">
-    <div class="card-title"><span class="icon">⏱</span> Cronometro Attività</div>
+    <div class="card-title"><span class="icon">⏱</span> <span data-i18n="cronometroAttivita">Cronometro Attività</span></div>
     <div class="chrono-display">
       <div class="chrono-time" id="chronoDisplay">00:00:00</div>
-      <div class="chrono-label" id="chronoStatus">In attesa di avvio</div>
+      <div class="chrono-label" id="chronoStatus" data-i18n="inAttesaAvvio">In attesa di avvio</div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-primary" id="btnStart" onclick="startTimer()">▶ Inizia Lavoro</button>
-      <button class="btn btn-danger" id="btnStop" onclick="stopTimer()" disabled>■ Fine Lavoro</button>
+      <button class="btn btn-primary" id="btnStart" onclick="startTimer()" data-i18n="iniziaLavoro">▶ Inizia Lavoro</button>
+      <button class="btn btn-danger" id="btnStop" onclick="stopTimer()" disabled data-i18n="fineLavoro">■ Fine Lavoro</button>
     </div>
     <div id="timeCalc" style="display:none; margin-top:12px; text-align:center;">
-      <span style="font-size:12px; color:var(--text-muted)">Ore calcolate: </span>
+      <span style="font-size:12px; color:var(--text-muted)" data-i18n="oreCalcolateLbl">Ore calcolate: </span>
       <span id="oreCalcolate" style="font-size:16px; font-weight:700; color:var(--accent)">—</span>
     </div>
   </div>
 
   <!-- METEO -->
   <div class="card">
-    <div class="card-title"><span class="icon">🌡</span> Condizioni Cantiere</div>
+    <div class="card-title"><span class="icon">🌡</span> <span data-i18n="condizioniCantiere">Condizioni Cantiere</span></div>
     <div class="meteo-strip" id="meteoStrip">
-      <div class="meteo-chip">⏳ <span>Caricamento meteo…</span></div>
+      <div class="meteo-chip">⏳ <span data-i18n="caricamentoMeteo">Caricamento meteo…</span></div>
     </div>
     <div class="sep"></div>
     <div class="field">
-      <label>Temp. Laser / Supporto (°C)</label>
+      <label data-i18n="tempSupportoLbl">Temp. Laser / Supporto (°C)</label>
       <div class="input-unit">
         <input type="number" id="tempSupporto" placeholder="15" step="0.5" inputmode="decimal">
         <span class="unit">°C</span>
@@ -634,13 +941,15 @@
     </div>
   </div>
 
-  <!-- MANSIONE + MATERIALE -->
+  <!-- MANSIONE (flusso a cascata) -->
   <div class="card">
-    <div class="card-title"><span class="icon">📥</span> Inserisci il Lavoro Svolto</div>
+    <div class="card-title"><span class="icon">📥</span> <span data-i18n="inserisciLavoro">Inserisci il Lavoro Svolto</span></div>
 
     <div class="field">
-      <label>Mansione Principale</label>
-      <div class="mansioni-grid" id="mansioniGridLv1"></div>
+      <label data-i18n="mansionePrincipaleLbl">Mansione Principale</label>
+      <select id="mansionePrincipaleSelect" class="mansione-select">
+        <option value="">— Seleziona mansione —</option>
+      </select>
       <input type="hidden" id="mansionePrincipale" value="">
     </div>
 
@@ -656,79 +965,88 @@
       <input type="hidden" id="mansioneSelected" value="">
     </div>
 
-    <div class="field">
-      <label>Fornitore</label>
+    <div class="field hidden" id="fieldMisura"></div>
+
+    <div class="field hidden" id="fieldFornitore">
+      <label data-i18n="fornitoreLbl">Fornitore</label>
       <select id="fornitore">
-        <option value="">— Seleziona fornitore —</option>
+        <option value="" data-i18n="selFornitore">— Seleziona fornitore —</option>
         <option value="Soprema">Soprema</option>
         <option value="Bauder">Bauder</option>
         <option value="Swisspor">Swisspor</option>
         <option value="Hanselmann">Hanselmann</option>
         <option value="Würth">Würth</option>
         <option value="3M">3M</option>
-        <option value="Altro">Altro</option>
+        <option value="Altro" data-i18n="altro">Altro</option>
       </select>
     </div>
 
     <div class="field">
-      <label>Superficie / Quantità</label>
-      <div style="display:flex; gap:8px">
-        <div class="input-unit" style="flex:1">
-          <input type="number" id="quantita" placeholder="0" inputmode="decimal" step="0.1">
-          <span class="unit" id="unitLabel">m²</span>
-        </div>
-        <select id="unitSelect" style="width:80px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-size:14px; padding:12px 8px;" onchange="document.getElementById('unitLabel').textContent=this.value">
-          <option value="m²">m²</option>
-          <option value="ml">ml</option>
-          <option value="pz">pz</option>
-          <option value="kg">kg</option>
-          <option value="L">L</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="field">
-      <label>Strati</label>
-      <select id="strati">
-        <option value="1">1 strato</option>
-        <option value="2" selected>2 strati</option>
-        <option value="3">3 strati</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Note / Anomalie osservate</label>
-      <textarea id="note" placeholder="Es: Cemento ruvido, fessure presenti, bolle d'aria…"></textarea>
+      <label data-i18n="noteLbl">Note / Anomalie osservate</label>
+      <textarea id="note" placeholder="Es: Cemento ruvido, fessure presenti, bolle d'aria…" data-i18n-placeholder="placeholderNote"></textarea>
     </div>
   </div>
 
+  <!-- CONSUMABILI USATI OGGI — collegato al furgone, scala automaticamente -->
+  <div class="card hidden" id="cardConsumo">
+    <div class="card-title"><span class="icon">📦</span> <span data-i18n="materialiUsatiTitolo">Materiali Usati Oggi</span></div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;" data-i18n="materialiUsatiSub">Consumabili e materiali cantiere — quanti ne hai usati? Verranno scalati dal furgone al salvataggio.</p>
+    <div id="consumoList"></div>
+    <p id="consumoVuoto" class="hidden" style="font-size:13px; color:var(--text-muted); text-align:center; padding:16px 0;" data-i18n="consumoVuotoTxt">
+      Nessun materiale in furgone per questa mansione.<br>Aggiungilo da Magazzino → 🚐 Furgone.
+    </p>
+  </div>
+
+  <!-- FOTO -->
+  <div class="card" id="cardFoto">
+    <div class="card-title"><span class="icon">📷</span> <span data-i18n="fotoLavoroTitolo">Foto Lavoro</span></div>
+    <div class="foto-btn-row">
+      <label class="foto-btn">
+        <span data-i18n="scattaFoto">📷 Scatta foto</span>
+        <input type="file" accept="image/*" capture="environment" id="fotoCamera">
+      </label>
+      <label class="foto-btn">
+        <span data-i18n="galleria">🖼 Galleria</span>
+        <input type="file" accept="image/*" multiple id="fotoGalleria">
+      </label>
+    </div>
+    <div class="foto-grid" id="fotoPreview"></div>
+    <div class="foto-count" id="fotoCount">0 / 5</div>
+  </div>
+
+  <!-- SUVA banner (mostrato quando la verifica settimanale è già stata fatta) -->
+  <div class="suva-banner hidden" id="suvaBanner">
+    <span class="msg" id="suvaBannerMsg" data-i18n="suvaBannerTxt">✅ SUVA verificata questa settimana per questo cantiere</span>
+    <span class="verifica" onclick="forzaSuva()" data-i18n="verificaComunque">Verifica comunque</span>
+  </div>
+
   <!-- SUVA -->
-  <div class="card">
-    <div class="card-title"><span class="icon">🛡</span> Controllo Sicurezza SUVA</div>
+  <div class="card" id="cardSuva">
+    <div class="card-title"><span class="icon">🛡</span> <span data-i18n="suvaTitolo">Controllo Sicurezza SUVA</span></div>
     <div class="check-item" onclick="toggleCheck('s1')">
       <div class="check-box" id="s1"></div>
-      <div class="check-label">Brenner / Gas chiuso e sicuro
+      <div class="check-label" data-i18n="suva1">Brenner / Gas chiuso e sicuro
         <small>Valvola gas chiusa dopo utilizzo</small></div>
     </div>
     <div class="check-item" onclick="toggleCheck('s2')">
       <div class="check-box" id="s2"></div>
-      <div class="check-label">Linee vita / Parapetto integri
+      <div class="check-label" data-i18n="suva2">Linee vita / Parapetto integri
         <small>Assicurazione anticaduta verificata</small></div>
     </div>
     <div class="check-item" onclick="toggleCheck('s3')">
       <div class="check-box" id="s3"></div>
-      <div class="check-label">Foto lavoro eseguita
+      <div class="check-label" data-i18n="suva3">Foto lavoro eseguita
         <small>Documentazione fotografica scattata</small></div>
     </div>
     <div class="check-item" onclick="toggleCheck('s4')">
       <div class="check-box" id="s4"></div>
-      <div class="check-label">Pulizia zona lavoro completata
+      <div class="check-label" data-i18n="suva4">Pulizia zona lavoro completata
         <small>Scarti e materiali rimossi</small></div>
     </div>
   </div>
 
   <!-- SALVA -->
-  <button class="btn-save" id="btnSave" onclick="salvaDati()">
+  <button class="btn-save" id="btnSave" onclick="salvaDati()" data-i18n="btnSalva">
     🚀 SALVA NEL DIARIO DI BORDO
   </button>
 
@@ -738,83 +1056,119 @@
 <!-- ══════════════ PAGE: MAGAZZINO ══════════════ -->
 <div class="page" id="page-magazzino">
 
+  <!-- Striscia categorie fissa -->
+  <div class="cat-strip" id="catStrip"></div>
+  <!-- Striscia mansioni (sotto-raggruppamento) -->
+  <div class="cat-strip mansione-strip" id="mansioneStripMag"></div>
+
   <div class="card">
-    <div class="card-title"><span class="icon">📦</span> Inventario Furgone</div>
-    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">Livello scorte sul furgone. Tocca quantità per modificare.</p>
+    <div class="card-title"><span class="icon" id="catIcon">🧴</span> <span id="catTitolo">Consumabili</span></div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;" data-i18n="magSubtitle">Tocca "🚐 Furgone" per aggiungere/togliere un oggetto dal furgone.</p>
 
     <div class="stat-row" style="margin-bottom:16px;">
       <div class="stat-box">
         <div class="stat-val" id="statTotale">—</div>
-        <div class="stat-lbl">Articoli totali</div>
+        <div class="stat-lbl" data-i18n="inQuestaCategoria">In questa categoria</div>
       </div>
       <div class="stat-box">
-        <div class="stat-val" style="color:var(--danger)" id="statLow">—</div>
-        <div class="stat-lbl">Sotto soglia</div>
+        <div class="stat-val" style="color:var(--accent)" id="statInFurgone">—</div>
+        <div class="stat-lbl" data-i18n="inFurgoneLbl">In furgone</div>
       </div>
     </div>
 
-    <div class="mag-grid" id="magGrid">
-      <!-- Generato da JS -->
+    <div id="magList"><!-- Generato da JS --></div>
+
+    <!-- Box "aggiungi attrezzo mancante" — solo per categoria Attrezzi -->
+    <div id="addAttrezzoBox" class="hidden" style="margin-top:14px;">
+      <div class="sep"></div>
+      <div class="field">
+        <label data-i18n="aggiungiAttrezzoLbl">➕ Aggiungi attrezzo non a catalogo</label>
+        <input type="text" id="nuovoAttrezzoNome" placeholder="Nome attrezzo" data-i18n-placeholder="placeholderNomeAttrezzo">
+      </div>
+      <div class="field">
+        <label data-i18n="categoriaLbl">Categoria</label>
+        <select id="nuovoAttrezzoCat">
+          <option value="attrezzo" data-i18n="catAttrezzoOpt">Werkzeug / attrezzo</option>
+          <option value="consumabile" data-i18n="catConsumabileOpt">Materiale consumabile</option>
+          <option value="cantiere" data-i18n="catCantiereOpt">Materiale per cantiere</option>
+        </select>
+      </div>
+      <button class="btn btn-ghost" style="width:100%" onclick="aggiungiAttrezzoCustom()" data-i18n="aggiungiCatalogoBtn">Aggiungi al catalogo</button>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="icon">➕</span> Aggiorna Scorte</div>
-    <div class="field">
-      <label>Materiale</label>
-      <select id="magMateriale">
-        <option value="">— Seleziona —</option>
-      </select>
-    </div>
-    <div class="field">
-      <label>Nuova Quantità</label>
-      <div class="mag-edit-row">
-        <input type="number" id="magQty" placeholder="0" inputmode="decimal">
-        <button class="btn-small btn-primary" onclick="aggiornaScorta()">Aggiorna</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><span class="icon">🔄</span> Sync con Sheets</div>
-    <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Aggiorna le scorte dal Google Sheets LISTINO_OCI.</p>
-    <button class="btn btn-ghost" style="width:100%" onclick="syncMagazzino()">📡 Sincronizza da Sheets</button>
+    <div class="card-title"><span class="icon">🔄</span> <span data-i18n="syncSheetsTitolo">Sync con Sheets</span></div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;" data-i18n="syncSheetsSub">Aggiorna il catalogo dal Google Sheets LISTINO_OCI.</p>
+    <button class="btn btn-ghost" style="width:100%" onclick="syncMagazzino()" data-i18n="syncBtn">📡 Sincronizza da Sheets</button>
     <div id="syncStatus" style="font-size:12px; color:var(--text-muted); margin-top:10px; text-align:center;"></div>
   </div>
 
 </div><!-- /page-magazzino -->
 
 
+<!-- ══════════════ PAGE: FURGONE ══════════════ -->
+<div class="page" id="page-furgone">
+
+  <!-- Stesse strisce categoria + mansione del Magazzino -->
+  <div class="cat-strip" id="catStripFurgone"></div>
+  <div class="cat-strip mansione-strip" id="mansioneStripFurgone"></div>
+
+  <div class="card">
+    <div class="card-title"><span class="icon" id="furgoneCatIcon">🧴</span> <span id="furgoneCatTitolo">Consumabili</span> <span data-i18n="inFurgoneSuffix">— in furgone</span></div>
+    <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;" data-i18n="furgoneSubtitle">Tocca un oggetto per impostare quanti pezzi hai in auto.</p>
+
+    <div class="stat-row" style="margin-bottom:16px;">
+      <div class="stat-box">
+        <div class="stat-val" id="furgoneStatTotale">—</div>
+        <div class="stat-lbl" data-i18n="oggettiInFurgone">Oggetti in furgone</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val" style="color:var(--danger)" id="furgoneStatBasso">—</div>
+        <div class="stat-lbl" data-i18n="sottoSoglia">Sotto soglia</div>
+      </div>
+    </div>
+
+    <div id="furgoneList"></div>
+    <p id="furgoneVuoto" class="hidden" style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px 0;" data-i18n="furgoneVuotoTxt">
+      Nessun oggetto in furgone.<br>Vai su Magazzino e tocca "🚐 Furgone" sugli oggetti che porti in auto.
+    </p>
+  </div>
+
+</div><!-- /page-furgone -->
+
+
 <!-- ══════════════ PAGE: DIARIO ══════════════ -->
+
 <div class="page" id="page-log">
 
   <div class="card">
-    <div class="card-title"><span class="icon">📋</span> Diario di Bordo — Oggi</div>
+    <div class="card-title"><span class="icon">📋</span> <span data-i18n="diarioTitolo">Diario di Bordo — Oggi</span></div>
     <div id="logContainer">
-      <p style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px 0;">
+      <p style="font-size:13px; color:var(--text-muted); text-align:center; padding:24px 0;" data-i18n="diarioVuotoTxt">
         Nessuna voce ancora.<br>Salva il primo lavoro dal tab ⏱ Lavoro.
       </p>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="icon">📊</span> Riepilogo Giornata</div>
+    <div class="card-title"><span class="icon">📊</span> <span data-i18n="riepilogoGiornata">Riepilogo Giornata</span></div>
     <div class="stat-row">
       <div class="stat-box">
         <div class="stat-val" id="riepilogoOre">0h</div>
-        <div class="stat-lbl">Ore lavorate</div>
+        <div class="stat-lbl" data-i18n="oreLavorate">Ore lavorate</div>
       </div>
       <div class="stat-box">
         <div class="stat-val" id="riepilogoVoci">0</div>
-        <div class="stat-lbl">Voci salvate</div>
+        <div class="stat-lbl" data-i18n="vociSalvate">Voci salvate</div>
       </div>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title"><span class="icon">🗑</span> Gestione</div>
-    <button class="btn btn-danger" style="width:100%" onclick="svuotaDiario()">Svuota diario locale</button>
-    <p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:8px;">I dati già inviati a Sheets non vengono eliminati.</p>
+    <div class="card-title"><span class="icon">🗑</span> <span data-i18n="gestioneTitolo">Gestione</span></div>
+    <button class="btn btn-danger" style="width:100%" onclick="svuotaDiario()" data-i18n="svuotaDiarioBtn">Svuota diario locale</button>
+    <p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:8px;" data-i18n="datiInviatiTxt">I dati già inviati a Sheets non vengono eliminati.</p>
   </div>
 
 </div><!-- /page-log -->
@@ -824,20 +1178,34 @@
 <div class="bottom-nav">
   <div class="nav-item active" id="nav-lavoro" onclick="switchPage('lavoro')">
     <span class="nav-icon">⏱</span>
-    <div class="nav-lbl">Lavoro</div>
+    <div class="nav-lbl" data-i18n="navLavoro">Lavoro</div>
   </div>
   <div class="nav-item" id="nav-magazzino" onclick="switchPage('magazzino')">
     <span class="nav-icon">📦</span>
-    <div class="nav-lbl">Magazzino</div>
+    <div class="nav-lbl" data-i18n="navMagazzino">Magazzino</div>
+  </div>
+  <div class="nav-item" id="nav-furgone" onclick="switchPage('furgone')">
+    <span class="nav-icon">🚐</span>
+    <div class="nav-lbl" data-i18n="navFurgone">Furgone</div>
   </div>
   <div class="nav-item" id="nav-log" onclick="switchPage('log')">
     <span class="nav-icon">📋</span>
-    <div class="nav-lbl">Diario</div>
+    <div class="nav-lbl" data-i18n="navDiario">Diario</div>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
+
+<!-- FABBISOGNO MODAL -->
+<div class="fabbisogno-overlay" id="fabbisognoOverlay">
+  <div class="fabbisogno-modal">
+    <h2 id="fabbisognoTitolo">Cosa serve</h2>
+    <div class="sub" id="fabbisognoSub"></div>
+    <div id="fabbisognoContenuto"></div>
+    <button class="fabbisogno-close" onclick="chiudiFabbisogno()" data-i18n="chiudiBtn">Chiudi</button>
+  </div>
+</div>
 
 
 <script>
@@ -856,25 +1224,358 @@ let elapsedMs     = 0;
 let isRunning     = false;
 let meteoData     = {};
 let localLog      = JSON.parse(localStorage.getItem('dp_log') || '[]');
-let magazzino     = JSON.parse(localStorage.getItem('dp_mag') || 'null');
+let magazzino     = null; // ricostruito sotto da MAG_DEFAULT + attrezzi custom salvati
+window.fotoLavoro = [];
 
 // ══════════════════════════════════════════════════
 // MAGAZZINO DEFAULT
 // ══════════════════════════════════════════════════
+// Catalogo completo recuperato da memoria (sessione "Il Monumento del Leone
+// di Lucerna", 30.06.2026): 34 attrezzi (ATZ) + 32 materiali (MAT) + 1 DPI.
+// Ogni voce ha una categoria (cat) indipendente dal codice:
+//   'attrezzo'    = riutilizzabile (Werkzeug)
+//   'consumabile' = usato per applicare i materiali (gas, pennelli, rulli, nastro, viti, dischi...)
+//   'cantiere'    = diventa parte del sistema di impermeabilizzazione (membrane, isolanti, componenti)
+//   'sicurezza'   = DPI
+// mansioni = in quali mansioni si usa (dalla tabella "Usato in" originale) — un attrezzo
+// usato in più mansioni compare ripetuto in ogni sotto-gruppo mansione. Array vuoto = "Altri".
+// min è la soglia sotto cui il furgone segnala "BASSO" — PLACEHOLDER da correggere.
 const MAG_DEFAULT = [
-  { id:'egv3',      nome:'EGV3 Soprema',     qty:8,   min:3, unit:'rot' },
-  { id:'ep5',       nome:'EP5 Bauder',        qty:4,   min:2, unit:'rot' },
-  { id:'dampf',     nome:'Dampfbremse',       qty:3,   min:1, unit:'rot' },
-  { id:'pir80',     nome:'PIR 80mm',          qty:12,  min:4, unit:'pz' },
-  { id:'flk_1k',   nome:'FLK 1K',            qty:6,   min:2, unit:'Kt' },
-  { id:'flk_2k',   nome:'FLK 2K A+B',        qty:2,   min:1, unit:'set' },
-  { id:'primer',    nome:'Primer/Voranstrich',qty:3,   min:1, unit:'L' },
-  { id:'gas',       nome:'Gas propano',       qty:2,   min:1, unit:'Fl' },
-  { id:'bithermol', nome:'Bithermol',         qty:10,  min:3, unit:'L' },
-  { id:'vlies',     nome:'Vlies/Geotessile',  qty:2,   min:1, unit:'rot' },
+  // ── ATTREZZI (ATZ) — riutilizzabili ──
+  { id:'ATZ-001', nome:'Brenner / Cannello',                 unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','flk','montage','sekuranten'] },
+  { id:'ATZ-002', nome:'Gasflasche / Bombola gas',            unit:'pz', min:1, cat:'consumabile', mansioni:['bitumen','montage'] },
+  { id:'ATZ-003', nome:'Rolle / Rullo pressatore',            unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff'] },
+  { id:'ATZ-004', nome:'Cutter / Dachmesser',                 unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff','flk','montage'] },
+  { id:'ATZ-005', nome:'Besen / Scopa',                       unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff'] },
+  { id:'ATZ-006', nome:'Laubbläser / Soffiatore',             unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff'] },
+  { id:'ATZ-007', nome:'Schaber / Raschietto',                unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff'] },
+  { id:'ATZ-008', nome:'Pinsel / Pennello',                   unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','flk'] },
+  { id:'ATZ-009', nome:'Spachtel / Cazzuola',                 unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff'] },
+  { id:'ATZ-010', nome:'Säge / Sega',                         unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff'] },
+  { id:'ATZ-011', nome:'Schaumpistole / Pistola schiuma',     unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen','kunststoff'] },
+  { id:'ATZ-012', nome:'Flex / Smerigliatrice',               unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-013', nome:'Diamanttopf / Tazza diamantata',      unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-014', nome:'Staubsauger / Aspiratore',            unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-015', nome:'Feuchtigkeitsmesser (CM) / Igrometro',unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-016', nome:'Waage / Bilancia',                    unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-017', nome:'Rührwerk / Miscelatore',              unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-018', nome:'Entlüfterrolle / Rullo frangibolle',  unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-019', nome:'Schere / Forbici',                    unit:'pz', min:1, cat:'attrezzo', mansioni:['flk','kunststoff','montage'] },
+  { id:'ATZ-020', nome:'Feinrolle / Rullo pelo fine',         unit:'pz', min:1, cat:'attrezzo', mansioni:['flk'] },
+  { id:'ATZ-021', nome:'Schneider / Taglierina teli',         unit:'pz', min:1, cat:'attrezzo', mansioni:['kunststoff'] },
+  { id:'ATZ-022', nome:'Bohrmaschine / Trapano',              unit:'pz', min:1, cat:'attrezzo', mansioni:['kunststoff','montage','sekuranten'] },
+  { id:'ATZ-023', nome:'Akkuschrauber / Avvitatore',          unit:'pz', min:1, cat:'attrezzo', mansioni:['kunststoff','montage'] },
+  { id:'ATZ-024', nome:'Sarnamatic / Saldatrice automatica',  unit:'pz', min:1, cat:'attrezzo', mansioni:['kunststoff'] },
+  { id:'ATZ-025', nome:'Leister / Saldatore manuale',         unit:'pz', min:1, cat:'attrezzo', mansioni:['kunststoff','montage','sekuranten'] },
+  { id:'ATZ-026', nome:'Prüfnadel / Ago controllo saldature', unit:'pz', min:1, cat:'attrezzo', mansioni:['kunststoff'] },
+  { id:'ATZ-027', nome:'Wasserwaage / Livella',               unit:'pz', min:1, cat:'attrezzo', mansioni:['montage'] },
+  { id:'ATZ-028', nome:'Kernbohrgerät / Carotatrice',         unit:'pz', min:1, cat:'attrezzo', mansioni:['montage'] },
+  { id:'ATZ-029', nome:'Inbusschlüssel / Chiave esagonale',   unit:'pz', min:1, cat:'attrezzo', mansioni:['montage','sekuranten'] },
+  { id:'ATZ-030', nome:'Spannwerkzeug / Tenditore fune',      unit:'pz', min:1, cat:'attrezzo', mansioni:['sekuranten'] },
+  { id:'ATZ-031', nome:'Metro / Massband',                    unit:'pz', min:1, cat:'attrezzo', mansioni:['montage','sekuranten'] },
+  { id:'ATZ-032', nome:'Bitumofen / Fornello bitume',         unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen'] },
+  { id:'ATZ-033', nome:'Giesskanne / Spandi-bitume',          unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen'] },
+  { id:'ATZ-034', nome:'Schaufel / Pala',                     unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen'] },
+  { id:'ATZ-035', nome:'Wickelkern',                          unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen'] },
+  { id:'ATZ-036', nome:'Rollenzieher / Rollenführungsbügel',  unit:'pz', min:1, cat:'attrezzo', mansioni:['bitumen'] },
+  { id:'ATZ-037', nome:'Hammer',                              unit:'pz', min:1, cat:'attrezzo', mansioni:['montage'] },
+
+  // ── MATERIALI PER CANTIERE (parte del sistema di impermeabilizzazione) ──
+  { id:'MAT-001', nome:'Voranstrich / Primer bituminoso',     unit:'kg', min:1, cat:'cantiere', mansioni:['bitumen'] },
+  { id:'MAT-002', nome:'EGV 3,5',                             unit:'m²', min:2, cat:'cantiere', mansioni:['bitumen','kunststoff'] },
+  { id:'MAT-003', nome:'EVA 3,5 Dampfbremse',                 unit:'m²', min:2, cat:'cantiere', mansioni:['bitumen'] },
+  { id:'MAT-004', nome:'Membran EP5 AR',                      unit:'m²', min:2, cat:'cantiere', mansioni:['bitumen'] },
+  { id:'MAT-005', nome:'PIR-Dämmplatten',                     unit:'m²', min:2, cat:'cantiere', mansioni:['bitumen','kunststoff'] },
+  { id:'MAT-007', nome:'Geotextil-Vlies ≥300g',               unit:'m²', min:2, cat:'cantiere', mansioni:['bitumen'] },
+  { id:'MAT-008', nome:'Gussasphalt / Asfalto colato',        unit:'kg', min:2, cat:'cantiere', mansioni:['bitumen'] },
+  { id:'MAT-009', nome:'Glasvlies / Trennlage',               unit:'m²', min:2, cat:'cantiere', mansioni:['kunststoff'] },
+  { id:'MAT-010', nome:'PVC/TPO Dachbahn',                    unit:'m²', min:2, cat:'cantiere', mansioni:['kunststoff'] },
+  { id:'MAT-012', nome:'PVC-Flüssig',                         unit:'flacone', min:2, cat:'cantiere', mansioni:['kunststoff'] },
+  { id:'MAT-014', nome:'Primer FLK',                          unit:'kg', min:2, cat:'cantiere', mansioni:['flk'] },
+  { id:'MAT-015', nome:'Flüssigkunststoff (Harz)',            unit:'kg', min:2, cat:'cantiere', mansioni:['flk','montage','sekuranten'] },
+  { id:'MAT-017', nome:'ALSAN FLK-Vlies',                     unit:'m', min:2, cat:'cantiere', mansioni:['flk'] },
+  { id:'MAT-019', nome:'Zarge / Telaio base',                 unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-021', nome:'Kuppel (Polycarbonat)',               unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-022', nome:'Ablauf / Gully',                      unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-023', nome:'Anschlussmanschette',                 unit:'pz', min:2, cat:'cantiere', mansioni:['montage','sekuranten'] },
+  { id:'MAT-025', nome:'Dachausstieg / Botola',               unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-026', nome:'RWA-Kit',                              unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-027', nome:'Kontrollstütze',                      unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-028', nome:'Kabeldurchführung / Passacavi',       unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-029', nome:'Metallhalter',                        unit:'pz', min:2, cat:'cantiere', mansioni:['montage'] },
+  { id:'MAT-031', nome:'Anschlagpunkt',                       unit:'pz', min:2, cat:'cantiere', mansioni:['sekuranten'] },
+  { id:'MAT-032', nome:'Stahlseil + Spanner',                 unit:'m', min:2, cat:'cantiere', mansioni:['sekuranten'] },
+  { id:'MAT-033', nome:'Feuerlöscher',                        unit:'pz', min:1, cat:'cantiere', mansioni:['bitumen'] },
+
+  // ── MATERIALI CONSUMABILI (usati per applicare i materiali) ──
+  { id:'MAT-006', nome:'PU-Kleber / Colla poliuretanica',     unit:'cartuccia', min:2, cat:'consumabile', mansioni:['bitumen','kunststoff'] },
+  { id:'MAT-011', nome:'Befestigungsschrauben + Teller',      unit:'pz', min:2, cat:'consumabile', mansioni:['kunststoff'] },
+  { id:'MAT-013', nome:'Reiniger / Detergente',               unit:'L', min:2, cat:'consumabile', mansioni:['kunststoff','flk','montage'] },
+  { id:'MAT-016', nome:'Katalysator',                         unit:'g', min:2, cat:'consumabile', mansioni:['flk'] },
+  { id:'MAT-018', nome:'Schleifscheibe Beton',                unit:'pz', min:2, cat:'consumabile', mansioni:['flk'] },
+  { id:'MAT-020', nome:'Guarnizioni / Dichtung',              unit:'pz', min:2, cat:'consumabile', mansioni:['montage'] },
+  { id:'MAT-024', nome:'Dichtstoff / Sigillante',             unit:'cartuccia', min:2, cat:'consumabile', mansioni:['montage'] },
+  { id:'MAT-030', nome:'Befestigung / Dübel / Tasselli',      unit:'pz', min:2, cat:'consumabile', mansioni:['montage','sekuranten'] },
+  { id:'MAT-034', nome:'Fassadendübel',                       unit:'pz', min:2, cat:'consumabile', mansioni:['montage'] },
+
+  // ── SICUREZZA (DPI) ──
+  { id:'DPI-001', nome:'Sicherheits-Kit / Kit sicurezza',     unit:'kit', min:1, cat:'sicurezza', mansioni:[] },
 ];
 
-if (!magazzino) magazzino = JSON.parse(JSON.stringify(MAG_DEFAULT));
+// Applica lo stato furgone (in/out + quantità) salvato in localStorage,
+// così i default sopra restano puliti e riusabili.
+function applicaStatoFurgone(catalogo) {
+  const raw = localStorage.getItem('dp_furgone_stato');
+  const stato = raw ? JSON.parse(raw) : {};
+  return catalogo.map(item => ({
+    ...item,
+    inFurgone: stato[item.id]?.inFurgone || false,
+    furgoneQty: stato[item.id]?.furgoneQty ?? 0,
+  }));
+}
+
+function salvaStatoFurgone() {
+  const stato = {};
+  magazzino.forEach(m => { stato[m.id] = { inFurgone: !!m.inFurgone, furgoneQty: m.furgoneQty || 0 }; });
+  localStorage.setItem('dp_furgone_stato', JSON.stringify(stato));
+}
+
+// Il catalogo base (MAG_DEFAULT) viene SEMPRE letto fresco dal codice — così
+// rinominazioni/nuove mansioni si vedono subito senza restare bloccate nella
+// cache del telefono. Solo gli attrezzi custom e lo stato furgone persistono.
+const attrezziCustom = JSON.parse(localStorage.getItem('dp_mag_custom') || '[]');
+magazzino = applicaStatoFurgone([...JSON.parse(JSON.stringify(MAG_DEFAULT)), ...attrezziCustom]);
+
+// ══════════════════════════════════════════════════
+// LINGUA APP — DE (solo tedesco) / IT (italiano grande + tedesco piccolo)
+// ══════════════════════════════════════════════════
+let appLang = localStorage.getItem('dp_lang') || 'de';
+
+// Dizionario completo dei testi statici dell'interfaccia.
+const TRANSLATIONS = {
+  offline: { it:'Offline', de:'Offline' },
+  tabLavoro: { it:'⏱ Lavoro', de:'⏱ Arbeit' },
+  tabMagazzino: { it:'📦 Magazzino', de:'📦 Lager' },
+  tabFurgone: { it:'🚐 Furgone', de:'🚐 Fahrzeug' },
+  tabDiario: { it:'📋 Diario', de:'📋 Rapport' },
+  cantiereAttivo: { it:'Cantiere Attivo', de:'Aktive Baustelle' },
+  nomeIndirizzo: { it:'Nome / Indirizzo', de:'Name / Adresse' },
+  operaio: { it:'Operaio', de:'Mitarbeiter' },
+  cronometroAttivita: { it:'Cronometro Attività', de:'Arbeitszeit-Timer' },
+  inAttesaAvvio: { it:'In attesa di avvio', de:'Bereit zum Start' },
+  lavoroInCorso: { it:'Lavoro in corso…', de:'Arbeit läuft…' },
+  fineLavoroRegistrato: { it:'Fine lavoro registrato', de:'Arbeitsende erfasst' },
+  iniziaLavoro: { it:'▶ Inizia Lavoro', de:'▶ Arbeit starten' },
+  fineLavoro: { it:'■ Fine Lavoro', de:'■ Arbeit beenden' },
+  oreCalcolateLbl: { it:'Ore calcolate: ', de:'Berechnete Stunden: ' },
+  condizioniCantiere: { it:'Condizioni Cantiere', de:'Baustellenbedingungen' },
+  caricamentoMeteo: { it:'Caricamento meteo…', de:'Wetter wird geladen…' },
+  gpsNonDisponibile: { it:'📡 GPS non disponibile — inserisci manualmente', de:'📡 GPS nicht verfügbar — manuell eingeben' },
+  flkFuoriSpec: { it:'⚠️ FLK fuori spec SIA 271', de:'⚠️ FLK außerhalb SIA 271-Spezifikation' },
+  ariaLbl: { it:'Aria', de:'Luft' },
+  umiditaLbl: { it:'Umidità', de:'Feuchtigkeit' },
+  tempSupportoLbl: { it:'Temp. Laser / Supporto (°C)', de:'Temp. Laser / Untergrund (°C)' },
+  inserisciLavoro: { it:'Inserisci il Lavoro Svolto', de:'Ausgeführte Arbeit erfassen' },
+  mansionePrincipaleLbl: { it:'Mansione Principale', de:'Hauptaufgabe' },
+  selMansione: { it:'— Seleziona mansione —', de:'— Aufgabe wählen —' },
+  fornitoreLbl: { it:'Fornitore', de:'Lieferant' },
+  selFornitore: { it:'— Seleziona fornitore —', de:'— Lieferant wählen —' },
+  altro: { it:'Altro', de:'Andere' },
+  noteLbl: { it:'Note / Anomalie osservate', de:'Notizen / Beobachtete Mängel' },
+  materialiUsatiTitolo: { it:'Materiali Usati Oggi', de:'Heute Verwendete Materialien' },
+  materialiUsatiSub: { it:'Consumabili e materiali cantiere — quanti ne hai usati? Verranno scalati dal furgone al salvataggio.', de:'Verbrauchsmaterial und Baustellenmaterial — wie viel hast du verwendet? Wird beim Speichern vom Fahrzeug abgezogen.' },
+  consumoVuotoTxt: { it:'Nessun materiale in furgone per questa mansione.<br>Aggiungilo da Magazzino → 🚐 Furgone.', de:'Kein Material im Fahrzeug für diese Aufgabe.<br>Füge es unter Lager → 🚐 Fahrzeug hinzu.' },
+  fotoLavoroTitolo: { it:'Foto Lavoro', de:'Arbeitsfotos' },
+  scattaFoto: { it:'📷 Scatta foto', de:'📷 Foto aufnehmen' },
+  galleria: { it:'🖼 Galleria', de:'🖼 Galerie' },
+  fotoUnit: { it:'foto', de:'Fotos' },
+  suvaBannerTxt: { it:'✅ SUVA verificata questa settimana per questo cantiere', de:'✅ SUVA diese Woche für diese Baustelle geprüft' },
+  verificaComunque: { it:'Verifica comunque', de:'Trotzdem prüfen' },
+  suvaTitolo: { it:'Controllo Sicurezza SUVA', de:'SUVA-Sicherheitskontrolle' },
+  suva1: { it:'Brenner / Gas chiuso e sicuro<small>Valvola gas chiusa dopo utilizzo</small>', de:'Brenner / Gas geschlossen und sicher<small>Gasventil nach Gebrauch geschlossen</small>' },
+  suva2: { it:'Linee vita / Parapetto integri<small>Assicurazione anticaduta verificata</small>', de:'Lebensleinen / Geländer intakt<small>Absturzsicherung geprüft</small>' },
+  suva3: { it:'Foto lavoro eseguita<small>Documentazione fotografica scattata</small>', de:'Arbeitsfoto erstellt<small>Fotodokumentation erstellt</small>' },
+  suva4: { it:'Pulizia zona lavoro completata<small>Scarti e materiali rimossi</small>', de:'Reinigung des Arbeitsbereichs abgeschlossen<small>Abfälle und Materialien entfernt</small>' },
+  btnSalva: { it:'🚀 SALVA NEL DIARIO DI BORDO', de:'🚀 IM RAPPORT SPEICHERN' },
+  salvataggioInCorso: { it:'Salvataggio…', de:'Speichern…' },
+  magSubtitle: { it:'Tocca "🚐 Furgone" per aggiungere/togliere un oggetto dal furgone.', de:'Tippe auf "🚐 Fahrzeug", um ein Objekt hinzuzufügen/zu entfernen.' },
+  inQuestaCategoria: { it:'In questa categoria', de:'In dieser Kategorie' },
+  inFurgoneLbl: { it:'In furgone', de:'Im Fahrzeug' },
+  aggiungiAttrezzoLbl: { it:'➕ Aggiungi attrezzo non a catalogo', de:'➕ Werkzeug hinzufügen (nicht im Katalog)' },
+  categoriaLbl: { it:'Categoria', de:'Kategorie' },
+  catAttrezzoOpt: { it:'Werkzeug / attrezzo', de:'Werkzeug' },
+  catConsumabileOpt: { it:'Materiale consumabile', de:'Verbrauchsmaterial' },
+  catCantiereOpt: { it:'Materiale per cantiere', de:'Baustellenmaterial' },
+  aggiungiCatalogoBtn: { it:'Aggiungi al catalogo', de:'Zum Katalog hinzufügen' },
+  syncSheetsTitolo: { it:'Sync con Sheets', de:'Sync mit Sheets' },
+  syncSheetsSub: { it:'Aggiorna il catalogo dal Google Sheets LISTINO_OCI.', de:'Katalog von Google Sheets LISTINO_OCI aktualisieren.' },
+  syncBtn: { it:'📡 Sincronizza da Sheets', de:'📡 Von Sheets synchronisieren' },
+  inFurgoneSuffix: { it:'— in furgone', de:'— im Fahrzeug' },
+  furgoneSubtitle: { it:'Tocca un oggetto per impostare quanti pezzi hai in auto.', de:'Tippe auf ein Objekt, um die Stückzahl im Auto festzulegen.' },
+  oggettiInFurgone: { it:'Oggetti in furgone', de:'Objekte im Fahrzeug' },
+  sottoSoglia: { it:'Sotto soglia', de:'Unter Mindestbestand' },
+  furgoneVuotoTxt: { it:'Nessun oggetto in furgone.<br>Vai su Magazzino e tocca "🚐 Furgone" sugli oggetti che porti in auto.', de:'Kein Objekt im Fahrzeug.<br>Gehe zu Lager und tippe bei den mitgeführten Objekten auf "🚐 Fahrzeug".' },
+  diarioTitolo: { it:'Diario di Bordo — Oggi', de:'Bautagebuch — Heute' },
+  diarioVuotoTxt: { it:'Nessuna voce ancora.<br>Salva il primo lavoro dal tab ⏱ Lavoro.', de:'Noch kein Eintrag.<br>Speichere die erste Arbeit im Tab ⏱ Arbeit.' },
+  riepilogoGiornata: { it:'Riepilogo Giornata', de:'Tageszusammenfassung' },
+  oreLavorate: { it:'Ore lavorate', de:'Gearbeitete Stunden' },
+  vociSalvate: { it:'Voci salvate', de:'Gespeicherte Einträge' },
+  gestioneTitolo: { it:'Gestione', de:'Verwaltung' },
+  svuotaDiarioBtn: { it:'Svuota diario locale', de:'Lokales Tagebuch leeren' },
+  datiInviatiTxt: { it:'I dati già inviati a Sheets non vengono eliminati.', de:'Bereits an Sheets gesendete Daten werden nicht gelöscht.' },
+  navLavoro: { it:'Lavoro', de:'Arbeit' },
+  navMagazzino: { it:'Magazzino', de:'Lager' },
+  navFurgone: { it:'Furgone', de:'Fahrzeug' },
+  navDiario: { it:'Diario', de:'Rapport' },
+  chiudiBtn: { it:'Chiudi', de:'Schließen' },
+  cosaServe: { it:'Cosa serve', de:'Was wird benötigt' },
+  gruppoFlkLbl: { it:'Gruppo FLK', de:'FLK-Gruppe' },
+  mansioneSpecificaLbl: { it:'Mansione Specifica', de:'Spezifische Aufgabe' },
+  cambiaLbl: { it:'Cambia', de:'Ändern' },
+  superficiePosata: { it:'Superficie posata (m²)', de:'Verlegte Fläche (m²)' },
+  lunghezzaPosata: { it:'Lunghezza posata (m)', de:'Verlegte Länge (m)' },
+  larghezzaVlies: { it:'Larghezza Vlies (m)', de:'Vliesbreite (m)' },
+  litriFlkConsumati: { it:'Litri FLK consumati', de:'Verbrauchte FLK-Liter' },
+  numeroPezziMontati: { it:'Numero pezzi montati', de:'Anzahl montierter Stück' },
+  disponibiliInFurgone: { it:'disponibili in furgone', de:'verfügbar im Fahrzeug' },
+  minConsigliato: { it:'min consigliato', de:'empfohlenes Minimum' },
+  nonInFurgone: { it:'non in furgone', de:'nicht im Fahrzeug' },
+  nessunOggettoCategoria: { it:'Nessun oggetto in questa categoria.', de:'Kein Objekt in dieser Kategorie.' },
+  nessunOggettoSenzaMansione: { it:'Nessun oggetto senza mansione qui.', de:'Kein Objekt ohne Aufgabe hier.' },
+  nessunOggettoMansione: { it:'Nessun oggetto per questa mansione.', de:'Kein Objekt für diese Aufgabe.' },
+  nienteMapMansione: { it:'Nessuno mappato per questa mansione.', de:'Nichts für diese Aufgabe zugeordnet.' },
+  attrezziSez: { it:'🔧 Attrezzi', de:'🔧 Werkzeuge' },
+  cantiereSez: { it:'🏗 Materiali cantiere', de:'🏗 Baustellenmaterial' },
+  consumabiliSez: { it:'🧴 Consumabili', de:'🧴 Verbrauchsmaterial' },
+  toastCantiere: { it:'⚠️ Inserisci il nome cantiere', de:'⚠️ Baustellenname eingeben' },
+  toastMansionePrinc: { it:'⚠️ Seleziona la mansione principale', de:'⚠️ Hauptaufgabe wählen' },
+  toastMansioneSpec: { it:'⚠️ Seleziona la mansione specifica', de:'⚠️ Spezifische Aufgabe wählen' },
+  toastMisura: { it:'⚠️ Inserisci la misura del lavoro svolto', de:'⚠️ Maß der ausgeführten Arbeit eingeben' },
+  toastSuva: { it:'⚠️ Completa il controllo SUVA prima di salvare', de:'⚠️ SUVA-Kontrolle vor dem Speichern abschließen' },
+  toastSalvatoOk: { it:'✅ Salvato nel Diario di Bordo!', de:'✅ Im Bautagebuch gespeichert!' },
+  toastSalvatoOffline: { it:'💾 Salvato offline — invieremo a Sheets appena connesso', de:'💾 Offline gespeichert — wird gesendet, sobald online' },
+  toastDiarioSvuotato: { it:'🗑 Diario locale svuotato', de:'🗑 Lokales Tagebuch geleert' },
+  toastNomeAttrezzo: { it:'⚠️ Inserisci il nome dell attrezzo', de:'⚠️ Werkzeugname eingeben' },
+  toastAttrezzoAggiunto: { it:'✅ aggiunto al catalogo (in "Altri")', de:'zum Katalog hinzugefügt (unter "Andere")' },
+  toastMaxFoto: { it:'⚠️ Massimo', de:'⚠️ Maximal' },
+  toastFotoUnit: { it:'foto', de:'Fotos' },
+  syncInCorso: { it:'⏳ Sincronizzazione in corso…', de:'⏳ Synchronisierung läuft…' },
+  syncCompletato: { it:'✅ Sync completato — ', de:'✅ Sync abgeschlossen — ' },
+  syncNessunDato: { it:'⚠️ Nessun dato ricevuto da Sheets', de:'⚠️ Keine Daten von Sheets erhalten' },
+  syncErrore: { it:'❌ Errore connessione — controlla il webhook', de:'❌ Verbindungsfehler — Webhook prüfen' },
+  confirmSvuotaDiario: { it:'Svuotare il diario locale? I dati già inviati a Sheets rimangono.', de:'Lokales Tagebuch leeren? Bereits gesendete Daten bleiben erhalten.' },
+  placeholderCantiere: { it:'Es: Hildisriden, Oberdorfstr. 12', de:'Z.B. Hildisriden, Oberdorfstr. 12' },
+  placeholderOperaio: { it:'Es: Andi / Klaus', de:'Z.B. Andi / Klaus' },
+  placeholderNote: { it:"Es: Cemento ruvido, fessure presenti, bolle d'aria…", de:'Z.B. raue Betonoberfläche, Risse, Luftblasen…' },
+  placeholderNomeAttrezzo: { it:'Nome attrezzo', de:'Werkzeugname' },
+};
+
+// Ritorna il testo tradotto per una chiave, nella lingua attiva.
+function t(key) {
+  const entry = TRANSLATIONS[key];
+  return entry ? entry[appLang] : key;
+}
+
+// Applica le traduzioni a tutti gli elementi statici con data-i18n
+// (testo) e data-i18n-placeholder (attributo placeholder).
+function applyTranslations() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.innerHTML = t(el.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.dataset.i18nPlaceholder);
+  });
+}
+
+function setLang(lang) {
+  appLang = lang;
+  localStorage.setItem('dp_lang', lang);
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  applyTranslations();
+  refreshLingua();
+}
+
+// "Nome / Nome" (catalogo) → { de, it }. Se non c'è "/", il termine è
+// uguale in entrambe le lingue (es. codici prodotto come "EGV 3,5").
+function splitNome(nome) {
+  const idx = nome.indexOf(' / ');
+  if (idx === -1) return { de: nome, it: nome };
+  return { de: nome.slice(0, idx), it: nome.slice(idx + 3) };
+}
+
+// Rende il nome di un item di catalogo secondo la lingua attiva.
+function nomeDisplay(nome) {
+  const { de, it } = splitNome(nome);
+  if (appLang === 'de') return de;
+  return `${it}<br><small style="opacity:.6">${de}</small>`;
+}
+
+// Rende una coppia de/it (mansioni, gruppi) secondo la lingua attiva.
+function mansioneDisplay(de, it) {
+  if (appLang === 'de') return de;
+  return `${it}<br><small style="opacity:.6">${de}</small>`;
+}
+
+// Etichetta breve (senza sottotitolo), usata per i <select> nativi che
+// non supportano HTML — es. mansionePrincipaleSelect.
+function labelBreve(de, it) {
+  return appLang === 'de' ? de : `${it} — ${de}`;
+}
+
+// Ricostruisce tutte le viste con testo bilingue quando si cambia lingua,
+// senza toccare lo stato già selezionato (mansione/furgone/ecc).
+function refreshLingua() {
+  renderMansioniLv1();
+  if (document.getElementById('mansionePrincipaleSelect')) {
+    document.getElementById('mansionePrincipaleSelect').value = mansioneState.principale || '';
+  }
+  if (mansioneState.gruppo) {
+    renderGruppoCollapsed(mansioneState.gruppo);
+  } else if (mansioneState.principale && MANSIONI_TREE[mansioneState.principale]?.groups) {
+    const fg = document.getElementById('mansioniGridGruppo');
+    if (fg) renderMansioniGruppo();
+  }
+  if (mansioneState.dettaglio) {
+    renderDettaglioCollapsed(mansioneState.dettaglio, mansioneState.dettaglioLabel);
+  } else if (mansioneState.principale) {
+    const cat = MANSIONI_TREE[mansioneState.principale];
+    const items = cat.groups ? (cat.groups[mansioneState.gruppo]?.items) : cat.items;
+    if (items) renderMansioniDettaglio(items);
+  }
+  renderCatStrip();
+  renderMansioneStrip();
+  renderMagazzino();
+  renderFurgonePage();
+  renderConsumoSection();
+}
+
+function salvaAttrezziCustom() {
+  const custom = magazzino.filter(m => m.id.startsWith('CUSTOM-'))
+    .map(({ inFurgone, furgoneQty, ...rest }) => rest); // salva solo i campi catalogo, non lo stato furgone
+  localStorage.setItem('dp_mag_custom', JSON.stringify(custom));
+}
+
+let magCategoriaAttiva = 'consumabile';
+const CAT_LABELS = {
+  consumabile: { icon:'🧴', de:'Verbrauchsmaterial', it:'Consumabili' },
+  attrezzo:    { icon:'🔧', de:'Werkzeuge', it:'Attrezzi' },
+  cantiere:    { icon:'🏗',  de:'Baustellenmaterial', it:'Materiali cantiere' },
+  sicurezza:   { icon:'🦺', de:'Sicherheit', it:'Sicurezza' },
+};
+
+// Ordine e denominazioni dei sotto-gruppi per mansione, usati sia in
+// Magazzino che in Furgone per raggruppare gli oggetti.
+let magMansioneAttiva = 'tutti';
+const MANSIONE_ORDER = ['bitumen','kunststoff','flk','montage','sekuranten'];
+const MANSIONE_FILTER_LABELS = {
+  tutti:      { icon:'📚', de:'Alle', it:'Tutti' },
+  bitumen:    { icon:'🔥', de:'Bitumen', it:'Bitumen' },
+  kunststoff: { icon:'🧊', de:'Kunststoff', it:'Kunststoff' },
+  flk:        { icon:'💧', de:'FLK', it:'FLK' },
+  montage:    { icon:'🔩', de:'Montage', it:'Montage' },
+  sekuranten: { icon:'🧗', de:'Sekuranten', it:'Sekuranten' },
+  altri:      { icon:'📎', de:'Andere', it:'Altri' },
+};
 
 // ══════════════════════════════════════════════════
 // NAVIGATION
@@ -887,6 +1588,7 @@ function switchPage(name) {
   document.querySelector(`.tab[data-tab="${name}"]`).classList.add('active');
   document.getElementById('nav-' + name).classList.add('active');
   if (name === 'magazzino') renderMagazzino();
+  if (name === 'furgone') renderFurgonePage();
   if (name === 'log') renderLog();
 }
 
@@ -905,7 +1607,7 @@ function startTimer() {
   document.getElementById('btnStart').disabled = true;
   document.getElementById('btnStop').disabled = false;
   document.getElementById('chronoDisplay').classList.add('running');
-  document.getElementById('chronoStatus').textContent = 'Lavoro in corso…';
+  document.getElementById('chronoStatus').textContent = t('lavoroInCorso');
   document.getElementById('timeCalc').style.display = 'none';
 }
 
@@ -918,7 +1620,7 @@ function stopTimer() {
   document.getElementById('btnStop').disabled = true;
   document.getElementById('chronoDisplay').classList.remove('running');
   const ore = elapsedMs / 3600000;
-  document.getElementById('chronoStatus').textContent = 'Fine lavoro registrato';
+  document.getElementById('chronoStatus').textContent = t('fineLavoroRegistrato');
   document.getElementById('oreCalcolate').textContent = ore.toFixed(2) + ' h';
   document.getElementById('timeCalc').style.display = 'block';
 }
@@ -936,166 +1638,520 @@ function resetTimer() {
   stopTimer();
   elapsedMs = 0;
   document.getElementById('chronoDisplay').textContent = '00:00:00';
-  document.getElementById('chronoStatus').textContent = 'In attesa di avvio';
+  document.getElementById('chronoStatus').textContent = t('inAttesaAvvio');
   document.getElementById('timeCalc').style.display = 'none';
 }
 
 // ══════════════════════════════════════════════════
-// MANSIONI — Architettura a 5 categorie (01.07.2026)
-// DE primario / IT secondario / MISURA dinamica
+// MANSIONI — Architettura a 5 categorie (30.06.2026)
+// DE primario / IT secondario — flusso a cascata
 // ══════════════════════════════════════════════════
+const MONTAGE_ITEMS = [
+  {id:'lichtkuppel', de:'Lichtkuppel', it:'Lucernario'},
+  {id:'ablauf', de:'Ablauf / Notablauf', it:'Scarico / scarico di sicurezza'},
+  {id:'lueftungsrohr', de:'Lüftungsrohr', it:'Tubo di ventilazione'},
+  {id:'dachausstieg', de:'Dachausstieg', it:'Uscita sul tetto'},
+  {id:'kamin_rwa', de:'Kamin / RWA-Anschluss', it:'Camino / raccordo RWA'},
+  {id:'kontrollstuetze', de:'Kontrollstütze', it:'Supporto di controllo'},
+  {id:'stromkasten', de:'Stromkasten / Kabeldurchführung', it:'Cassetta elettrica / passaggio cavi'},
+  {id:'metallhalter_gelaender', de:'Metallhalter Geländer', it:'Supporto metallico ringhiera'},
+  {id:'metallhalter_industrie', de:'Metallhalter Industriemaschine', it:'Supporto metallico macchinario'},
+];
+
 const MANSIONI_TREE = {
-  bitumen: { 
-    de:'Bitumen', it:'Bitume', 
-    misura: 'mq',
-    items:[
-      {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
-      {id:'dampf_flamm', de:'Dampfbremse – Membrana fiammata', it:'Dampfbremse – membrana fiammata'},
-      {id:'dampf_guss', de:'Dampfbremse – Gussasphalt/Bitumofen', it:'Dampfbremse – gussasphalt/bitumofen'},
-      {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
-      {id:'abdichtung', de:'Abdichtung / Deckschicht', it:'Strato di tenuta'},
-      {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
-      {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
-      {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
+  bitumen: { de:'Bitumen', it:'Bitume', misura:'mq', items:[
+    {id:'vorbereitung', de:'Vorbereitung', it:'Preparazione supporto'},
+    {id:'dampfbremse', de:'Dampfbremse', it:'Barriera vapore'},
+    {id:'dampfbremse_aufbordung', de:'Dampfbremse Aufbordung', it:'Barriera vapore – risvolto'},
+    {id:'isolieren', de:'Isolieren', it:'Isolamento (PIR)'},
+    {id:'erste_lage', de:'Erste Lage', it:'Prima mano'},
+    {id:'erste_lage_aufbordung', de:'Erste Lage Aufbordung', it:'Prima mano – risvolto'},
+    {id:'bitumenkeil', de:'Bitumenkeil', it:'Cuneo bitume'},
+    {id:'zweite_lage', de:'2. Lage', it:'Seconda mano'},
+    {id:'aufbordung_2lage', de:'Aufbordung 2. Lage', it:'Risvolto seconda mano'},
+    {id:'sichtschutz_vlies', de:'Sichtschutz / Vlies / Begrünung', it:'Protezione / vlies / inverdimento'},
+  ]},
+  kunststoff: { de:'Kunststoff / PVC-TPO', it:'Kunststoff / PVC-TPO', misura:'mq', items:[
+    // Sequenza da fonti reali (BauNetz Wissen, Bauder Verlegeanleitung PVC/TPO)
+    {id:'untergrund_pruefen', de:'Untergrund prüfen / vorbereiten', it:'Controllo e preparazione supporto'},
+    {id:'dampfbremse', de:'Dampfbremse verlegen', it:'Posa barriera vapore'},
+    {id:'daemmung', de:'Dämmung verlegen (PIR)', it:'Posa isolante (PIR)'},
+    {id:'trennlage', de:'Trennlage / Vlies verlegen', it:'Posa strato di separazione / vlies'},
+    {id:'bahn_auslegen', de:'Kunststoffbahn auslegen', it:'Stesura telo'},
+    {id:'bahn_befestigen', de:'Bahn befestigen (mechanisch/kleben)', it:'Fissaggio telo (meccanico/incollato)'},
+    {id:'naht_verschweissen', de:'Nähte verschweissen', it:'Saldatura giunzioni'},
+    {id:'naht_kontrolle', de:'Nahtkontrolle (Prüfnadel)', it:'Controllo saldature'},
+    {id:'randanschluss', de:'Randanschluss / Aufkantung', it:'Raccordo bordo / risvolto'},
+    {id:'ecken_durchdringung', de:'Ecken & Durchdringungen', it:'Angoli e passaggi'},
+    {id:'sichtschutz_vlies', de:'Sichtschutz / Auflast / Begrünung', it:'Protezione / zavorra / inverdimento'},
+  ]},
+  flk: { de:'FLK', it:'FLK', groups:{
+    fenster: { de:'Fenster', it:'Finestre', misura:'flk', items:[
+      {id:'fenster', de:'Fenster', it:'Finestra'},
     ]},
-  kunststoff: { 
-    de:'Kunststoff / PVC-TPO', it:'Kunststoff / PVC-TPO', 
-    misura: 'mq',
-    items:[
-      {id:'untergrund', de:'Untergrund vorbereiten', it:'Preparazione supporto'},
-      {id:'dampfbremse', de:'Dampfbremse', it:'Dampfbremse'},
-      {id:'isolieren', de:'Isolieren (PIR)', it:'Isolamento (PIR)'},
-      {id:'abdichtung', de:'Abdichtung / Deckschicht PVC-TPO', it:'Strato di tenuta PVC-TPO'},
-      {id:'schweissnaht', de:'Schweissnaht / Fügung', it:'Saldatura / giunzione'},
-      {id:'aufbordung', de:'Aufbordung (120mm)', it:'Aufbordung (120mm)'},
-      {id:'abbordung', de:'Abbordung (200mm)', it:'Abbordung (200mm)'},
-      {id:'kehle', de:'Kehle / Ecken', it:'Gola / Angoli'},
+    montierte_objekte: { de:'Montierte Objekte', it:'Oggetti montati', misura:'pezzi', items: MONTAGE_ITEMS },
+    anschluss: { de:'Anschluss', it:'Raccordi', misura:'flk', items:[
+      {id:'anschluss_beton_bitumen', de:'Anschluss Beton–Bitumen', it:'Raccordo cemento–bitume'},
+      {id:'anschluss_bitumen_kunststoff', de:'Anschluss Bitumen–Kunststoff', it:'Raccordo bitume–plastica'},
+      {id:'anschluss_bitumen_holz', de:'Anschluss Bitumen–Holz', it:'Raccordo bitume–legno'},
+      {id:'anschluss_bitumen_metall', de:'Anschluss Bitumen–Metall', it:'Raccordo bitume–metallo'},
+      {id:'beton_flk', de:'Beton FLK', it:'Calcestruzzo FLK'},
     ]},
-  flk: { 
-    de:'FLK', it:'FLK', 
-    misura: 'flk',
-    groups:{
-      fenster: { 
-        de:'Fenster', it:'Finestre', 
-        items:[
-          {id:'fenster_anschluss', de:'Fensteranschluss', it:'Raccordo finestra'},
-          {id:'fensterbank', de:'Fensterbank', it:'Davanzale'},
-        ]},
-      montierte_objekte: { 
-        de:'Montierte Objekte', it:'Oggetti montati', 
-        items:[
-          {id:'lichtkuppel', de:'Lichtkuppel', it:'Lucernario'},
-          {id:'ablauf', de:'Ablauf / Notablauf', it:'Scarico / scarico di sicurezza'},
-          {id:'lueftungsrohr', de:'Lüftungsrohr', it:'Tubo di ventilazione'},
-          {id:'dachausstieg', de:'Dachausstieg', it:'Uscita sul tetto'},
-          {id:'kamin_rwa', de:'Kamin / RWA-Anschluss', it:'Camino / raccordo RWA'},
-          {id:'kontrollstuetze', de:'Kontrollstütze', it:'Supporto di controllo'},
-          {id:'stromkasten', de:'Stromkasten / Kabeldurchführung', it:'Cassetta elettrica / passaggio cavi'},
-          {id:'metallhalter_gelaender', de:'Metallhalter Geländer', it:'Supporto metallico ringhiera'},
-          {id:'metallhalter_industrie', de:'Metallhalter Industriemaschine', it:'Supporto metallico macchinario'},
-        ]},
-      anschluss: { 
-        de:'Anschluss', it:'Raccordi', 
-        items:[
-          {id:'anschluss_beton_bitumen', de:'Anschluss Beton–Bitumen', it:'Raccordo cemento–bitume'},
-          {id:'anschluss_bitumen_kunststoff', de:'Anschluss Bitumen–Kunststoff', it:'Raccordo bitume–plastica'},
-          {id:'anschluss_bitumen_holz', de:'Anschluss Bitumen–Holz', it:'Raccordo bitume–legno'},
-          {id:'anschluss_bitumen_metall', de:'Anschluss Bitumen–Metall', it:'Raccordo bitume–metallo'},
-        ]},
-    }},
-  montage: { 
-    de:'Montage', it:'Montaggio', 
-    misura: 'pezzi',
-    items:[
-      {id:'lichtkuppel', de:'Lichtkuppel', it:'Lucernario'},
-      {id:'ablauf', de:'Ablauf / Notablauf', it:'Scarico / scarico di sicurezza'},
-      {id:'lueftungsrohr', de:'Lüftungsrohr', it:'Tubo di ventilazione'},
-      {id:'dachausstieg', de:'Dachausstieg', it:'Uscita sul tetto'},
-      {id:'kamin_rwa', de:'Kamin / RWA-Anschluss', it:'Camino / raccordo RWA'},
-      {id:'kontrollstuetze', de:'Kontrollstütze', it:'Supporto di controllo'},
-      {id:'stromkasten', de:'Stromkasten / Kabeldurchführung', it:'Cassetta elettrica / passaggio cavi'},
-      {id:'metallhalter_gelaender', de:'Metallhalter Geländer', it:'Supporto metallico ringhiera'},
-      {id:'metallhalter_industrie', de:'Metallhalter Industriemaschine', it:'Supporto metallico macchinario'},
-    ]},
-  sekuranten: { 
-    de:'Sekuranten / Seilsystem', it:'Sekuranten / sistema a fune', 
-    misura: 'pezzi',
-    items:[
-      {id:'seilsystem_montage', de:'Seilsystem Montage', it:'Montaggio sistema a fune'},
-      {id:'anschlagpunkt', de:'Anschlagpunkt', it:'Punto di ancoraggio'},
-      {id:'kontrolle_sekurant', de:'Kontrolle / Prüfung', it:'Controllo / verifica'},
-    ]},
+  }},
+  montage: { de:'Montage', it:'Montaggio', misura:'pezzi', items: MONTAGE_ITEMS },
+  sekuranten: { de:'Sekuranten / Seilsystem', it:'Sekuranten / sistema a fune', misura:'pezzi', items:[
+    {id:'seilsystem_montage', de:'Seilsystem Montage', it:'Montaggio sistema a fune'},
+    {id:'anschlagpunkt', de:'Anschlagpunkt', it:'Punto di ancoraggio'},
+    {id:'kontrolle_sekurant', de:'Kontrolle / Prüfung', it:'Controllo / verifica'},
+  ]},
 };
 
+// Ritorna il tipo di misura corretto: usa quella del gruppo FLK se presente,
+// altrimenti quella della categoria principale.
+function getMisuraTipo() {
+  const cat = mansioneState.principale ? MANSIONI_TREE[mansioneState.principale] : null;
+  if (!cat) return '';
+  if (cat.groups && mansioneState.gruppo) {
+    const g = cat.groups[mansioneState.gruppo];
+    return (g && g.misura) || cat.misura || '';
+  }
+  return cat.misura || '';
+}
+
 let mansioneState = { principale:'', gruppo:'', dettaglio:'', dettaglioLabel:'' };
+let consumoOggi = {};
 
 function renderMansioniLv1() {
-  const grid = document.getElementById('mansioniGridLv1');
-  grid.innerHTML = Object.entries(MANSIONI_TREE).map(([key, m]) =>
-    `<div class="mansione-chip" data-key="${key}" onclick="selectMansionePrincipale('${key}')">${m.de}<br><small style="opacity:.6">${m.it}</small></div>`
-  ).join('');
+  const sel = document.getElementById('mansionePrincipaleSelect');
+  sel.innerHTML = `<option value="">${t('selMansione')}</option>` +
+    Object.entries(MANSIONI_TREE).map(([key, m]) =>
+      `<option value="${key}">${labelBreve(m.de, m.it)}</option>`
+    ).join('');
+  sel.onchange = () => selectMansionePrincipale(sel.value);
 }
 
 function selectMansionePrincipale(key) {
   mansioneState = { principale:key, gruppo:'', dettaglio:'', dettaglioLabel:'' };
+  consumoOggi = {};
   document.getElementById('mansionePrincipale').value = key;
-  document.querySelectorAll('#mansioniGridLv1 .mansione-chip').forEach(c =>
-    c.classList.toggle('active', c.dataset.key === key));
-
-  const m = MANSIONI_TREE[key];
-  const fieldGruppo = document.getElementById('fieldGruppo');
-  const fieldDettaglio = document.getElementById('fieldDettaglio');
   document.getElementById('mansioneSelected').value = '';
   document.getElementById('mansioneGruppo').value = '';
 
+  const fieldGruppo = document.getElementById('fieldGruppo');
+  const fieldDettaglio = document.getElementById('fieldDettaglio');
+
+  if (!key) {
+    fieldGruppo.classList.add('hidden');
+    fieldDettaglio.classList.add('hidden');
+    renderCampoMisura();
+    renderConsumoSection();
+    return;
+  }
+
+  const m = MANSIONI_TREE[key];
   if (m.groups) {
     fieldGruppo.classList.remove('hidden');
+    fieldGruppo.innerHTML = `<label>${t('gruppoFlkLbl')}</label><div class="mansioni-grid" id="mansioniGridGruppo"></div><input type="hidden" id="mansioneGruppo" value="">`;
+    renderMansioniGruppo();
     fieldDettaglio.classList.add('hidden');
-    document.getElementById('mansioniGridGruppo').innerHTML = Object.entries(m.groups).map(([gkey, g]) =>
-      `<div class="mansione-chip" data-key="${gkey}" onclick="selectMansioneGruppo('${gkey}')">${g.de}<br><small style="opacity:.6">${g.it}</small></div>`
-    ).join('');
   } else {
     fieldGruppo.classList.add('hidden');
     fieldDettaglio.classList.remove('hidden');
+    fieldDettaglio.innerHTML = `<label>${t('mansioneSpecificaLbl')}</label><div class="mansioni-grid" id="mansioniGridDettaglio"></div><input type="hidden" id="mansioneSelected" value="">`;
     renderMansioniDettaglio(m.items);
   }
+  renderCampoMisura();
+  renderConsumoSection();
+}
+
+function renderMansioniGruppo() {
+  const grid = document.getElementById('mansioniGridGruppo');
+  if (!grid) return;
+  grid.innerHTML = Object.entries(MANSIONI_TREE.flk.groups).map(([gkey, g]) =>
+    `<div class="mansione-chip" data-key="${gkey}" onclick="selectMansioneGruppo('${gkey}')">${mansioneDisplay(g.de, g.it)}</div>`
+  ).join('');
 }
 
 function selectMansioneGruppo(gkey) {
   mansioneState.gruppo = gkey;
   document.getElementById('mansioneGruppo').value = gkey;
-  document.querySelectorAll('#mansioniGridGruppo .mansione-chip').forEach(c =>
-    c.classList.toggle('active', c.dataset.key === gkey));
-  document.getElementById('fieldDettaglio').classList.remove('hidden');
+  const fieldDettaglio = document.getElementById('fieldDettaglio');
+  fieldDettaglio.classList.remove('hidden');
+  fieldDettaglio.innerHTML = `<label>${t('mansioneSpecificaLbl')}</label><div class="mansioni-grid" id="mansioniGridDettaglio"></div><input type="hidden" id="mansioneSelected" value="">`;
   renderMansioniDettaglio(MANSIONI_TREE.flk.groups[gkey].items);
+  renderGruppoCollapsed(gkey);
+  renderCampoMisura();
+  renderConsumoSection();
+}
+
+// Vista collassata del gruppo FLK già scelto — riusata anche al cambio lingua.
+function renderGruppoCollapsed(gkey) {
+  const g = MANSIONI_TREE.flk.groups[gkey];
+  const fieldGruppo = document.getElementById('fieldGruppo');
+  if (!fieldGruppo) return;
+  fieldGruppo.innerHTML = `
+    <label>${t('gruppoFlkLbl')}</label>
+    <div class="mansione-collapsed">
+      <div class="val">${mansioneDisplay(g.de, g.it)}</div>
+      <div class="cambia" onclick="selectMansionePrincipale('flk')">↺ ${t('cambiaLbl')}</div>
+    </div>
+    <input type="hidden" id="mansioneGruppo" value="${gkey}">`;
 }
 
 function renderMansioniDettaglio(items) {
-  document.getElementById('mansioniGridDettaglio').innerHTML = items.map(it =>
-    `<div class="mansione-chip" data-key="${it.id}" onclick="selectMansioneDettaglio('${it.id}','${it.de.replace(/'/g,"\\'")}')">${it.de}<br><small style="opacity:.6">${it.it}</small></div>`
-  ).join('');
+  const grid = document.getElementById('mansioniGridDettaglio');
+  if (!grid) return;
+  const principale = mansioneState.principale;
+  const gruppo = mansioneState.gruppo;
+  grid.innerHTML = items.map(it => {
+    const key = gruppo ? `${principale}::${gruppo}::${it.id}` : `${principale}::${it.id}`;
+    return `<div class="mansione-chip-row">
+      <div class="mansione-chip" data-key="${it.id}" onclick='selectMansioneDettaglio(${JSON.stringify(it.id)}, ${JSON.stringify(it.de)})'>${mansioneDisplay(it.de, it.it)}</div>
+      <div class="info-btn" onclick='event.stopPropagation(); mostraFabbisogno(${JSON.stringify(key)}, ${JSON.stringify(it.de)}, ${JSON.stringify(it.it)})'>ℹ️</div>
+    </div>`;
+  }).join('');
 }
 
 function selectMansioneDettaglio(id, deLabel) {
   mansioneState.dettaglio = id;
   mansioneState.dettaglioLabel = deLabel;
   document.getElementById('mansioneSelected').value = deLabel;
-  document.querySelectorAll('#mansioniGridDettaglio .mansione-chip').forEach(c =>
-    c.classList.toggle('active', c.dataset.key === id));
+  renderDettaglioCollapsed(id, deLabel);
+  renderCampoMisura();
+  renderConsumoSection();
+}
+
+// Vista collassata della mansione specifica già scelta — riusata anche al
+// cambio lingua, quindi non richiede lo stato di selezione della chip.
+function renderDettaglioCollapsed(id, deLabel) {
+  let itLabel = '';
+  const cat = MANSIONI_TREE[mansioneState.principale];
+  const items = cat.groups ? cat.groups[mansioneState.gruppo].items : cat.items;
+  const found = items.find(i => i.id === id);
+  if (found) itLabel = found.it;
+  mansioneState.dettaglioLabel = deLabel;
+
+  const fieldDettaglio = document.getElementById('fieldDettaglio');
+  if (!fieldDettaglio) return;
+  fieldDettaglio.innerHTML = `
+    <label>${t('mansioneSpecificaLbl')}</label>
+    <div class="mansione-collapsed">
+      <div class="val">${mansioneDisplay(deLabel, itLabel)}</div>
+      <div style="display:flex; gap:14px; flex-shrink:0; align-items:center">
+        <div class="info-link" onclick='mostraFabbisogno(${JSON.stringify(getSottomansioneKey() || "")}, ${JSON.stringify(deLabel)}, ${JSON.stringify(itLabel)})'>ℹ️ ${t('cosaServe')}</div>
+        <div class="cambia" onclick="riapriDettaglio()">↺ ${t('cambiaLbl')}</div>
+      </div>
+    </div>
+    <input type="hidden" id="mansioneSelected" value="${deLabel}">`;
+}
+
+function riapriDettaglio() {
+  const cat = MANSIONI_TREE[mansioneState.principale];
+  const items = cat.groups ? cat.groups[mansioneState.gruppo].items : cat.items;
+  mansioneState.dettaglio = '';
+  mansioneState.dettaglioLabel = '';
+  const fieldDettaglio = document.getElementById('fieldDettaglio');
+  fieldDettaglio.innerHTML = `<label>${t('mansioneSpecificaLbl')}</label><div class="mansioni-grid" id="mansioniGridDettaglio"></div><input type="hidden" id="mansioneSelected" value="">`;
+  renderMansioniDettaglio(items);
+  renderCampoMisura();
+  renderConsumoSection();
+}
+
+// ══════════════════════════════════════════════════
+// CAMPO MISURA DINAMICO (mq / flk / pezzi)
+// ══════════════════════════════════════════════════
+function renderCampoMisura() {
+  const tipo = getMisuraTipo();
+  const field = document.getElementById('fieldMisura');
+
+  if (!tipo || !mansioneState.dettaglio) {
+    field.classList.add('hidden');
+    field.innerHTML = '';
+    document.getElementById('fieldFornitore').classList.add('hidden');
+    return;
+  }
+
+  field.classList.remove('hidden');
+  if (tipo === 'mq') {
+    field.innerHTML = `
+      <label>${t('superficiePosata')}</label>
+      <input type="number" id="misuraMq" inputmode="decimal" step="0.1" placeholder="0">`;
+  } else if (tipo === 'flk') {
+    field.innerHTML = `
+      <label>${t('lunghezzaPosata')}</label>
+      <input type="number" id="misuraLunghezza" inputmode="decimal" step="0.1" placeholder="0">
+      <label style="margin-top:10px">${t('larghezzaVlies')}</label>
+      <input type="number" id="misuraLarghezzaVlies" inputmode="decimal" step="0.1" value="1">
+      <label style="margin-top:10px">${t('litriFlkConsumati')}</label>
+      <input type="number" id="misuraLitriFlk" inputmode="decimal" step="0.1" placeholder="0">`;
+  } else if (tipo === 'pezzi') {
+    field.innerHTML = `
+      <label>${t('numeroPezziMontati')}</label>
+      <input type="number" id="misuraPezzi" inputmode="numeric" step="1" placeholder="0">`;
+  }
+
+  field.querySelectorAll('input').forEach(inp => {
+    inp.addEventListener('input', checkMostraFornitore);
+  });
+  checkMostraFornitore();
+}
+
+function checkMostraFornitore() {
+  const tipo = getMisuraTipo();
+  let valido = false;
+  if (tipo === 'mq') valido = parseFloat(document.getElementById('misuraMq')?.value) > 0;
+  if (tipo === 'flk') valido = parseFloat(document.getElementById('misuraLunghezza')?.value) > 0;
+  if (tipo === 'pezzi') valido = parseFloat(document.getElementById('misuraPezzi')?.value) > 0;
+  document.getElementById('fieldFornitore').classList.toggle('hidden', !valido);
+}
+
+function getMisuraValori() {
+  const tipo = getMisuraTipo();
+  const out = {
+    Misura_Mq: '',
+    Misura_LunghezzaM: '', Misura_LarghezzaVliesCm: '', Misura_LitriFlk: '',
+    Misura_NumeroPezzi: '',
+  };
+  if (tipo === 'mq') {
+    out.Misura_Mq = document.getElementById('misuraMq')?.value || '';
+  } else if (tipo === 'flk') {
+    out.Misura_LunghezzaM = document.getElementById('misuraLunghezza')?.value || '';
+    out.Misura_LarghezzaVliesCm = document.getElementById('misuraLarghezzaVlies')?.value || '';
+    out.Misura_LitriFlk = document.getElementById('misuraLitriFlk')?.value || '';
+  } else if (tipo === 'pezzi') {
+    out.Misura_NumeroPezzi = document.getElementById('misuraPezzi')?.value || '';
+  }
+  return out;
+}
+
+function misuraValida() {
+  const tipo = getMisuraTipo();
+  if (tipo === 'mq') return parseFloat(document.getElementById('misuraMq')?.value) > 0;
+  if (tipo === 'flk') return parseFloat(document.getElementById('misuraLunghezza')?.value) > 0;
+  if (tipo === 'pezzi') return parseFloat(document.getElementById('misuraPezzi')?.value) > 0;
+  return false;
 }
 
 function resetMansioni() {
   mansioneState = { principale:'', gruppo:'', dettaglio:'', dettaglioLabel:'' };
+  document.getElementById('mansionePrincipaleSelect').value = '';
   document.getElementById('mansionePrincipale').value = '';
-  document.getElementById('mansioneGruppo').value = '';
-  document.getElementById('mansioneSelected').value = '';
-  document.getElementById('fieldGruppo').classList.add('hidden');
-  document.getElementById('fieldDettaglio').classList.add('hidden');
-  document.querySelectorAll('#mansioniGridLv1 .mansione-chip').forEach(c => c.classList.remove('active'));
+  const fieldGruppo = document.getElementById('fieldGruppo');
+  fieldGruppo.classList.add('hidden');
+  fieldGruppo.innerHTML = `<label>Gruppo FLK</label><div class="mansioni-grid" id="mansioniGridGruppo"></div><input type="hidden" id="mansioneGruppo" value="">`;
+  const fieldDettaglio = document.getElementById('fieldDettaglio');
+  fieldDettaglio.classList.add('hidden');
+  fieldDettaglio.innerHTML = `<label>Mansione Specifica</label><div class="mansioni-grid" id="mansioniGridDettaglio"></div><input type="hidden" id="mansioneSelected" value="">`;
+  const fieldMisura = document.getElementById('fieldMisura');
+  fieldMisura.classList.add('hidden');
+  fieldMisura.innerHTML = '';
+  document.getElementById('fieldFornitore').classList.add('hidden');
+  document.getElementById('fornitore').value = '';
+  resetConsumoOggi();
 }
 
 // ══════════════════════════════════════════════════
-// SUVA CHECKLIST
+// MAPPATURA ITEM → SOTTOMANSIONI (da tool di mappatura, 01.07.2026)
+// Chiave = principale::[gruppo::]dettaglio — stessa nomenclatura di MANSIONI_TREE.
+// Copre attrezzi/cantiere/consumabili; oggi usata solo per i consumabili nella
+// sezione "Consumabili Usati Oggi", ma tenuta completa per usi futuri
+// (es. checklist attrezzi necessari per una mansione).
+const ITEM_MANSIONI_MAP = {
+  'ATZ-001': ['bitumen::dampfbremse','bitumen::dampfbremse_aufbordung','bitumen::erste_lage','bitumen::erste_lage_aufbordung','bitumen::bitumenkeil','bitumen::zweite_lage','bitumen::aufbordung_2lage','kunststoff::dampfbremse','sekuranten::seilsystem_montage','montage::lichtkuppel','montage::ablauf','montage::lueftungsrohr','montage::dachausstieg','montage::kamin_rwa','montage::kontrollstuetze','montage::stromkasten','montage::metallhalter_gelaender','montage::metallhalter_industrie'],
+  'ATZ-002': ['bitumen::dampfbremse','bitumen::dampfbremse_aufbordung','bitumen::erste_lage','bitumen::erste_lage_aufbordung','bitumen::zweite_lage','bitumen::aufbordung_2lage','kunststoff::dampfbremse'],
+  'ATZ-003': ['kunststoff::naht_verschweissen','kunststoff::randanschluss','kunststoff::ecken_durchdringung'],
+  'ATZ-004': ['bitumen::dampfbremse','bitumen::dampfbremse_aufbordung','bitumen::erste_lage','bitumen::erste_lage_aufbordung','bitumen::bitumenkeil','bitumen::zweite_lage','bitumen::aufbordung_2lage','bitumen::sichtschutz_vlies','kunststoff::dampfbremse','kunststoff::trennlage','kunststoff::bahn_auslegen','kunststoff::randanschluss','kunststoff::ecken_durchdringung','kunststoff::sichtschutz_vlies'],
+  'ATZ-005': ['bitumen::vorbereitung','kunststoff::untergrund_pruefen'],
+  'ATZ-006': ['bitumen::vorbereitung','kunststoff::untergrund_pruefen','flk::anschluss::anschluss_beton_bitumen','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_metall'],
+  'ATZ-007': ['bitumen::vorbereitung','kunststoff::untergrund_pruefen'],
+  'ATZ-008': ['flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::ablauf','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::kamin_rwa','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::stromkasten','flk::montierte_objekte::metallhalter_industrie','flk::anschluss::anschluss_beton_bitumen','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_metall'],
+  'ATZ-009': ['bitumen::dampfbremse_aufbordung','bitumen::erste_lage_aufbordung','bitumen::bitumenkeil','bitumen::aufbordung_2lage','kunststoff::dampfbremse'],
+  'ATZ-010': ['bitumen::isolieren','kunststoff::daemmung'],
+  'ATZ-011': ['bitumen::isolieren','kunststoff::daemmung'],
+  'ATZ-012': ['montage::ablauf','montage::lueftungsrohr','montage::kamin_rwa','montage::kontrollstuetze','montage::stromkasten','montage::metallhalter_gelaender','montage::metallhalter_industrie','sekuranten::seilsystem_montage','sekuranten::anschlagpunkt','sekuranten::kontrolle_sekurant'],
+  'ATZ-013': ['flk::fenster::fenster','flk::anschluss::anschluss_beton_bitumen','kunststoff::untergrund_pruefen','bitumen::vorbereitung'],
+  'ATZ-014': ['bitumen::vorbereitung','kunststoff::untergrund_pruefen'],
+  'ATZ-017': ['flk::anschluss::anschluss_bitumen_metall','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_beton_bitumen','flk::montierte_objekte::metallhalter_industrie','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::stromkasten','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::lichtkuppel','flk::fenster::fenster','flk::montierte_objekte::ablauf','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::kamin_rwa'],
+  'ATZ-018': ['bitumen::vorbereitung','kunststoff::untergrund_pruefen'],
+  'ATZ-019': ['flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::ablauf','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::kamin_rwa','flk::montierte_objekte::metallhalter_industrie','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::stromkasten','flk::anschluss::anschluss_bitumen_metall','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_beton_bitumen'],
+  'ATZ-020': ['flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::ablauf','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::kamin_rwa','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::stromkasten','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::metallhalter_industrie','flk::anschluss::anschluss_beton_bitumen','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_metall'],
+  'ATZ-022': ['montage::lichtkuppel','montage::ablauf','montage::lueftungsrohr','montage::dachausstieg','montage::stromkasten','montage::kamin_rwa','montage::kontrollstuetze','montage::metallhalter_gelaender','montage::metallhalter_industrie','sekuranten::seilsystem_montage','sekuranten::anschlagpunkt','sekuranten::kontrolle_sekurant'],
+  'ATZ-023': ['sekuranten::seilsystem_montage','sekuranten::anschlagpunkt','sekuranten::kontrolle_sekurant','montage::metallhalter_gelaender','montage::lichtkuppel','montage::ablauf','montage::lueftungsrohr','montage::dachausstieg','montage::kamin_rwa','montage::kontrollstuetze','montage::stromkasten','montage::metallhalter_industrie'],
+  'ATZ-024': ['kunststoff::naht_verschweissen'],
+  'ATZ-025': ['kunststoff::naht_verschweissen','kunststoff::randanschluss','kunststoff::ecken_durchdringung'],
+  'ATZ-026': ['kunststoff::naht_kontrolle'],
+  'ATZ-028': ['montage::ablauf'],
+  'ATZ-029': ['sekuranten::seilsystem_montage','sekuranten::anschlagpunkt','sekuranten::kontrolle_sekurant'],
+  'ATZ-030': ['sekuranten::kontrolle_sekurant','sekuranten::anschlagpunkt','sekuranten::seilsystem_montage'],
+  'ATZ-034': ['kunststoff::untergrund_pruefen','bitumen::vorbereitung'],
+  'MAT-001': ['bitumen::vorbereitung','kunststoff::untergrund_pruefen'],
+  'MAT-002': ['bitumen::erste_lage','bitumen::dampfbremse','kunststoff::dampfbremse'],
+  'MAT-003': ['bitumen::dampfbremse'],
+  'MAT-004': ['bitumen::zweite_lage','bitumen::aufbordung_2lage'],
+  'MAT-005': ['kunststoff::daemmung','bitumen::isolieren'],
+  'MAT-006': ['bitumen::isolieren','kunststoff::daemmung'],
+  'MAT-009': ['kunststoff::trennlage'],
+  'MAT-010': ['kunststoff::bahn_auslegen','kunststoff::randanschluss'],
+  'MAT-011': ['kunststoff::bahn_befestigen'],
+  'MAT-013': ['kunststoff::naht_verschweissen','kunststoff::ecken_durchdringung','kunststoff::randanschluss','flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::ablauf','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::kamin_rwa','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::stromkasten','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::metallhalter_industrie','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_bitumen_metall'],
+  'MAT-014': ['flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::kamin_rwa','flk::anschluss::anschluss_beton_bitumen','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_metall'],
+  'MAT-015': ['flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::ablauf','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::kamin_rwa','flk::montierte_objekte::stromkasten','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::metallhalter_industrie','flk::anschluss::anschluss_bitumen_metall','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_beton_bitumen'],
+  'MAT-016': ['flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::ablauf','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::kamin_rwa','flk::montierte_objekte::stromkasten','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::metallhalter_industrie','flk::anschluss::anschluss_beton_bitumen','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_metall'],
+  'MAT-017': ['flk::anschluss::anschluss_bitumen_metall','flk::anschluss::anschluss_bitumen_holz','flk::anschluss::anschluss_bitumen_kunststoff','flk::anschluss::anschluss_beton_bitumen','flk::fenster::fenster','flk::montierte_objekte::lichtkuppel','flk::montierte_objekte::ablauf','flk::montierte_objekte::lueftungsrohr','flk::montierte_objekte::dachausstieg','flk::montierte_objekte::metallhalter_industrie','flk::montierte_objekte::metallhalter_gelaender','flk::montierte_objekte::stromkasten','flk::montierte_objekte::kontrollstuetze','flk::montierte_objekte::kamin_rwa'],
+  'MAT-018': ['bitumen::vorbereitung','kunststoff::untergrund_pruefen','flk::fenster::fenster','flk::anschluss::anschluss_beton_bitumen'],
+  'MAT-020': ['montage::ablauf'],
+  'MAT-030': ['sekuranten::seilsystem_montage','montage::lichtkuppel','montage::ablauf','montage::lueftungsrohr','montage::dachausstieg','montage::kamin_rwa','montage::kontrollstuetze','montage::stromkasten','montage::metallhalter_gelaender','montage::metallhalter_industrie'],
+  'MAT-034': ['montage::ablauf','montage::lueftungsrohr','montage::kamin_rwa','montage::kontrollstuetze','montage::stromkasten'],
+  'MAT-031': ['sekuranten::anschlagpunkt'],
+  'MAT-032': ['sekuranten::seilsystem_montage'],
+  'ATZ-035': ['bitumen::dampfbremse','bitumen::erste_lage','bitumen::zweite_lage'],
+  'ATZ-036': ['bitumen::dampfbremse','bitumen::erste_lage','bitumen::zweite_lage'],
+  'ATZ-037': ['montage::lichtkuppel'],
+  'MAT-033': ['bitumen::vorbereitung','bitumen::dampfbremse','bitumen::dampfbremse_aufbordung','bitumen::isolieren','bitumen::erste_lage','bitumen::erste_lage_aufbordung','bitumen::bitumenkeil','bitumen::zweite_lage','bitumen::aufbordung_2lage','bitumen::sichtschutz_vlies','kunststoff::dampfbremse'],
+};
+
+// Chiave composita della mansione specifica correntemente selezionata,
+// nella stessa nomenclatura di ITEM_MANSIONI_MAP.
+function getSottomansioneKey() {
+  if (!mansioneState.principale || !mansioneState.dettaglio) return null;
+  if (mansioneState.gruppo) return `${mansioneState.principale}::${mansioneState.gruppo}::${mansioneState.dettaglio}`;
+  return `${mansioneState.principale}::${mansioneState.dettaglio}`;
+}
+
+// ══════════════════════════════════════════════════
+// "COSA SERVE" — fabbisogno attrezzi/cantiere/consumabili per una
+// mansione specifica, letto da ITEM_MANSIONI_MAP (indipendente dal furgone:
+// mostra tutto il catalogo pertinente, non solo ciò che hai già in auto).
+// ══════════════════════════════════════════════════
+function getFabbisognoPerChiave(key) {
+  const ids = Object.entries(ITEM_MANSIONI_MAP)
+    .filter(([id, keys]) => keys.includes(key))
+    .map(([id]) => id);
+  const items = ids.map(id => magazzino.find(m => m.id === id)).filter(Boolean);
+  return {
+    attrezzo: items.filter(m => m.cat === 'attrezzo'),
+    cantiere: items.filter(m => m.cat === 'cantiere'),
+    consumabile: items.filter(m => m.cat === 'consumabile'),
+  };
+}
+
+function mostraFabbisogno(key, deLabel, itLabel) {
+  document.getElementById('fabbisognoTitolo').textContent = appLang === 'de' ? deLabel : itLabel;
+  document.getElementById('fabbisognoSub').textContent = appLang === 'de' ? '' : deLabel;
+
+  const f = getFabbisognoPerChiave(key);
+  const sezioni = [
+    { titolo: t('attrezziSez'), items: f.attrezzo },
+    { titolo: t('cantiereSez'), items: f.cantiere },
+    { titolo: t('consumabiliSez'), items: f.consumabile },
+  ];
+
+  let html = '';
+  sezioni.forEach(s => {
+    html += `<div class="fabbisogno-cat-title">${s.titolo}</div>`;
+    if (!s.items.length) {
+      html += `<div class="fabbisogno-empty">${t('nienteMapMansione')}</div>`;
+    } else {
+      html += s.items.map(m => `
+        <div class="fabbisogno-item">${nomeDisplay(m.nome)} ${m.inFurgone ? '· 🚐 ' + (m.furgoneQty || 0) + ' ' + m.unit : '· ' + t('nonInFurgone')}
+          <div class="id">${m.id}</div>
+        </div>`).join('');
+    }
+  });
+
+  document.getElementById('fabbisognoContenuto').innerHTML = html;
+  document.getElementById('fabbisognoOverlay').classList.add('open');
+}
+
+function chiudiFabbisogno() {
+  document.getElementById('fabbisognoOverlay').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════════
+// CONSUMABILI USATI OGGI — filtrati sulla mansione specifica esatta, scalano dal furgone
+// ══════════════════════════════════════════════════
+function renderConsumoSection() {
+  const card = document.getElementById('cardConsumo');
+  const key = getSottomansioneKey();
+
+  if (!key) {
+    card.classList.add('hidden');
+    return;
+  }
+
+  const items = magazzino.filter(m =>
+    (m.cat === 'consumabile' || m.cat === 'cantiere') && m.inFurgone && (ITEM_MANSIONI_MAP[m.id] || []).includes(key)
+  );
+
+  card.classList.remove('hidden');
+  const list = document.getElementById('consumoList');
+  const vuoto = document.getElementById('consumoVuoto');
+
+  if (!items.length) {
+    list.innerHTML = '';
+    vuoto.classList.remove('hidden');
+    return;
+  }
+  vuoto.classList.add('hidden');
+
+  list.innerHTML = items.map(m => {
+    const usato = consumoOggi[m.id] || 0;
+    return `
+    <div class="consumo-row">
+      <div class="consumo-row-info">
+        <div class="consumo-row-nome">${nomeDisplay(m.nome)}</div>
+        <div class="consumo-row-sub">${t('disponibiliInFurgone')}: ${m.furgoneQty || 0} ${m.unit}</div>
+      </div>
+      <div class="qty-stepper">
+        <div class="qty-btn" onclick="stepConsumo('${m.id}', -1)">−</div>
+        <input type="number" class="furgone-qty-input" value="${usato}"
+          inputmode="numeric" onchange="setConsumo('${m.id}', this.value)">
+        <div class="qty-btn" onclick="stepConsumo('${m.id}', 1)">+</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function stepConsumo(id, delta) {
+  const item = magazzino.find(m => m.id === id);
+  const max = item ? (item.furgoneQty || 0) : 0;
+  const cur = consumoOggi[id] || 0;
+  consumoOggi[id] = Math.max(0, Math.min(max, cur + delta));
+  renderConsumoSection();
+}
+
+function setConsumo(id, val) {
+  const item = magazzino.find(m => m.id === id);
+  const max = item ? (item.furgoneQty || 0) : 0;
+  consumoOggi[id] = Math.max(0, Math.min(max, parseFloat(val) || 0));
+  renderConsumoSection();
+}
+
+// Applica il consumo di oggi: scala furgoneQty per ogni consumabile usato,
+// ritorna una stringa riepilogo per il salvataggio nel Diario/Sheets.
+function applicaConsumoOggi() {
+  const righe = [];
+  Object.entries(consumoOggi).forEach(([id, qty]) => {
+    if (qty > 0) {
+      const item = magazzino.find(m => m.id === id);
+      if (item) {
+        item.furgoneQty = Math.max(0, (item.furgoneQty || 0) - qty);
+        righe.push(`${item.nome} x${qty}`);
+      }
+    }
+  });
+  if (righe.length) salvaStatoFurgone();
+  return righe.join('; ');
+}
+
+function resetConsumoOggi() {
+  consumoOggi = {};
+  const card = document.getElementById('cardConsumo');
+  if (card) card.classList.add('hidden');
+}
+
+
+// SUVA CHECKLIST + REGOLA SETTIMANALE
 // ══════════════════════════════════════════════════
 const checks = { s1: false, s2: false, s3: false, s4: false };
 function toggleCheck(id) {
@@ -1107,6 +2163,105 @@ function getSuvaStatus() {
   const vals = Object.values(checks);
   const done = vals.filter(Boolean).length;
   return { done, total: vals.length, ok: vals.every(Boolean) };
+}
+
+function suvaNecessaria() {
+  const raw = localStorage.getItem('dp_suva_last');
+  if (!raw) return true;
+  let last;
+  try { last = JSON.parse(raw); } catch (e) { return true; }
+  const cantiereAttuale = document.getElementById('cantiere').value.trim();
+  if (last.cantiere !== cantiereAttuale) return true;
+  const giorni = (Date.now() - new Date(last.data).getTime()) / 86400000;
+  return giorni >= 7;
+}
+
+function updateSuvaVisibility() {
+  const banner = document.getElementById('suvaBanner');
+  const card = document.getElementById('cardSuva');
+  if (suvaNecessaria()) {
+    banner.classList.add('hidden');
+    card.classList.remove('hidden');
+  } else {
+    banner.classList.remove('hidden');
+    card.classList.add('hidden');
+  }
+}
+
+function forzaSuva() {
+  document.getElementById('suvaBanner').classList.add('hidden');
+  document.getElementById('cardSuva').classList.remove('hidden');
+}
+
+function salvaSuvaSettimana() {
+  localStorage.setItem('dp_suva_last', JSON.stringify({
+    data: new Date().toISOString(),
+    cantiere: document.getElementById('cantiere').value.trim(),
+  }));
+}
+
+// ══════════════════════════════════════════════════
+// FOTO LAVORO
+// ══════════════════════════════════════════════════
+const FOTO_MAX = 5;
+
+function resizeImmagine(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxLato = 800;
+        let { width, height } = img;
+        if (width > height && width > maxLato) {
+          height = Math.round(height * (maxLato / width));
+          width = maxLato;
+        } else if (height > maxLato) {
+          width = Math.round(width * (maxLato / height));
+          height = maxLato;
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function gestisciFileFoto(fileList) {
+  const files = Array.from(fileList);
+  for (const file of files) {
+    if (window.fotoLavoro.length >= FOTO_MAX) {
+      showToast(`${t('toastMaxFoto')} ${FOTO_MAX}`, 'err');
+      break;
+    }
+    try {
+      const dataUrl = await resizeImmagine(file);
+      window.fotoLavoro.push(dataUrl);
+    } catch (e) { /* ignora file non validi */ }
+  }
+  renderFotoPreview();
+}
+
+function renderFotoPreview() {
+  const grid = document.getElementById('fotoPreview');
+  grid.innerHTML = window.fotoLavoro.map((src, i) => `
+    <div class="foto-thumb">
+      <img src="${src}">
+      <div class="rm" onclick="rimuoviFoto(${i})">✕</div>
+    </div>`).join('');
+  document.getElementById('fotoCount').textContent = `${window.fotoLavoro.length} / ${FOTO_MAX} ${t('fotoUnit')}`;
+}
+
+function rimuoviFoto(i) {
+  window.fotoLavoro.splice(i, 1);
+  renderFotoPreview();
 }
 
 // ══════════════════════════════════════════════════
@@ -1125,20 +2280,20 @@ async function loadMeteo() {
     const rh = d.hourly?.relativehumidity_2m?.[0] ?? '—';
     meteoData = { temp: cw.temperature, wind: cw.windspeed, rh };
     document.getElementById('meteoStrip').innerHTML = `
-      <div class="meteo-chip">🌡 <span class="val">${cw.temperature}°C</span> Aria</div>
+      <div class="meteo-chip">🌡 <span class="val">${cw.temperature}°C</span> ${t('ariaLbl')}</div>
       <div class="meteo-chip">💨 <span class="val">${cw.windspeed} km/h</span></div>
-      <div class="meteo-chip">💧 <span class="val">${rh}%</span> Umidità</div>
+      <div class="meteo-chip">💧 <span class="val">${rh}%</span> ${t('umiditaLbl')}</div>
     `;
     // SIA 271 FLK warning
     if (rh > 80 || cw.temperature < 5 || cw.temperature > 30) {
       document.getElementById('meteoStrip').innerHTML += `
         <div class="meteo-chip" style="border-color:rgba(224,85,85,0.4); color:var(--danger)">
-          ⚠️ FLK fuori spec SIA 271
+          ${t('flkFuoriSpec')}
         </div>`;
     }
   } catch (e) {
     document.getElementById('meteoStrip').innerHTML = `
-      <div class="meteo-chip" style="color:var(--text-muted)">📡 GPS non disponibile — inserisci manualmente</div>`;
+      <div class="meteo-chip" style="color:var(--text-muted)">${t('gpsNonDisponibile')}</div>`;
   }
 }
 
@@ -1149,19 +2304,21 @@ async function salvaDati() {
   const cantiere = document.getElementById('cantiere').value.trim();
   const operaio  = document.getElementById('operaio').value.trim();
   const mansione = document.getElementById('mansioneSelected').value;
-  const qty      = document.getElementById('quantita').value;
-  const unit     = document.getElementById('unitSelect').value;
-  const strati   = document.getElementById('strati').value;
   const tempSup  = document.getElementById('tempSupporto').value;
   const note     = document.getElementById('note').value.trim();
   const fornitore= document.getElementById('fornitore').value;
   const suva     = getSuvaStatus();
+  const suvaOraNecessaria = suvaNecessaria();
 
-  if (!cantiere) { showToast('⚠️ Inserisci il nome cantiere', 'err'); return; }
-  if (!mansioneState.principale) { showToast('⚠️ Seleziona la mansione principale', 'err'); return; }
-  if (!qty)      { showToast('⚠️ Inserisci la quantità', 'err'); return; }
+  if (!cantiere) { showToast(t('toastCantiere'), 'err'); return; }
+  if (!mansioneState.principale) { showToast(t('toastMansionePrinc'), 'err'); return; }
+  if (!mansioneState.dettaglio) { showToast(t('toastMansioneSpec'), 'err'); return; }
+  if (!misuraValida()) { showToast(t('toastMisura'), 'err'); return; }
+  if (suvaOraNecessaria && !suva.ok) { showToast(t('toastSuva'), 'err'); return; }
 
   const ore = elapsedMs > 0 ? (elapsedMs / 3600000).toFixed(2) : '';
+  const misure = getMisuraValori();
+  const consumabiliUsatiTxt = applicaConsumoOggi(); // scala dal furgone e ritorna riepilogo
 
   const now = new Date();
   const row = {
@@ -1174,28 +2331,31 @@ async function salvaDati() {
     MansionePrincipale: document.getElementById('mansionePrincipale').value,
     MansioneGruppo:     document.getElementById('mansioneGruppo').value,
     Fornitore:       fornitore,
-    Quantita:        qty,
-    Unita:           unit,
-    Strati:          strati,
+    ...misure,
     Ore_Lavorate:    ore,
     Temp_Supporto:   tempSup,
     Temp_Aria:       meteoData.temp ?? '',
     Umidita:         meteoData.rh ?? '',
     Vento_kmh:       meteoData.wind ?? '',
-    SUVA_OK:         suva.ok ? 'SI' : `${suva.done}/${suva.total}`,
+    SUVA_OK:         suvaOraNecessaria ? (suva.ok ? 'SI' : `${suva.done}/${suva.total}`) : 'GIA VERIFICATA (settimana)',
+    Foto_Count:      window.fotoLavoro.length,
+    ConsumabiliUsati: consumabiliUsatiTxt,
     Note:            note,
     Timestamp:       now.toISOString(),
   };
 
   const btn = document.getElementById('btnSave');
   btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Salvataggio…';
+  btn.innerHTML = `<span class="spinner"></span> ${t('salvataggioInCorso')}`;
 
-  // salva locale
-  localLog.unshift(row);
+  // salva locale (con foto allegate alla voce)
+  const rowConFoto = { ...row, foto: [...window.fotoLavoro] };
+  localLog.unshift(rowConFoto);
   localStorage.setItem('dp_log', JSON.stringify(localLog));
 
-  // invia a Sheets
+  if (suvaOraNecessaria && suva.ok) salvaSuvaSettimana();
+
+  // invia a Sheets (senza le foto, solo il conteggio)
   try {
     const res = await fetch(SHEETS_URL, {
       method: 'POST',
@@ -1204,89 +2364,240 @@ async function salvaDati() {
       body: JSON.stringify(row),
     });
     setOnline(true);
-    showToast('✅ Salvato nel Diario di Bordo!', 'ok');
+    showToast(t('toastSalvatoOk'), 'ok');
   } catch (e) {
     setOnline(false);
-    showToast('💾 Salvato offline — invieremo a Sheets appena connesso', 'ok');
+    showToast(t('toastSalvatoOffline'), 'ok');
   }
 
   btn.disabled = false;
-  btn.innerHTML = '🚀 SALVA NEL DIARIO DI BORDO';
+  btn.innerHTML = t('btnSalva');
 
   // reset form parziale
-  document.getElementById('quantita').value = '';
   document.getElementById('note').value = '';
   document.getElementById('tempSupporto').value = '';
   Object.keys(checks).forEach(k => {
     checks[k] = false;
     document.getElementById(k).classList.remove('checked');
   });
+  window.fotoLavoro = [];
+  renderFotoPreview();
   resetMansioni();
   resetTimer();
+  updateSuvaVisibility();
 }
 
 // ══════════════════════════════════════════════════
-// MAGAZZINO
+// MAGAZZINO / FURGONE — striscia categorie + striscia mansioni
 // ══════════════════════════════════════════════════
-function renderMagazzino() {
-  const grid = document.getElementById('magGrid');
-  const sel  = document.getElementById('magMateriale');
-  sel.innerHTML = '<option value="">— Seleziona —</option>';
-  let low = 0;
-  grid.innerHTML = magazzino.map(m => {
-    const isLow = m.qty <= m.min;
-    if (isLow) low++;
-    return `<div class="mag-item ${isLow ? 'low' : 'ok'}">
-      <div class="mag-badge ${isLow ? 'low' : 'ok'}">${isLow ? 'BASSO' : 'OK'}</div>
-      <div class="mag-name">${m.nome}</div>
-      <div><span class="mag-qty">${m.qty}</span> <span class="mag-unit">${m.unit}</span></div>
-      <div class="mag-threshold">Min: ${m.min} ${m.unit}</div>
-    </div>`;
-  }).join('');
-  magazzino.forEach(m => {
-    sel.innerHTML += `<option value="${m.id}">${m.nome} (${m.qty} ${m.unit})</option>`;
+function renderCatStrip() {
+  ['catStrip', 'catStripFurgone'].forEach(stripId => {
+    const strip = document.getElementById(stripId);
+    if (!strip) return;
+    strip.innerHTML = Object.entries(CAT_LABELS).map(([key, c]) =>
+      `<div class="cat-chip ${key === magCategoriaAttiva ? 'active' : ''}" onclick="selezionaCategoria('${key}')">${c.icon} ${labelBreve(c.de, c.it)}</div>`
+    ).join('');
   });
-  document.getElementById('statTotale').textContent = magazzino.length;
-  document.getElementById('statLow').textContent = low;
 }
 
-function aggiornaScorta() {
-  const id  = document.getElementById('magMateriale').value;
-  const qty = parseFloat(document.getElementById('magQty').value);
-  if (!id || isNaN(qty)) { showToast('⚠️ Seleziona materiale e quantità', 'err'); return; }
-  const item = magazzino.find(m => m.id === id);
-  if (item) {
-    item.qty = qty;
-    localStorage.setItem('dp_mag', JSON.stringify(magazzino));
-    renderMagazzino();
-    document.getElementById('magQty').value = '';
-    showToast(`✅ ${item.nome}: aggiornato a ${qty} ${item.unit}`, 'ok');
+function renderMansioneStrip() {
+  ['mansioneStripMag', 'mansioneStripFurgone'].forEach(stripId => {
+    const strip = document.getElementById(stripId);
+    if (!strip) return;
+    strip.innerHTML = Object.entries(MANSIONE_FILTER_LABELS).map(([key, m]) =>
+      `<div class="cat-chip ${key === magMansioneAttiva ? 'active' : ''}" onclick="selezionaMansione('${key}')">${m.icon} ${labelBreve(m.de, m.it)}</div>`
+    ).join('');
+  });
+}
+
+function selezionaCategoria(cat) {
+  magCategoriaAttiva = cat;
+  renderCatStrip();
+  renderMagazzino();
+  renderFurgonePage();
+}
+
+function selezionaMansione(m) {
+  magMansioneAttiva = m;
+  renderMansioneStrip();
+  renderMagazzino();
+  renderFurgonePage();
+}
+
+// Raggruppa `items` (già filtrati per categoria) secondo magMansioneAttiva
+// e li renderizza in `containerId` usando `rowFn(item)` per ogni riga.
+// 'tutti'  → sezioni con header per ogni mansione presente, oggetti condivisi ripetuti
+// 'altri'  → solo oggetti senza mansioni assegnate
+// singola  → solo oggetti di quella mansione, lista piatta
+function renderGruppiPerMansione(containerId, items, rowFn) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (magMansioneAttiva === 'tutti') {
+    let html = '';
+    MANSIONE_ORDER.forEach(mk => {
+      const subset = items.filter(it => (it.mansioni || []).includes(mk));
+      if (subset.length) {
+        html += `<div class="mansione-group-header">${MANSIONE_FILTER_LABELS[mk].icon} ${labelBreve(MANSIONI_TREE[mk].de, MANSIONI_TREE[mk].it)}</div>`;
+        html += subset.map(rowFn).join('');
+      }
+    });
+    const altri = items.filter(it => !(it.mansioni && it.mansioni.length));
+    if (altri.length) {
+      html += `<div class="mansione-group-header">${MANSIONE_FILTER_LABELS.altri.icon} ${labelBreve(MANSIONE_FILTER_LABELS.altri.de, MANSIONE_FILTER_LABELS.altri.it)}</div>`;
+      html += altri.map(rowFn).join('');
+    }
+    container.innerHTML = html || `<p class="mag-empty">${t('nessunOggettoCategoria')}</p>`;
+  } else if (magMansioneAttiva === 'altri') {
+    const subset = items.filter(it => !(it.mansioni && it.mansioni.length));
+    container.innerHTML = subset.map(rowFn).join('') || `<p class="mag-empty">${t('nessunOggettoSenzaMansione')}</p>`;
+  } else {
+    const subset = items.filter(it => (it.mansioni || []).includes(magMansioneAttiva));
+    container.innerHTML = subset.map(rowFn).join('') || `<p class="mag-empty">${t('nessunOggettoMansione')}</p>`;
   }
+}
+
+function magRowTemplate(m) {
+  return `
+    <div class="mag-row ${m.inFurgone ? 'in-furgone' : ''}">
+      <div class="mag-row-info">
+        <div class="mag-row-nome">${nomeDisplay(m.nome)}</div>
+        <div class="mag-row-sub">${m.id} · ${m.unit}${m.inFurgone ? ' · in furgone: ' + (m.furgoneQty || 0) : ''}</div>
+      </div>
+      <div class="mag-row-btn ${m.inFurgone ? 'active' : ''}" onclick="toggleFurgone('${m.id}')">
+        ${m.inFurgone ? '✓ Furgone' : '🚐 Furgone'}
+      </div>
+    </div>`;
+}
+
+function renderMagazzino() {
+  const c = CAT_LABELS[magCategoriaAttiva];
+  document.getElementById('catIcon').textContent = c.icon;
+  document.getElementById('catTitolo').textContent = labelBreve(c.de, c.it);
+
+  const items = magazzino.filter(m => m.cat === magCategoriaAttiva);
+  renderGruppiPerMansione('magList', items, magRowTemplate);
+
+  document.getElementById('statTotale').textContent = items.length;
+  document.getElementById('statInFurgone').textContent = items.filter(m => m.inFurgone).length;
+
+  // box "aggiungi attrezzo" solo nella categoria Attrezzi
+  document.getElementById('addAttrezzoBox').classList.toggle('hidden', magCategoriaAttiva !== 'attrezzo');
+}
+
+function toggleFurgone(id) {
+  const item = magazzino.find(m => m.id === id);
+  if (!item) return;
+  item.inFurgone = !item.inFurgone;
+  if (!item.inFurgone) item.furgoneQty = 0;
+  else if (!item.furgoneQty) item.furgoneQty = 1;
+  salvaStatoFurgone();
+  renderMagazzino();
+  renderFurgonePage();
+}
+
+function aggiungiAttrezzoCustom() {
+  const nome = document.getElementById('nuovoAttrezzoNome').value.trim();
+  const cat = document.getElementById('nuovoAttrezzoCat').value;
+  if (!nome) { showToast(t('toastNomeAttrezzo'), 'err'); return; }
+  const id = 'CUSTOM-' + Date.now();
+  // gli attrezzi custom nascono senza mansione assegnata → finiscono in "Altri"
+  magazzino.push({ id, nome, unit:'pz', min:1, cat, mansioni:[], inFurgone:false, furgoneQty:0 });
+  salvaAttrezziCustom();
+  salvaStatoFurgone();
+  document.getElementById('nuovoAttrezzoNome').value = '';
+  showToast(`✅ "${nome}" ${t('toastAttrezzoAggiunto')}`, 'ok');
+  magCategoriaAttiva = cat;
+  renderCatStrip();
+  renderMagazzino();
 }
 
 async function syncMagazzino() {
   const el = document.getElementById('syncStatus');
-  el.textContent = '⏳ Sincronizzazione in corso…';
+  el.textContent = t('syncInCorso');
   try {
     const url = SHEETS_URL + '?action=get_listino';
     const r = await fetch(url);
     const d = await r.json();
     if (d && d.materiali) {
-      // merge con magazzino locale
+      // merge min/unit dal foglio, per id o nome — non tocca lo stato furgone
       d.materiali.forEach(sm => {
         const local = magazzino.find(m => m.id === sm.id || m.nome === sm.nome);
-        if (local) { local.qty = sm.qty; local.min = sm.min; }
+        if (local) { if (sm.min != null) local.min = sm.min; if (sm.unit) local.unit = sm.unit; }
       });
-      localStorage.setItem('dp_mag', JSON.stringify(magazzino));
       renderMagazzino();
-      el.textContent = '✅ Sync completato — ' + new Date().toLocaleTimeString('it-CH');
+      el.textContent = t('syncCompletato') + new Date().toLocaleTimeString('it-CH');
     } else {
-      el.textContent = '⚠️ Nessun dato ricevuto da Sheets';
+      el.textContent = t('syncNessunDato');
     }
   } catch (e) {
-    el.textContent = '❌ Errore connessione — controlla il webhook';
+    el.textContent = t('syncErrore');
   }
 }
+
+// ══════════════════════════════════════════════════
+// FURGONE — stesso schema categoria+mansione, solo oggetti "in furgone"
+// ══════════════════════════════════════════════════
+function furgoneRowTemplate(m) {
+  const isLow = (m.furgoneQty || 0) < m.min;
+  return `
+    <div class="mag-row ${isLow ? '' : 'in-furgone'}">
+      <div class="mag-row-info">
+        <div class="mag-row-nome">${nomeDisplay(m.nome)} ${isLow ? '⚠️' : ''}</div>
+        <div class="mag-row-sub">${m.id} · ${t('minConsigliato')}: ${m.min} ${m.unit}</div>
+      </div>
+      <div class="qty-stepper">
+        <div class="qty-btn" onclick="stepFurgoneQty('${m.id}', -1)">−</div>
+        <input type="number" class="furgone-qty-input" value="${m.furgoneQty || 0}"
+          inputmode="numeric" onchange="setFurgoneQty('${m.id}', this.value)">
+        <div class="qty-btn" onclick="stepFurgoneQty('${m.id}', 1)">+</div>
+      </div>
+    </div>`;
+}
+
+function renderFurgonePage() {
+  const catEl = CAT_LABELS[magCategoriaAttiva];
+  const iconEl = document.getElementById('furgoneCatIcon');
+  const titEl = document.getElementById('furgoneCatTitolo');
+  if (iconEl) iconEl.textContent = catEl.icon;
+  if (titEl) titEl.textContent = labelBreve(catEl.de, catEl.it);
+
+  const itemsCat = magazzino.filter(m => m.cat === magCategoriaAttiva);
+  const itemsFurgone = itemsCat.filter(m => m.inFurgone);
+  const vuoto = document.getElementById('furgoneVuoto');
+
+  if (!itemsFurgone.length) {
+    document.getElementById('furgoneList').innerHTML = '';
+    if (vuoto) vuoto.classList.remove('hidden');
+    document.getElementById('furgoneStatTotale').textContent = '0';
+    document.getElementById('furgoneStatBasso').textContent = '0';
+    return;
+  }
+  if (vuoto) vuoto.classList.add('hidden');
+
+  renderGruppiPerMansione('furgoneList', itemsFurgone, furgoneRowTemplate);
+
+  const basso = itemsFurgone.filter(m => (m.furgoneQty || 0) < m.min).length;
+  document.getElementById('furgoneStatTotale').textContent = itemsFurgone.length;
+  document.getElementById('furgoneStatBasso').textContent = basso;
+}
+
+function setFurgoneQty(id, val) {
+  const item = magazzino.find(m => m.id === id);
+  if (!item) return;
+  item.furgoneQty = Math.max(0, parseFloat(val) || 0);
+  salvaStatoFurgone();
+  renderFurgonePage();
+}
+
+function stepFurgoneQty(id, delta) {
+  const item = magazzino.find(m => m.id === id);
+  if (!item) return;
+  item.furgoneQty = Math.max(0, (item.furgoneQty || 0) + delta);
+  salvaStatoFurgone();
+  renderFurgonePage();
+}
+
 
 // ══════════════════════════════════════════════════
 // DIARIO LOG
@@ -1302,10 +2613,14 @@ function renderLog() {
   let totOre = 0;
   container.innerHTML = localLog.slice(0,20).map(r => {
     if (r.Ore_Lavorate) totOre += parseFloat(r.Ore_Lavorate) || 0;
+    const misuraTxt = r.Misura_Mq ? `${r.Misura_Mq} m²`
+      : r.Misura_LunghezzaM ? `${r.Misura_LunghezzaM} m · ${r.Misura_LitriFlk || 0} L`
+      : r.Misura_NumeroPezzi ? `${r.Misura_NumeroPezzi} pz`
+      : '—';
     return `<div class="log-entry">
       <div class="log-time">${r.Data} ${r.Ora} · ${r.Cantiere}</div>
       <div class="log-main">${r.TipoLavoro} ${r.Mansione ? '· ' + r.Mansione : ''}</div>
-      <div class="log-detail">${r.Quantita} ${r.Unita} · ${r.Fornitore || '—'} · ${r.Ore_Lavorate ? r.Ore_Lavorate + 'h' : '—'} ${r.Note ? '· ' + r.Note.substring(0,40) : ''}</div>
+      <div class="log-detail">${misuraTxt} · ${r.Fornitore || '—'} · ${r.Ore_Lavorate ? r.Ore_Lavorate + 'h' : '—'} ${r.Foto_Count ? '· 📷 ' + r.Foto_Count : ''} ${r.Note ? '· ' + r.Note.substring(0,40) : ''}</div>
     </div>`;
   }).join('');
   document.getElementById('riepilogoOre').textContent = totOre.toFixed(1) + 'h';
@@ -1313,11 +2628,11 @@ function renderLog() {
 }
 
 function svuotaDiario() {
-  if (!confirm('Svuotare il diario locale? I dati già inviati a Sheets rimangono.')) return;
+  if (!confirm(t('confirmSvuotaDiario'))) return;
   localLog = [];
   localStorage.removeItem('dp_log');
   renderLog();
-  showToast('🗑 Diario locale svuotato', 'ok');
+  showToast(t('toastDiarioSvuotato'), 'ok');
 }
 
 // ══════════════════════════════════════════════════
@@ -1340,17 +2655,28 @@ function setOnline(on) {
 // INIT
 // ══════════════════════════════════════════════════
 window.addEventListener('load', () => {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === appLang));
+  applyTranslations();
   renderMansioniLv1();
+  renderCatStrip();
+  renderMansioneStrip();
   renderMagazzino();
   loadMeteo();
+  updateSuvaVisibility();
+
+  // foto: collega gli input file
+  document.getElementById('fotoCamera').addEventListener('change', (e) => gestisciFileFoto(e.target.files));
+  document.getElementById('fotoGalleria').addEventListener('change', (e) => gestisciFileFoto(e.target.files));
+
   // restore cantiere da localStorage
   const lastCantiere = localStorage.getItem('dp_lastCantiere');
   const lastOperaio  = localStorage.getItem('dp_lastOperaio');
   if (lastCantiere) document.getElementById('cantiere').value = lastCantiere;
   if (lastOperaio)  document.getElementById('operaio').value  = lastOperaio;
-  // auto-save cantiere/operaio
+  // auto-save cantiere/operaio + ricontrolla regola SUVA al cambio cantiere
   document.getElementById('cantiere').addEventListener('blur', () => {
     localStorage.setItem('dp_lastCantiere', document.getElementById('cantiere').value);
+    updateSuvaVisibility();
   });
   document.getElementById('operaio').addEventListener('blur', () => {
     localStorage.setItem('dp_lastOperaio', document.getElementById('operaio').value);
