@@ -525,12 +525,43 @@
     color: var(--accent);
   }
 
+  /* MANSIONE SELECT (Lv1) */
+  .mansione-select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 15px;
+    font-family: var(--font);
+    padding: 12px 14px;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    transition: border-color 0.15s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8fa8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 36px;
+  }
+  .mansione-select:focus {
+    border-color: var(--accent);
+  }
+
   /* MANSIONE CHIPS */
   .mansioni-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 4px;
+  }
+  #mansioniGridDettaglio {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  #mansioniGridDettaglio .mansione-chip {
+    width: 100%;
   }
   .mansione-chip {
     background: var(--surface2);
@@ -640,7 +671,9 @@
 
     <div class="field">
       <label>Mansione Principale</label>
-      <div class="mansioni-grid" id="mansioniGridLv1"></div>
+      <select id="mansionePrincipaleSelect" class="mansione-select">
+        <option value="">— Seleziona —</option>
+      </select>
       <input type="hidden" id="mansionePrincipale" value="">
     </div>
 
@@ -656,7 +689,9 @@
       <input type="hidden" id="mansioneSelected" value="">
     </div>
 
-    <div class="field">
+    <div class="field hidden" id="fieldMisura"></div>
+
+    <div class="field hidden" id="fieldFornitore">
       <label>Fornitore</label>
       <select id="fornitore">
         <option value="">— Seleziona fornitore —</option>
@@ -1002,10 +1037,15 @@ const MANSIONI_TREE = {
 let mansioneState = { principale:'', gruppo:'', dettaglio:'', dettaglioLabel:'' };
 
 function renderMansioniLv1() {
-  const grid = document.getElementById('mansioniGridLv1');
-  grid.innerHTML = Object.entries(MANSIONI_TREE).map(([key, m]) =>
-    `<div class="mansione-chip" data-key="${key}" onclick="selectMansionePrincipale('${key}')">${m.de}<br><small style="opacity:.6">${m.it}</small></div>`
-  ).join('');
+  const sel = document.getElementById('mansionePrincipaleSelect');
+  sel.innerHTML = '<option value="">— Seleziona —</option>' +
+    Object.entries(MANSIONI_TREE).map(([key, m]) =>
+      `<option value="${key}">${m.de} — ${m.it}</option>`
+    ).join('');
+  sel.addEventListener('change', function() {
+    if (this.value) selectMansionePrincipale(this.value);
+    else resetMansioni();
+  });
 }
 
 function selectMansionePrincipale(key) {
@@ -1054,6 +1094,59 @@ function selectMansioneDettaglio(id, deLabel) {
   document.getElementById('mansioneSelected').value = deLabel;
   document.querySelectorAll('#mansioniGridDettaglio .mansione-chip').forEach(c =>
     c.classList.toggle('active', c.dataset.key === id));
+  renderCampoMisura();
+}
+
+function renderCampoMisura() {
+  const fieldMisura = document.getElementById('fieldMisura');
+  const tipo = MANSIONI_TREE[mansioneState.principale]?.misura;
+  if (!tipo) { fieldMisura.classList.add('hidden'); return; }
+
+  let html = '<label>Misura</label>';
+  if (tipo === 'mq') {
+    html += `<div style="display:flex; gap:8px">
+      <div class="input-unit" style="flex:1">
+        <input type="number" id="misuraMq" placeholder="0" inputmode="decimal" step="0.1" oninput="checkMostraFornitore()">
+        <span class="unit">m²</span>
+      </div>
+      <select id="misuraStrati" style="width:90px; background:var(--surface2); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-size:14px; padding:12px 8px; appearance:none; -webkit-appearance:none;">
+        <option value="1">1 strato</option>
+        <option value="2" selected>2 strati</option>
+        <option value="3">3 strati</option>
+      </select>
+    </div>`;
+  } else if (tipo === 'flk') {
+    html += `<div style="display:flex; flex-direction:column; gap:8px">
+      <div class="input-unit">
+        <input type="number" id="misuraLunghezza" placeholder="Lunghezza (ml)" inputmode="decimal" step="0.1" oninput="checkMostraFornitore()">
+        <span class="unit">ml</span>
+      </div>
+      <div class="input-unit">
+        <input type="number" id="misuraLarghezza" placeholder="Larghezza vlies (cm)" inputmode="decimal" step="0.1" oninput="checkMostraFornitore()">
+        <span class="unit">cm</span>
+      </div>
+      <div class="input-unit">
+        <input type="number" id="misuraLitri" placeholder="Litri" inputmode="decimal" step="0.1" oninput="checkMostraFornitore()">
+        <span class="unit">L</span>
+      </div>
+    </div>`;
+  } else if (tipo === 'pezzi') {
+    html += `<div class="input-unit">
+      <input type="number" id="misuraPezzi" placeholder="0" inputmode="numeric" step="1" oninput="checkMostraFornitore()">
+      <span class="unit">pz</span>
+    </div>`;
+  }
+
+  fieldMisura.innerHTML = html;
+  fieldMisura.classList.remove('hidden');
+  document.getElementById('fieldFornitore').classList.add('hidden');
+}
+
+function checkMostraFornitore() {
+  const fieldMisura = document.getElementById('fieldMisura');
+  const inputs = fieldMisura.querySelectorAll('input[type="number"]');
+  const hasValue = Array.from(inputs).some(inp => parseFloat(inp.value) > 0);
+  document.getElementById('fieldFornitore').classList.toggle('hidden', !hasValue);
 }
 
 function resetMansioni() {
@@ -1061,9 +1154,11 @@ function resetMansioni() {
   document.getElementById('mansionePrincipale').value = '';
   document.getElementById('mansioneGruppo').value = '';
   document.getElementById('mansioneSelected').value = '';
+  document.getElementById('mansionePrincipaleSelect').value = '';
   document.getElementById('fieldGruppo').classList.add('hidden');
   document.getElementById('fieldDettaglio').classList.add('hidden');
-  document.querySelectorAll('#mansioniGridLv1 .mansione-chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('fieldMisura').classList.add('hidden');
+  document.getElementById('fieldFornitore').classList.add('hidden');
 }
 
 // ══════════════════════════════════════════════════
